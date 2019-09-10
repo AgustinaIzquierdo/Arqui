@@ -1,13 +1,12 @@
 `timescale 1ns / 1ps
 
-module ALU #(parameter NB_DATA_IN=6,
-            parameter NB_DATA_OUT=7,
+module ALU #(parameter NB_DATA=6,
             parameter NB_OPERADOR=6)
 (
-  input signed [NB_DATA_IN-1 : 0]i_dato_a,
-  input signed [NB_DATA_IN-1 : 0]i_dato_b,
+  input signed [NB_DATA-1 : 0]i_dato_a,
+  input signed [NB_DATA-1 : 0]i_dato_b,
   input [NB_OPERADOR-1 : 0]i_operador,
-  output reg signed [NB_DATA_OUT-1: 0] o_resultado 
+  output reg signed [NB_DATA-1: 0] o_resultado 
 );
   
 localparam ADD = 6'b100000;
@@ -15,7 +14,7 @@ localparam SUB = 6'b100010;
 localparam AND = 6'b100100;
 localparam OR = 6'b100101;
 localparam XOR= 6'b100110;
-localparam NOR = 6'b100111;
+localparam NOR = 6'b100111;  
 localparam SRA = 6'b000011;
 localparam SRL = 6'b000010;
   
@@ -30,7 +29,7 @@ begin
     NOR: o_resultado = ~(i_dato_a | i_dato_b);
     SRA: o_resultado = i_dato_a >>> i_dato_b;
     SRL: o_resultado = i_dato_a >> i_dato_b;
-    default: o_resultado = {NB_DATA_OUT{1'b0}};
+    default: o_resultado = {NB_DATA{1'b0}};
   endcase
 end
 endmodule

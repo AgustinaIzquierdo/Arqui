@@ -4,21 +4,20 @@
 
 module testb_ALU();
     //local parameters
-    localparam  NB_DATA_IN_01    =  5;
-    localparam  NB_DATA_OUT_01    =  6;
-    localparam  NB_OPERADOR_01   =  6;
+localparam  NB_DATA_01    =  5;
+localparam  NB_OPERADOR_01   =  6;
     //Inputs
-  reg  signed       [NB_DATA_IN_01-1:0]        i_data_bus_a;
-  reg  signed       [NB_DATA_IN_01-1:0]        i_data_bus_b;
-  reg         [NB_OPERADOR_01-1:0]    i_data_operador;
+reg  signed       [NB_DATA_01-1:0]        i_data_bus_a;
+reg  signed       [NB_DATA_01-1:0]        i_data_bus_b;
+reg         [NB_OPERADOR_01-1:0]    i_data_operador;
     //Outputs
-  	wire        [NB_DATA_OUT_01-1:0]        o_data_resultado;
+wire        [NB_DATA_01-1:0]        o_data_resultado;
 
 
     initial begin
       #0
-      i_data_bus_a  ={NB_DATA_IN_01{1'b0}};
-      i_data_bus_b  ={NB_DATA_IN_01{1'b0}};
+      i_data_bus_a  ={NB_DATA_01{1'b0}};
+      i_data_bus_b  ={NB_DATA_01{1'b0}};
       i_data_operador  ={NB_OPERADOR_01{1'b0}};
       #1000
       $finish;
@@ -26,9 +25,13 @@ module testb_ALU();
 
     always begin
       #100
-      i_data_bus_a = 5'b01010;
+      i_data_bus_a = 5'b00010;
       i_data_bus_b = 5'b01010;
       i_data_operador = 6'b100000; //ADD
+      #100
+      i_data_bus_a = 5'b01010;
+      i_data_bus_b = 5'b01010;
+      i_data_operador = 6'b100000; //ADD con overflow
       #100
       i_data_bus_a = 5'b00110;
       i_data_bus_b = 5'b00111;
@@ -61,8 +64,7 @@ module testb_ALU();
 
     ALU  
     #(
-      .NB_DATA_IN           (NB_DATA_IN_01),
-      .NB_DATA_OUT          (NB_DATA_OUT_01),
+      .NB_DATA           (NB_DATA_01),
       .NB_OPERADOR          (NB_OPERADOR_01)
      )
     u_alu_01

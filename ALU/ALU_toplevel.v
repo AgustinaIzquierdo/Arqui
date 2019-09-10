@@ -19,8 +19,7 @@
 // 
 //////////////////////////////////////////////////////////////////////////////////
 
-`define NB_DATA_IN 6
-`define NB_DATA_OUT 7
+`define NB_DATA 6
 `define NB_OPERADOR 6
 `define N_BOTON 3
 
@@ -34,25 +33,23 @@ module ALU_toplevel(
 );
 
 /// PARAMETERS
-parameter NB_DATA_IN              = `NB_DATA_IN;
-parameter NB_DATA_OUT              = `NB_DATA_OUT;
+parameter NB_DATA              = `NB_DATA;
 parameter NB_OPERADOR          = `NB_OPERADOR;
-parameter N_BOTON          = `N_BOTON;
 
 /// PORTS
-input [NB_DATA_IN-1:0] sw;
+input [NB_DATA-1:0] sw;
 input clk;
 //input [N_BOTON-1:0] i_btn;
 input btnL;
 input btnC;
 input btnR;
-output [NB_DATA_OUT-1:0] led;
+output [NB_DATA-1:0] led;
 
 /// VARIABLES
-reg [NB_DATA_IN-1 : 0] dato_a;
-reg [NB_DATA_IN-1 : 0] dato_b;
+reg [NB_DATA-1 : 0] dato_a;
+reg [NB_DATA-1 : 0] dato_b;
 reg [NB_OPERADOR-1 : 0] operador;
-wire [NB_DATA_OUT-1: 0] resultado;
+wire [NB_DATA-1: 0] resultado;
 
 always @(posedge clk)
 begin
@@ -79,7 +76,7 @@ end
 assign led=resultado;
 
 ALU
-#(`NB_DATA_IN,`NB_DATA_OUT,`NB_OPERADOR)
+#(`NB_DATA,`NB_OPERADOR)
 u_ALU
 (.i_dato_a(dato_a),
  .i_dato_b(dato_b),
