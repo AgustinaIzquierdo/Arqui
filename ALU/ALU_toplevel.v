@@ -49,7 +49,6 @@ output [NB_DATA-1:0] led;
 reg [NB_DATA-1 : 0] dato_a;
 reg [NB_DATA-1 : 0] dato_b;
 reg [NB_OPERADOR-1 : 0] operador;
-wire [NB_DATA-1: 0] resultado;
 
 always @(posedge clk)
 begin
@@ -73,7 +72,6 @@ begin
     end
 end
 
-assign led=resultado;
 
 ALU
 #(`NB_DATA,`NB_OPERADOR)
@@ -81,7 +79,7 @@ u_ALU
 (.i_dato_a(dato_a),
  .i_dato_b(dato_b),
  .i_operador(operador),
- .o_resultado(resultado)
+ .o_resultado(led)
 );
 
 

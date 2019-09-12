@@ -33,7 +33,7 @@
   
   \date{11 de septiembre de 2019}
 \maketitle
-
+\newpage
 \section{Introducción}
 
 Para el primer trabajo práctico de la materia se realizó la implementación en FPGA de una Unidad Aritmética Lógica (ALU). Se desarrolló para la placa Basys 3 utilizando el software Vivado 2018.2. El módulo posee un bus de datos parametrizable. 
@@ -43,8 +43,6 @@ Para el primer trabajo práctico de la materia se realizó la implementación en
 \includegraphics[width=.6\textwidth]{alu.jpg}
 \caption{\label{fig:alu}Diagrama de la ALU}
 \end{figure}
-
-\newpage
 
 La ALU soporta las siguientes operaciones, con los siguientes códigos:\\
 
@@ -89,8 +87,24 @@ Se desarrolló un módulo que se definió ALU\_toplevel, con los siguientes entr
     \item clk: entrada de clock
     \item led [NB\_DATA-1 : 0]: salida del resultado por los leds de la placa
 \end{enumerate}
+
 Para almacenar los valores ingresados se definieron dos registros A y B, que mantienen los números con los que se quiere operar. 
 El resultado se almacena en el registro o\_resultado.\\
+
+\section{Schematic}
+\subsection{General}
+\begin{figure}[!htb]
+\centering
+\includegraphics[scale=0.5]{schematic.png}
+\caption{\label{fig:tests}{Diagrama general de la implementación}}
+\end{figure}
+\subsection{ALU}
+\begin{figure}[!htb]
+\centering
+\includegraphics[scale=0.4]{alu.png}
+\caption{\label{fig:tests}Diagrama modulo ALU}
+\end{figure}
+
 
 \section{Test Bench}
 
@@ -100,12 +114,12 @@ A la hora de realizar los tests del módulo se programó un test bench que compr
 \item Suma: 2 + 10 = 12
 \item Suma con overflow: 10 + 10 = -12
 \item Resta: 6 - 7 = -1
-\item AND: 10101 \& 00111 = resultados
-\item OR: 11001 | 01011 = 
-\item XOR: 11111 \^ 01101 = no me dejo poner bien el operando aca
-\item NOR: 00110 \~| 10001 = 
-\item SRA: 10110 / 11 = no me dejo poner bien el operando aca
-\item SRL: 10110 / 11 = no me dejo poner bien el operando aca
+\item AND: 10101 \& 00111 = 00101
+\item OR: 11001 | 01011 = 11011
+\item XOR: 11111 \^ 01101 = 10010
+\item NOR: 00110 \~| 10001 = 01000
+\item SRA: 10110 \textgreater\textgreater\textgreater  11 = 11110
+\item SRL: 11010  \textgreater \textgreater 11 = 00011
 \end{enumerate}
 
 El procedimiento fue codificar un clock simulado mediante una sentencia always, y dentro de un bloque initial escribir uno por uno los tests anteriores, simulando la entrada manual de los valores.
