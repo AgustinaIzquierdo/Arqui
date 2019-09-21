@@ -39,7 +39,6 @@ parameter NB_OPERADOR          = `NB_OPERADOR;
 /// PORTS
 input [NB_DATA-1:0] sw;
 input clk;
-//input [N_BOTON-1:0] i_btn;
 input btnL;
 input btnC;
 input btnR;
@@ -62,7 +61,7 @@ begin
     end
     else if(btnR==1'b1)
     begin
-        operador<=sw;
+        operador<=sw[NB_OPERADOR-1 : 0];
     end
     else
     begin
