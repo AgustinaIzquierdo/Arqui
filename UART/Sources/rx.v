@@ -26,11 +26,11 @@ module rx
    )
    (
     input i_clk,
-    input i_reset,
-    input i_rx,
-    input i_s_tick,
-    output reg o_rx_done_tick,
-    output [8-1:0] o_dout
+    input i_rst,
+    input i_bit, //Senial que recibe los bit de entrada
+    input i_tick, //Senial de control que indica cuando muestrear
+    output reg o_done_data, //Dato listo
+    output [DBIT-1:0] o_data //Dato de salida DBIT 
    );
    
    //SYMBOLIC STATE DECLARATION
@@ -50,9 +50,9 @@ module rx
    reg [8-1:0] b_next;
    
    //FSMD STATE & DATA REGISTERS
-   always @(posedge i_clk, posedge i_reset)
+   always @(posedge i_clk)
    begin
-    if(i_reset)
+    if(i_rst)
     begin
         state_reg <= idle;
         s_reg <= 4'b0;
@@ -72,7 +72,7 @@ module rx
    always @(*)
    begin
         state_next = state_reg;
-        o_rx_done_tick = 1'b0;
+        o_done_data = 1'b0;
         s_next = s_reg;
         n_next = n_reg;
         b_next = b_reg;
@@ -80,7 +80,7 @@ module rx
         case(state_reg)
             idle:
             begin
-                if(~i_rx)
+                if(~i_bit)  //Detecta bit de start
                 begin
                     state_next = start;
                     s_next = 0;
@@ -88,7 +88,7 @@ module rx
             end
             start:
             begin
-                if(i_s_tick)
+                if(i_tick)
                 begin
                     if(s_reg==7)
                     begin
@@ -97,17 +97,17 @@ module rx
                         n_next = 3'b0;    
                     end
                     else
-                        n_next = n_reg + 1'b1;    
+                        s_next = s_reg + 1'b1;    
                 end
             end
             data:
             begin
-                if(i_s_tick)
+                if(i_tick)
                 begin
                     if(s_reg==15)
                     begin
                         s_next = 4'b0;
-                        b_next = {i_rx, b_reg[7:1]};
+                        b_next = {i_bit, b_reg[7:1]};
                         if(n_reg==(DBIT-1))
                             state_next = stop;
                         else
@@ -119,12 +119,12 @@ module rx
             end
             stop:
             begin
-                if(i_s_tick)
+                if(i_tick)
                 begin
                     if(s_reg==(SB_TICK-1))
                     begin
                        state_next = idle;
-                       o_rx_done_tick = 1'b1;   
+                       o_done_data = 1'b1;   
                     end
                     else
                         s_next = s_reg + 1'b1;    
@@ -134,5 +134,5 @@ module rx
    end
    
    //OUTPUT
-   assign o_dout = b_reg;
+   assign o_data = b_reg;
 endmodule

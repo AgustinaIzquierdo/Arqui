@@ -19,25 +19,25 @@
 // Additional Comments:
 // 
 //////////////////////////////////////////////////////////////////////////////////
-module interfaz # ( parameter W = 8) //bits buffer 
+module interfaz # ( parameter DBIT = 8) //bits buffer 
 (
     input i_clk,
     input i_rst,
     input i_clr_flag,
     input i_set_flag,
-    input [W-1:0] i_din,
+    input [DBIT-1:0] i_din,
     output o_flag,
-    output [W-1:0] o_dout    
+    output [DBIT-1:0] o_dout    
 );
 
 //declaracion de señales
-reg [W-1:0] buf_reg;
-reg [W-1:0] buf_next;
+reg [DBIT-1:0] buf_reg;
+reg [DBIT-1:0] buf_next;
 reg flag_reg;
 reg flag_next;
 
 //FF y registro
-always @(posedge i_clk or posedge i_rst)
+always @(posedge i_clk)
 begin
     if(i_rst)
     begin
@@ -67,7 +67,7 @@ end
 
 //logica de salida
 assign o_dout = buf_reg;
-assign flag = flag_reg;
+assign o_flag = flag_reg;
 
 
 endmodule

@@ -25,12 +25,12 @@ module tx
     parameter SB_TICK = 16 // TICKS FOR STOP BITS
    )
    (
-    input i_clk,
-    input i_reset,
-    input i_tx_start,
-    input i_s_tick,
-    input [8-1:0] i_din,
-    output reg o_tx_done_tick,
+    input i_clk,  
+    input i_rst,
+    input i_tx_start, //Tiene un resultado la interfaz
+    input i_tick,
+    input [DBIT-1:0] i_data, //Resultado de la ALU
+    output reg o_done_tx, //Ya transmiti el dato a la PC
     output o_tx
    );
    
@@ -50,12 +50,13 @@ module tx
    reg [8-1:0] b_reg;
    reg [8-1:0] b_next;
    reg tx_reg;
-   reg tx_next;
+   reg tx_next; //En los estados IDLE-START-STOP lo usa para empezar y cerrar la trama
+                //En el estado DATA lo usa para transmitir los datos a la PC
    
    //FSMD STATE & DATA REGISTERS
-   always @(posedge i_clk, posedge i_reset)
+   always @(posedge i_clk)
    begin
-    if(i_reset)
+    if(i_rst)
     begin
         state_reg <= idle;
         s_reg <= 4'b0;
@@ -77,7 +78,7 @@ module tx
    always @(*)
    begin
         state_next = state_reg;
-        o_tx_done_tick = 1'b0;
+        o_done_tx = 1'b0;
         s_next = s_reg;
         n_next = n_reg;
         b_next = b_reg;
@@ -91,13 +92,13 @@ module tx
                 begin
                     state_next = start;
                     s_next = 0;
-                    b_next = i_din;
+                    b_next = i_data;
                 end
             end
             start:
             begin
                 tx_next = 1'b0;
-                if(i_s_tick)
+                if(i_tick)
                 begin
                     if(s_reg==15)
                     begin
@@ -112,7 +113,7 @@ module tx
             data:
             begin
                 tx_next = b_reg[0];
-                if(i_s_tick)
+                if(i_tick)
                 begin
                     if(s_reg==15)
                     begin
@@ -130,12 +131,12 @@ module tx
             stop:
             begin
                 tx_next = 1'b1;
-                if(i_s_tick)
+                if(i_tick)
                 begin
                     if(s_reg==(SB_TICK-1))
                     begin
                        state_next = idle;
-                       o_tx_done_tick = 1'b1;   
+                       o_done_tx = 1'b1;   
                     end
                     else
                         s_next = s_reg + 1'b1;    
