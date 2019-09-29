@@ -46,8 +46,8 @@ module rx
    reg [4-1:0] s_next;
    reg [3-1:0] n_reg;
    reg [3-1:0] n_next;
-   reg [8-1:0] b_reg;
-   reg [8-1:0] b_next;
+   reg [DBIT-1:0] b_reg;
+   reg [DBIT-1:0] b_next;
    
    //FSMD STATE & DATA REGISTERS
    always @(posedge i_clk)

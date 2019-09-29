@@ -1,73 +1,99 @@
-
 `timescale 1ns / 1ps
-//////////////////////////////////////////////////////////////////////////////////
-// Company: 
-// Engineer: 
-// 
-// Create Date: 22.09.2019 23:04:29
-// Design Name: 
-// Module Name: interfaz
-// Project Name: 
-// Target Devices: 
-// Tool Versions: 
-// Description: 
-// 
-// Dependencies: 
-// 
-// Revision:
-// Revision 0.01 - File Created
-// Additional Comments:
-// 
-//////////////////////////////////////////////////////////////////////////////////
-module interfaz # ( parameter DBIT = 8) //bits buffer 
+module interfaz_rx # ( parameter DBIT = 8) //bits buffer 
 (
     input i_clk,
     input i_rst,
-    input i_clr_flag,
-    input i_set_flag,
-    input [DBIT-1:0] i_din,
-    output o_flag,
-    output [DBIT-1:0] o_dout    
+    input [DBIT-1:0] i_data,
+    input i_done_data,
+    output reg [DBIT-1:0] o_a,
+    output reg [DBIT-1:0] o_b,
+    output reg [DBIT-1:0] o_op,
+    output o_rx_alu_done
 );
 
-//declaracion de señales
-reg [DBIT-1:0] buf_reg;
-reg [DBIT-1:0] buf_next;
-reg flag_reg;
-reg flag_next;
+localparam [2-1:0] idle = 2'b00;
+localparam [2-1:0] almacenar = 2'b01;
+localparam [2-1:0] alu = 2'b10;
 
-//FF y registro
+reg [2-1:0] state_reg;
+reg [2-1:0] state_next;
+reg [2-1:0] contador_reg; //Delimita que el dato vaya a A-B-OPCODE
+reg [2-1:0] contador_next;
+reg [DBIT-1:0] a;
+reg [DBIT-1:0] b;
+reg [DBIT-1:0] op;
+
+
+//FSMD STATE & DATA REGISTERS
 always @(posedge i_clk)
 begin
-    if(i_rst)
+    if(!i_rst)
     begin
-        buf_reg <= 0 ;
-        flag_reg <= 1'b0; 
+        state_reg <= idle;
+        contador_reg <= 2'b00;
+        o_op <= 8'b0;
+        o_a <= 8'b0;
+        o_b <= 8'b0;
     end
     else
     begin
-        buf_reg <= buf_next;
-        flag_reg <= flag_next;
+        state_reg <= state_next;
+        contador_reg <= contador_next;
+        if(state_reg==alu)
+        begin
+            o_a <= a;
+            o_b <= b;
+            o_op <= op;    
+        end
+        else
+        begin
+            o_a <= o_a;
+            o_b <= o_b;
+            o_op <= o_op;
+        end
     end
 end
 
-//logica siguiente estado
+//FSMD NEXT_STATE LOGIC
 always @(*)
 begin
-    buf_next = buf_reg;
-    flag_next = flag_reg;
-    if(i_set_flag)
-    begin
-        buf_next = i_din;
-        flag_next = 1'b1; 
-    end
-    else if(i_clr_flag)
-        flag_next = 1'b0;
+    state_next = state_reg;
+    case(state_reg)
+        idle:
+        begin
+            contador_next=2'b0;
+            if(i_done_data)
+                state_next = almacenar;
+        end
+        
+        almacenar:
+        begin
+            if(i_done_data)
+            begin
+                if(contador_reg==2)
+                begin
+                    contador_next= 2'b00;
+                    state_next = alu;
+                end
+                else
+                    contador_next = contador_reg + 1'b1;
+                    
+                if(contador_reg==2'b00)
+                    a=i_data;
+                else if(contador_reg==2'b01)
+                    b=i_data;
+                else
+                    op=i_data;
+            end        
+        end
+        
+        alu:
+        begin
+                state_next = idle;
+        end
+    endcase
 end
 
-//logica de salida
-assign o_dout = buf_reg;
-assign o_flag = flag_reg;
-
+assign o_rx_alu_done = (state_reg==alu) ? 1'b1 : 1'b0;
 
 endmodule

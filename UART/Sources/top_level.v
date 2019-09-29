@@ -52,10 +52,8 @@ wire rx_data_out;
 
 //instancias
 
-tx #(
-    .DBIT(DBIT), .SB_TICK(SB_TICK)
-    )
-    (
+tx #(.DBIT(DBIT), .SB_TICK(SB_TICK))
+(
     .i_clk(i_clk),
     .i_rst(i_rst),
     .i_tx_start(tx_fifo_not_empty), //
@@ -63,26 +61,36 @@ tx #(
     .i_data(tx_fifo_out),           //
     .o_done_tx(tx_done_tick),       //
     .o_tx(o_tx)                     // TPLEVEL
-    );
+);
 
-rx #(
-    .DBIT(DBIT), .SB_TICK(SB_TICK)
-    )
-    (
+rx #(.DBIT(DBIT), .SB_TICK(SB_TICK))
+(
     .i_clk(i_clk),
     .i_rst(i_rst),
     .i_bit(i_rx),                  //TPLEVEL
     .i_tick(tick),
     .o_done_data(rx_done_data),   //
     .o_dout(rx_data_out)         //
-    );
+);
     
-baudrate_gen(
+baudrate_gen
+(
     .i_clk(i_clk),
     .i_rst(i_rst),
     .o_tick(tick)
 );
 
+interfaz_rx #(.DBIT(DBIT))
+(
+    .i_clk(i_clk),
+    .i_rst(i_rst),
+    .i_data(rx_data_out),
+    .i_done_data(rx_done_data),
+    .o_a(),
+    .o_b(),
+    .o_op(),
+    .o_rx_alu_done()
+);
 assign tx_fifo_not_empty = ~tx_empty; //ta pesimo
 
 endmodule
