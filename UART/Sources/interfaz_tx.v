@@ -17,22 +17,25 @@ localparam [2-1:0] push_on = 2'b10;
 
 reg [2-1:0] state_reg;
 reg [2-1:0] state_next;
-reg [DBIT-1:0] data_aux;
-
 
 //FSMD STATE & DATA REGISTERS
 always @(posedge i_clk)
 begin
     if(!i_rst)
-    begin
         state_reg <= idle;
+    else
+        state_reg <= state_next;
+end
+
+//Asignacion dato de salida
+always @(posedge i_clk)
+begin
+    if(!i_rst)
         o_data<= 8'b0;
-    end
     else
     begin
-        state_reg <= state_next;
-        if(state_reg==push_on)
-            o_data <= data_aux;
+        if(state_reg==almacenar)
+            o_data <= i_resultado;
         else
             o_data <= o_data;
     end
@@ -51,7 +54,6 @@ begin
         
         almacenar:
         begin
-            data_aux = i_resultado;
             if(i_done_tx)
                 state_next = push_on;
         end

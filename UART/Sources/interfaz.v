@@ -18,32 +18,39 @@ localparam [2-1:0] alu = 2'b10;
 reg [2-1:0] state_reg;
 reg [2-1:0] state_next;
 reg [2-1:0] contador_reg; //Delimita que el dato vaya a A-B-OPCODE
-reg [2-1:0] contador_next;
-reg [DBIT-1:0] a;
-reg [DBIT-1:0] b;
-reg [DBIT-1:0] op;
+wire [2-1:0] contador_next;
+reg count_reset;
+reg count_inc;
 
 
 //FSMD STATE & DATA REGISTERS
 always @(posedge i_clk)
 begin
     if(!i_rst)
-    begin
         state_reg <= idle;
-        contador_reg <= 2'b00;
+    else
+        state_reg <= state_next;
+end
+
+//Asignacion datos de salida
+always @(posedge i_clk)
+begin
+    if(!i_rst)
+    begin
         o_op <= 8'b0;
         o_a <= 8'b0;
         o_b <= 8'b0;
     end
     else
     begin
-        state_reg <= state_next;
-        contador_reg <= contador_next;
-        if(state_reg==alu)
+        if(state_reg==almacenar)
         begin
-            o_a <= a;
-            o_b <= b;
-            o_op <= op;    
+            if(contador_reg==2'b00)
+                o_a <= i_data;
+            else if(contador_reg==2'b01)
+                o_b <= i_data;
+            else
+                o_op <= i_data;   
         end
         else
         begin
@@ -54,6 +61,22 @@ begin
     end
 end
 
+//Incremento y reset contador
+always @(posedge i_clk)
+begin
+    if(!i_rst || count_reset)
+    begin
+        contador_reg <= 2'b00;
+    end
+    else
+    begin
+        if(state_reg==almacenar)
+            contador_reg <= contador_next;
+        else
+            contador_reg <= contador_reg;
+    end
+end
+
 //FSMD NEXT_STATE LOGIC
 always @(*)
 begin
@@ -61,7 +84,6 @@ begin
     case(state_reg)
         idle:
         begin
-            contador_next=2'b0;
             if(i_done_data)
                 state_next = almacenar;
         end
@@ -72,18 +94,13 @@ begin
             begin
                 if(contador_reg==2)
                 begin
-                    contador_next= 2'b00;
+                    count_reset = 1'b1;
                     state_next = alu;
+                    count_inc = 1'b0;
                 end
                 else
-                    contador_next = contador_reg + 1'b1;
-                    
-                if(contador_reg==2'b00)
-                    a=i_data;
-                else if(contador_reg==2'b01)
-                    b=i_data;
-                else
-                    op=i_data;
+                    count_reset = 1'b0;
+                    count_inc = 1'b1;
             end        
         end
         
@@ -95,5 +112,7 @@ begin
 end
 
 assign o_rx_alu_done = (state_reg==alu) ? 1'b1 : 1'b0;
+
+assign contador_next = (count_inc) ? (contador_reg +1'b1) : contador_next;
 
 endmodule
