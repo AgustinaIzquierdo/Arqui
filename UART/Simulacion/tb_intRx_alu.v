@@ -20,7 +20,7 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module tb_interfaz_rx();
+module tb_intRx_alu();
 
 //local parameters
 localparam  NB_DBIT_01    =  8;
@@ -37,6 +37,8 @@ wire  signed       [NB_DBIT_01-1:0]        o_data_bus_a;
 wire  signed       [NB_DBIT_01-1:0]        o_data_bus_b;
 wire  [NB_OPER_01-1:0]    o_data_operador;
 wire rx_alu_done;
+wire [NB_DBIT_01-1:0] alu_resultado;
+wire tx_done_alu;
 
 initial begin
   #0
@@ -83,6 +85,18 @@ always #1 clk = ~clk;
       .o_a (o_data_bus_a),
       .o_b (o_data_bus_b),
       .o_op (o_data_operador)
+    );
+    
+    ALU
+    #(.NB_DATA           (NB_DBIT_01), .NB_OPERADOR(NB_OPER_01))
+    u_alu1
+    (
+     .i_dato_a(o_data_bus_a),
+     .i_dato_b(o_data_bus_b),
+     .i_operador(o_data_operador),
+     .i_alu_valid(rx_alu_done),
+     .o_done_alu(tx_done_alu),
+     .o_resultado(alu_resultado)  
     );
 
 endmodule

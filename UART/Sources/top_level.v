@@ -47,8 +47,8 @@ wire tx_done_tick;
 wire tx_empty;
 wire tx_fifo_not_empty;
 wire [8-1:0] tx_f;
-wire tx_fifo_out;
 wire rx_data_out;
+wire [DBIT-1:0] tx_interfaz_data;
 
 //instancias
 
@@ -58,9 +58,20 @@ tx #(.DBIT(DBIT), .SB_TICK(SB_TICK))
     .i_rst(i_rst),
     .i_tx_start(tx_fifo_not_empty), //
     .i_tick(tick),
-    .i_data(tx_fifo_out),           //
+    .i_data(tx_interfaz_data),       
     .o_done_tx(tx_done_tick),       //
     .o_tx(o_tx)                     // TPLEVEL
+);
+
+interfaz_tx #(.DBIT(DBIT))
+(
+    .i_clk(i_clk),
+    .i_rst(i_rst),
+    .i_resultado(),
+    .i_done_alu(),
+    .i_done_tx(),
+    .o_data(tx_interfaz_data),
+    .o_tx_start()
 );
 
 rx #(.DBIT(DBIT), .SB_TICK(SB_TICK))
@@ -91,6 +102,7 @@ interfaz_rx #(.DBIT(DBIT))
     .o_op(),
     .o_rx_alu_done()
 );
+
 assign tx_fifo_not_empty = ~tx_empty; //ta pesimo
 
 endmodule

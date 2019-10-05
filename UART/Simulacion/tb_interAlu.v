@@ -3,9 +3,9 @@
 // Company: 
 // Engineer: 
 // 
-// Create Date: 29.09.2019 17:33:09
+// Create Date: 05.10.2019 18:00:37
 // Design Name: 
-// Module Name: tb_interfaz
+// Module Name: tb_interAlu
 // Project Name: 
 // Target Devices: 
 // Tool Versions: 
@@ -20,7 +20,7 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module tb_interfaz_rx();
+module tb_interAlu();
 
 //local parameters
 localparam  NB_DBIT_01    =  8;
@@ -37,6 +37,11 @@ wire  signed       [NB_DBIT_01-1:0]        o_data_bus_a;
 wire  signed       [NB_DBIT_01-1:0]        o_data_bus_b;
 wire  [NB_OPER_01-1:0]    o_data_operador;
 wire rx_alu_done;
+wire [NB_DBIT_01-1:0] alu_resultado;
+wire tx_done_alu;
+reg done_tx;
+wire [NB_DBIT_01-1:0] o_data;
+wire tx_start;
 
 initial begin
   #0
@@ -44,7 +49,8 @@ initial begin
   clk = 1'b0;
   done_data = 1'b0;
   data = 8'b0;
-   
+  done_tx = 1'b0;  
+  
   #2  rst = 1'b1;
   #10  done_data =1'b1; 
   data= 8'b00000100;
@@ -55,6 +61,8 @@ initial begin
   #10  done_data =1'b1; 
   data= 8'b00100000;
   #1 done_data =1'b0;
+  #2 done_tx = 1'b1;
+  #2 done_tx = 1'b0;
   
    #10  done_data =1'b1; 
    data= 8'b00000110;
@@ -65,15 +73,17 @@ initial begin
    #10  done_data =1'b1; 
    data= 8'b00100010;
    #1 done_data =1'b0;
+   #2 done_tx = 1'b1;
+   #2 done_tx = 1'b0;
   
-  #100000 $finish;
+  #50 $finish;
 end // initial
 
 always #1 clk = ~clk;
 
     interfaz_rx 
     #(.DBIT           (NB_DBIT_01), .NB_OPERADOR(NB_OPER_01))
-    u_interfaz_01
+    u_interfaz_rx
     (
       .i_clk (clk),
       .i_rst (rst),
@@ -84,5 +94,31 @@ always #1 clk = ~clk;
       .o_b (o_data_bus_b),
       .o_op (o_data_operador)
     );
+    
+    interfaz_tx  
+    #(.NB_DBIT           (NB_DBIT_01))
+    u_interfaz_tx
+    (
+      .i_clk (clk),
+      .i_rst (rst),
+      .i_resultado (alu_resultado),
+      .i_done_alu (tx_done_alu),
+      .i_done_tx(done_tx),
+      .o_data (o_data),
+      .o_tx_start (tx_start)
+    );
+    
+    ALU
+    #(.NB_DATA           (NB_DBIT_01), .NB_OPERADOR(NB_OPER_01))
+    u_alu1
+    (
+     .i_dato_a(o_data_bus_a),
+     .i_dato_b(o_data_bus_b),
+     .i_operador(o_data_operador),
+     .i_alu_valid(rx_alu_done),
+     .o_done_alu(tx_done_alu),
+     .o_resultado(alu_resultado)  
+    );
+
 
 endmodule

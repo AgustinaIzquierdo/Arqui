@@ -1,5 +1,5 @@
 `timescale 1ns / 1ps
-module interfaz_rx # ( parameter DBIT = 8) //bits buffer 
+module interfaz_rx # ( parameter DBIT = 8, parameter NB_OPERADOR =6) //bits buffer 
 (
     input i_clk,
     input i_rst,
@@ -7,7 +7,7 @@ module interfaz_rx # ( parameter DBIT = 8) //bits buffer
     input i_done_data,
     output reg [DBIT-1:0] o_a,
     output reg [DBIT-1:0] o_b,
-    output reg [DBIT-1:0] o_op,
+    output reg [NB_OPERADOR-1:0] o_op,
     output o_rx_alu_done
 );
 
@@ -21,7 +21,6 @@ reg [2-1:0] contador_reg; //Delimita que el dato vaya a A-B-OPCODE
 wire [2-1:0] contador_next;
 reg count_reset;
 reg count_inc;
-
 
 //FSMD STATE & DATA REGISTERS
 always @(posedge i_clk)
@@ -43,14 +42,14 @@ begin
     end
     else
     begin
-        if(state_reg==almacenar)
+        if(state_reg==almacenar) 
         begin
             if(contador_reg==2'b00)
                 o_a <= i_data;
             else if(contador_reg==2'b01)
                 o_b <= i_data;
             else
-                o_op <= i_data;   
+                o_op <= i_data[NB_OPERADOR-1:0];   
         end
         else
         begin
@@ -101,6 +100,11 @@ begin
                 else
                     count_reset = 1'b0;
                     count_inc = 1'b1;
+            end
+            else
+            begin
+                count_inc = 1'b0;
+                count_reset = 1'b0;
             end        
         end
         
