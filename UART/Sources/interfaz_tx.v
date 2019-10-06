@@ -1,14 +1,14 @@
 
 `timescale 1ns / 1ps
-module interfaz_tx # ( parameter DBIT = 8) //bits buffer 
+module interfaz_tx # ( parameter NB_DATA = 8) //bits buffer 
 (
     input i_clk,
     input i_rst,
-    input [DBIT-1:0] i_resultado,
-    input i_done_alu,
-    input i_done_tx,    
-    output reg [DBIT-1:0] o_data,
-    output o_tx_start
+    input [NB_DATA-1:0] i_resultado, //Resultado proveniente de la ALU
+    input i_done_alu, //ALU notifica que tiene el resultado
+    input i_done_tx,  //Tx avisa a la interfaz que esta libre para procesar datos  
+    output reg [NB_DATA-1:0] o_data, //Resultado enviado al TX
+    output o_int_tx //Indicador de dato valido para transmitir
 );
 
 localparam [2-1:0] idle = 2'b00;
@@ -65,6 +65,6 @@ begin
     endcase
 end
 
-assign o_tx_start = (state_reg==push_on) ? 1'b1 : 1'b0;
+assign o_int_tx = (state_reg==push_on) ? 1'b1 : 1'b0;
 
 endmodule

@@ -21,7 +21,7 @@
 
 module tx
   #(
-    parameter DBIT = 8, //DATA BITS
+    parameter NB_DATA = 8, //DATA BITS
     parameter SB_TICK = 16 // TICKS FOR STOP BITS
    )
    (
@@ -29,7 +29,7 @@ module tx
     input i_rst,
     input i_tx_start, //Tiene un resultado la interfaz
     input i_tick,
-    input [DBIT-1:0] i_data, //Resultado de la ALU
+    input [NB_DATA-1:0] i_data, //Resultado de la ALU
     output reg o_done_tx, //Ya transmiti el dato a la PC
     output o_tx
    );
@@ -47,8 +47,8 @@ module tx
    reg [4-1:0] s_next;
    reg [3-1:0] n_reg;
    reg [3-1:0] n_next;
-   reg [DBIT-1:0] b_reg;
-   reg [DBIT-1:0] b_next;
+   reg [NB_DATA-1:0] b_reg;
+   reg [NB_DATA-1:0] b_next;
    reg tx_reg;
    reg tx_next; //En los estados IDLE-START-STOP lo usa para empezar y cerrar la trama
                 //En el estado DATA lo usa para transmitir los datos a la PC
@@ -119,7 +119,7 @@ module tx
                     begin
                         s_next = 4'b0;
                         b_next = b_reg >> 1;
-                        if(n_reg==(DBIT-1))
+                        if(n_reg==(NB_DATA-1))
                             state_next = stop;
                         else
                             n_next = n_reg + 1'b1;    

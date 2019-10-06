@@ -21,7 +21,7 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module UART #(parameter DBIT = 8,//data bits
+module UART #(parameter NB_DATA = 8,//data bits
                    parameter SB_TICK =16//ticks for stop bits 16/24/32 ofr 1/1.5/2 bits
                    //parameter DVSR = 163, //divisor de baudrate DVSR=50M/(16*baudrate)
                    //parameter DVSR_BIT = 8, //bits of DVSR
@@ -30,58 +30,39 @@ module UART #(parameter DBIT = 8,//data bits
 (
     input i_clk,
     input i_rst,
-    input i_rd_uart,
-    input i_wr_uart,
-    input i_rx,
-    input [DBIT-1:0] i_w_data,
-    output o_tx_full,
-    output o_rx_empty,
-    output o_tx,
-    output [DBIT-1:0] o_r_data
+    input i_int_tx, //Indicador de dato valido para transmitir
+    input [NB_DATA-1:0] i_interfaz_tx_data, //Dato de la interfaz al tx
+    input i_rx, //Recibe de la computadora bit a bit
+    output o_tx_interfaz_done_data, //Tx avisa a la interfaz que esta libre para procesar datos
+    output o_tx, //Envia a la computadora bit a bit
+    output o_rx_interfaz_done_data, //Dato listo para pasarle a la interfaz
+    output [NB_DATA-1:0] o_rx_interfaz_data //Dato del rx a la interfaz
 );
 
 //declaracion de señales
 wire tick;
-wire rx_done_data;
-wire tx_done_tick;
-wire tx_empty;
-wire tx_fifo_not_empty;
-wire [8-1:0] tx_f;
-wire rx_data_out;
-wire [DBIT-1:0] tx_interfaz_data;
 
 //instancias
 
-tx #(.DBIT(DBIT), .SB_TICK(SB_TICK))
+tx #(.NB_DATA(NB_DATA), .SB_TICK(SB_TICK))
 (
     .i_clk(i_clk),
     .i_rst(i_rst),
-    .i_tx_start(tx_fifo_not_empty), //
+    .i_tx_start(i_int_tx),
     .i_tick(tick),
-    .i_data(tx_interfaz_data),       
-    .o_done_tx(tx_done_tick),       //
-    .o_tx(o_tx)                     // TPLEVEL
+    .i_data(i_interfaz_tx_data),       
+    .o_done_tx(o_tx_interfaz_done_data),       
+    .o_tx(o_tx) 
 );
 
-interfaz_tx #(.DBIT(DBIT))
+rx #(.NB_DATA(NB_DATA), .SB_TICK(SB_TICK))
 (
     .i_clk(i_clk),
     .i_rst(i_rst),
-    .i_resultado(),
-    .i_done_alu(),
-    .i_done_tx(),
-    .o_data(tx_interfaz_data),
-    .o_tx_start()
-);
-
-rx #(.DBIT(DBIT), .SB_TICK(SB_TICK))
-(
-    .i_clk(i_clk),
-    .i_rst(i_rst),
-    .i_bit(i_rx),                  //TPLEVEL
+    .i_bit(i_rx),                  
     .i_tick(tick),
-    .o_done_data(rx_done_data),   //
-    .o_dout(rx_data_out)         //
+    .o_done_data(o_rx_interfaz_done_data),  
+    .o_data(o_rx_interfaz_data)      
 );
     
 baudrate_gen
@@ -91,18 +72,7 @@ baudrate_gen
     .o_tick(tick)
 );
 
-interfaz_rx #(.DBIT(DBIT))
-(
-    .i_clk(i_clk),
-    .i_rst(i_rst),
-    .i_data(rx_data_out),
-    .i_done_data(rx_done_data),
-    .o_a(),
-    .o_b(),
-    .o_op(),
-    .o_rx_alu_done()
-);
 
-assign tx_fifo_not_empty = ~tx_empty; //ta pesimo
+
 
 endmodule

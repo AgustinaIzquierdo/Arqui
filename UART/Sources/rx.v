@@ -21,7 +21,7 @@
 
 module rx
   #(
-    parameter DBIT = 8, //DATA BITS
+    parameter NB_DATA = 8, //DATA BITS
     parameter SB_TICK = 16 // TICKS FOR STOP BITS
    )
    (
@@ -30,7 +30,7 @@ module rx
     input i_bit, //Senial que recibe los bit de entrada
     input i_tick, //Senial de control que indica cuando muestrear
     output reg o_done_data, //Dato listo
-    output [DBIT-1:0] o_data //Dato de salida DBIT 
+    output [NB_DATA-1:0] o_data //Dato de salida DBIT 
    );
    
    //SYMBOLIC STATE DECLARATION
@@ -46,8 +46,8 @@ module rx
    reg [4-1:0] s_next;
    reg [3-1:0] n_reg;
    reg [3-1:0] n_next;
-   reg [DBIT-1:0] b_reg;
-   reg [DBIT-1:0] b_next;
+   reg [NB_DATA-1:0] b_reg;
+   reg [NB_DATA-1:0] b_next;
    
    //FSMD STATE & DATA REGISTERS
    always @(posedge i_clk)
@@ -108,7 +108,7 @@ module rx
                     begin
                         s_next = 4'b0;
                         b_next = {i_bit, b_reg[7:1]};
-                        if(n_reg==(DBIT-1))
+                        if(n_reg==(NB_DATA-1))
                             state_next = stop;
                         else
                             n_next = n_reg + 1'b1;    

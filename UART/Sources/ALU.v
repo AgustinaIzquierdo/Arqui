@@ -7,7 +7,7 @@ module ALU #(parameter NB_DATA=8,
   input signed [NB_DATA-1 : 0]i_dato_b,
   input [NB_OPERADOR-1 : 0]i_operador,
   input i_alu_valid,
-  output o_done_alu,
+  output o_done_alu_tx,
   output reg signed [NB_DATA-1: 0] o_resultado 
 );
   
@@ -40,6 +40,6 @@ begin
     o_resultado = o_resultado;
 end
 
-assign o_done_alu = (i_alu_valid==1'b1)? 1'b1 : 1'b0;
+assign o_done_alu_tx = (i_alu_valid==1'b1)? 1'b1 : 1'b0;
 endmodule
   

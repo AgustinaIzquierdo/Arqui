@@ -1,14 +1,14 @@
 `timescale 1ns / 1ps
-module interfaz_rx # ( parameter DBIT = 8, parameter NB_OPERADOR =6) //bits buffer 
+module interfaz_rx # ( parameter NB_DATA = 8, parameter NB_OPERADOR =6) //bits buffer 
 (
     input i_clk,
     input i_rst,
-    input [DBIT-1:0] i_data,
-    input i_done_data,
-    output reg [DBIT-1:0] o_a,
-    output reg [DBIT-1:0] o_b,
+    input [NB_DATA-1:0] i_data, //Dato proveniente del RX
+    input i_done_data, //Dato listo para pasarle a la interfaz
+    output reg [NB_DATA-1:0] o_a,
+    output reg [NB_DATA-1:0] o_b,
     output reg [NB_OPERADOR-1:0] o_op,
-    output o_rx_alu_done
+    output o_rx_alu_done //Notifica a la ALU que tiene los datos listos
 );
 
 localparam [2-1:0] idle = 2'b00;
