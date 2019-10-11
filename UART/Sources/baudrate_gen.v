@@ -27,7 +27,7 @@ module baudrate_gen(
     );
     
 localparam BAUD_RATE = 9600;
-localparam CLK_RATE = 40000000; //clock de la placa 
+localparam CLK_RATE = 50000000; //clock de la placa 
 localparam NUM_TICKS = 16;  //division del baudio
 
 localparam RATE_CLK_OUT = CLK_RATE / (BAUD_RATE * NUM_TICKS); //Frecuencia de recepcion

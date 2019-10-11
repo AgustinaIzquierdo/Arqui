@@ -42,7 +42,7 @@ begin
     end
     else
     begin
-        if(state_reg==almacenar) 
+        if(state_reg==almacenar)
         begin
             if(contador_reg==2'b00)
                 o_a <= i_data;
@@ -70,9 +70,13 @@ begin
     else
     begin
         if(state_reg==almacenar)
+        begin
             contador_reg <= contador_next;
+        end
         else
+        begin
             contador_reg <= contador_reg;
+        end
     end
 end
 

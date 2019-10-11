@@ -52,7 +52,7 @@ module rx
    //FSMD STATE & DATA REGISTERS
    always @(posedge i_clk)
    begin
-    if(i_rst)
+    if(!i_rst)
     begin
         state_reg <= idle;
         s_reg <= 4'b0;
@@ -72,7 +72,6 @@ module rx
    always @(*)
    begin
         state_next = state_reg;
-        o_done_data = 1'b0;
         s_next = s_reg;
         n_next = n_reg;
         b_next = b_reg;
@@ -80,6 +79,7 @@ module rx
         case(state_reg)
             idle:
             begin
+                o_done_data = 1'b0;
                 if(~i_bit)  //Detecta bit de start
                 begin
                     state_next = start;
@@ -127,7 +127,10 @@ module rx
                        o_done_data = 1'b1;   
                     end
                     else
-                        s_next = s_reg + 1'b1;    
+                    begin
+                        s_next = s_reg + 1'b1;
+                        o_done_data = 1'b0;
+                    end
                 end
             end
         endcase

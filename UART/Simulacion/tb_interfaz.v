@@ -66,7 +66,7 @@ initial begin
    data= 8'b00100010;
    #1 done_data =1'b0;
   
-  #100000 $finish;
+  #300 $finish;
 end // initial
 
 always #1 clk = ~clk;
