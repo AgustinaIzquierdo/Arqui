@@ -10,7 +10,7 @@ module ALU #(parameter NB_DATA=8,
   output o_done_alu_tx,
   output reg signed [NB_DATA-1: 0] o_resultado 
 );
-  
+
 localparam ADD = 6'b100000;
 localparam SUB = 6'b100010;
 localparam AND = 6'b100100;
@@ -22,8 +22,8 @@ localparam SRL = 6'b000010;
   
 always @(*)
 begin
-  if(i_alu_valid)
-  begin
+//  if(i_alu_valid)  SAQUE ESTO
+//  begin
       case(i_operador)
         ADD: o_resultado = i_dato_a + i_dato_b;		
         SUB: o_resultado = i_dato_a - i_dato_b; 
@@ -35,11 +35,14 @@ begin
         SRL: o_resultado = i_dato_a >> i_dato_b;
         default: o_resultado = {NB_DATA{1'b0}};
       endcase
-  end
-  else
-    o_resultado = o_resultado;
+  //end
+// else
+// begin
+//   o_resultado = o_resultado; 
+// end
 end
 
 assign o_done_alu_tx = (i_alu_valid==1'b1)? 1'b1 : 1'b0;
+
 endmodule
   

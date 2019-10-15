@@ -42,7 +42,7 @@ begin
     #10 rst= 1'b1; //Desactiva el reset
     #160 rx = 1'b0; //bit inicio
             
-    #160 rx = 1'b0; // dato - 8 bits (1001 0110)
+    #160 rx = 1'b0; // dato - 8 bits
     #160 rx = 1'b1; // 160 viene dado porque cada 5 instantes de tiempo cambia el estado del rate
     #160 rx = 1'b1; // o sea, cada 10 instantes de tiempo hay un nuevo tick
     #160 rx = 1'b0; // entonces 16 * 10 = 160
@@ -52,6 +52,20 @@ begin
     #160 rx = 1'b0;
     
     #160 rx = 1'b1; //bits stop
+    
+    #160 rx = 1'b0; //bit inicio
+             
+     #160 rx = 1'b1; // dato - 8 bits 
+     #160 rx = 1'b0; // 160 viene dado porque cada 5 instantes de tiempo cambia el estado del rate
+     #160 rx = 1'b0; // o sea, cada 10 instantes de tiempo hay un nuevo tick
+     #160 rx = 1'b0; // entonces 16 * 10 = 160
+     #160 rx = 1'b0;
+     #160 rx = 1'b0;
+     #160 rx = 1'b0;
+     #160 rx = 1'b0;
+     
+     #160 rx = 1'b1; //bits stop
+    
     #500000000 $finish;
 end
 always #2.5 clk=~clk;  // Simulacion de clock.

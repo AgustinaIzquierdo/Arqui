@@ -29,7 +29,7 @@ module rx
     input i_rst,
     input i_bit, //Senial que recibe los bit de entrada
     input i_tick, //Senial de control que indica cuando muestrear
-    output reg o_done_data, //Dato listo
+    output o_done_data, //Dato listo  LO PUSE COMO CABLE
     output [NB_DATA-1:0] o_data //Dato de salida DBIT 
    );
    
@@ -79,7 +79,6 @@ module rx
         case(state_reg)
             idle:
             begin
-                o_done_data = 1'b0;
                 if(~i_bit)  //Detecta bit de start
                 begin
                     state_next = start;
@@ -124,12 +123,10 @@ module rx
                     if(s_reg==(SB_TICK-1))
                     begin
                        state_next = idle;
-                       o_done_data = 1'b1;   
                     end
                     else
                     begin
                         s_next = s_reg + 1'b1;
-                        o_done_data = 1'b0;
                     end
                 end
             end
@@ -138,4 +135,7 @@ module rx
    
    //OUTPUT
    assign o_data = b_reg;
+   
+   assign o_done_data = ((s_reg==(SB_TICK-1)) && (state_reg==stop))? 1'b1: 1'b0;
+   
 endmodule

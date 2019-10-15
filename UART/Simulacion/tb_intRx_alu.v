@@ -68,13 +68,13 @@ initial begin
    data= 8'b00100010;
    #1 done_data =1'b0;
   
-  #100000 $finish;
+  #200 $finish;
 end // initial
 
 always #1 clk = ~clk;
 
     interfaz_rx 
-    #(.DBIT           (NB_DBIT_01), .NB_OPERADOR(NB_OPER_01))
+    #(.NB_DATA           (NB_DBIT_01), .NB_OPERADOR(NB_OPER_01))
     u_interfaz_01
     (
       .i_clk (clk),
@@ -95,7 +95,7 @@ always #1 clk = ~clk;
      .i_dato_b(o_data_bus_b),
      .i_operador(o_data_operador),
      .i_alu_valid(rx_alu_done),
-     .o_done_alu(tx_done_alu),
+     .o_done_alu_tx(tx_done_alu),
      .o_resultado(alu_resultado)  
     );
 

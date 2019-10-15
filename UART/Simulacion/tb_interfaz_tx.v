@@ -56,13 +56,13 @@ initial begin
    resultado= 8'b00000110;
    #2 done_alu =1'b0;
   
-  #100000 $finish;
+  #1000 $finish;
 end // initial
 
 always #1 clk = ~clk;
 
     interfaz_tx  
-    #(.NB_DBIT           (NB_DBIT_01))
+    #(.NB_DATA           (NB_DBIT_01))
     u_interfaz_01
     (
       .i_clk (clk),
@@ -71,7 +71,7 @@ always #1 clk = ~clk;
       .i_done_alu (done_alu),
       .i_done_tx(done_tx),
       .o_data (o_data),
-      .o_tx_start (tx_start)
+      .o_int_tx (tx_start)
     );
 
 

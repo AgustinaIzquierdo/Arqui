@@ -53,20 +53,21 @@ initial begin
   #2  rst = 1'b1;
   #10 rx_alu_done=1'b1;
   #2   rx_alu_done=1'b0;
-  
+  #2  done_tx = 1'b1;
+  #2  done_tx = 1'b0;
   o_data_bus_a= 8'b00000110;
   o_data_bus_b= 8'b00000011;
   o_data_operador= 6'b100010;
   #10 rx_alu_done=1'b1;
   #2   rx_alu_done=1'b0;
 
-  #100000 $finish;
+  #200 $finish;
 end // initial
 
 always #1 clk = ~clk;
 
     interfaz_tx  
-    #(.NB_DBIT           (NB_DBIT_01))
+    #(.NB_DATA           (NB_DBIT_01))
     u_interfaz_01
     (
       .i_clk (clk),
@@ -75,7 +76,7 @@ always #1 clk = ~clk;
       .i_done_alu (tx_done_alu),
       .i_done_tx(done_tx),
       .o_data (o_data),
-      .o_tx_start (tx_start)
+      .o_int_tx (tx_start)
     );
     
       ALU
@@ -86,7 +87,7 @@ always #1 clk = ~clk;
        .i_dato_b(o_data_bus_b),
        .i_operador(o_data_operador),
        .i_alu_valid(rx_alu_done),
-       .o_done_alu(tx_done_alu),
+       .o_done_alu_tx(tx_done_alu),
        .o_resultado(alu_resultado)  
       );
 

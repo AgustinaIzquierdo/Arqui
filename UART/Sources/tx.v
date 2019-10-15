@@ -56,7 +56,7 @@ module tx
    //FSMD STATE & DATA REGISTERS
    always @(posedge i_clk)
    begin
-    if(i_rst)
+    if(!i_rst)
     begin
         state_reg <= idle;
         s_reg <= 4'b0;

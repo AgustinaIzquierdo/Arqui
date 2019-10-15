@@ -27,8 +27,8 @@ module top_gral
 (
      clk,
      rst,
-     uart_rx,
-     uart_tx
+     i_uart_rx,
+     o_uart_tx
 );
 
 /// PARAMETERS
@@ -39,8 +39,8 @@ parameter SB_TICK          = `SB_TICK;
 /// PORTS
  input clk;
  input rst;
- input uart_rx;
- output uart_tx;
+ input i_uart_rx;
+ output o_uart_tx;
  
 // VARIABLES
     //TX con INTERFAZ
@@ -64,9 +64,9 @@ wire [NB_DATA-1 : 0] resultado;
     .i_rst(rst),
     .i_int_tx(int_tx), //Indicador de dato valido para transmitir
     .i_interfaz_tx_data(interfaz_tx_data), //Dato de la interfaz al tx
-    .i_rx(uart_rx), //Recibe de la computadora bit a bit
+    .i_rx(i_uart_rx), //Recibe de la computadora bit a bit
     .o_tx_interfaz_done_data(tx_interfaz_done_data), //Tx avisa a la interfaz que esta libre para procesar datos
-    .o_tx(uart_tx), //Envia a la computadora bit a bit
+    .o_tx(o_uart_tx), //Envia a la computadora bit a bit
     .o_rx_interfaz_done_data(rx_interfaz_done_data), //Dato listo para pasarle a la interfaz
     .o_rx_interfaz_data(rx_interfaz_data) //Dato del rx a la interfaz
 );

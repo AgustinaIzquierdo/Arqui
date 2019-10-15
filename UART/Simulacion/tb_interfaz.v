@@ -51,20 +51,20 @@ initial begin
   #2 done_data =1'b0;
   #10  done_data =1'b1; 
   data= 8'b00000010;
-  #1 done_data =1'b0;
+  #2 done_data =1'b0;
   #10  done_data =1'b1; 
   data= 8'b00100000;
-  #1 done_data =1'b0;
+  #2 done_data =1'b0;
   
-   #10  done_data =1'b1; 
-   data= 8'b00000110;
-   #2 done_data =1'b0;
-   #10  done_data =1'b1; 
-   data= 8'b00000011;
-   #1 done_data =1'b0;
-   #10  done_data =1'b1; 
-   data= 8'b00100010;
-   #1 done_data =1'b0;
+//   #10  done_data =1'b1; 
+//   data= 8'b00000110;
+//   #2 done_data =1'b0;
+//   #10  done_data =1'b1; 
+//   data= 8'b00000011;
+//   #2 done_data =1'b0;
+//   #10  done_data =1'b1; 
+//   data= 8'b00100010;
+//   #2 done_data =1'b0;
   
   #300 $finish;
 end // initial
@@ -72,7 +72,7 @@ end // initial
 always #1 clk = ~clk;
 
     interfaz_rx 
-    #(.DBIT           (NB_DBIT_01), .NB_OPERADOR(NB_OPER_01))
+    #(.NB_DATA(NB_DBIT_01), .NB_OPERADOR(NB_OPER_01))
     u_interfaz_01
     (
       .i_clk (clk),
