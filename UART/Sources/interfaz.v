@@ -84,6 +84,8 @@ end
 always @(*)
 begin
     state_next = state_reg;
+    count_reset = 1'b0;
+    count_inc = 1'b0;
     case(state_reg)
         idle:
         begin
@@ -95,7 +97,7 @@ begin
         begin
             if(i_done_data)
             begin
-                if(contador_reg==2)
+                if(contador_reg==3)
                 begin
                     count_reset = 1'b1;
                     state_next = alu;
@@ -121,6 +123,6 @@ end
 
 assign o_rx_alu_done = (state_reg==alu) ? 1'b1 : 1'b0;
 
-assign contador_next = (count_inc) ? (contador_reg +1'b1) : contador_next;
+assign contador_next = (!i_rst)? 2'b0 : (count_inc) ? (contador_reg +1'b1) : contador_reg;
 
 endmodule

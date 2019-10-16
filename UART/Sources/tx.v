@@ -30,7 +30,7 @@ module tx
     input i_tx_start, //Tiene un resultado la interfaz
     input i_tick,
     input [NB_DATA-1:0] i_data, //Resultado de la ALU
-    output reg o_done_tx, //Ya transmiti el dato a la PC
+    output o_done_tx, //Ya transmiti el dato a la PC
     output o_tx
    );
    
@@ -78,7 +78,6 @@ module tx
    always @(*)
    begin
         state_next = state_reg;
-        o_done_tx = 1'b0;
         s_next = s_reg;
         n_next = n_reg;
         b_next = b_reg;
@@ -136,7 +135,6 @@ module tx
                     if(s_reg==(SB_TICK-1))
                     begin
                        state_next = idle;
-                       o_done_tx = 1'b1;   
                     end
                     else
                         s_next = s_reg + 1'b1;    
@@ -147,4 +145,6 @@ module tx
    
    //OUTPUT
    assign o_tx = tx_reg;
+   assign o_done_tx = ((s_reg==(SB_TICK-1)) && (state_reg==stop))? 1'b0: 1'b1;
+
 endmodule

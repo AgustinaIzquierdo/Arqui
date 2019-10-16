@@ -47,7 +47,7 @@ begin
     #160 data = 8'b00000110; // Dato a enviar
     
     #160 tx_start = 1'b1; // Enviar ahora
-    #100 tx_start = 1'b0;
+    #10 tx_start = 1'b0;
             
             
     
