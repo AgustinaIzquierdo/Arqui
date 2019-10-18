@@ -62,6 +62,8 @@ begin
         begin
                 state_next = idle;
         end
+        default:
+            state_next = idle;
     endcase
 end
 assign o_int_tx = (state_reg==push_on) ? 1'b1 : 1'b0;

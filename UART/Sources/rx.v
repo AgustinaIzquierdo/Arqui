@@ -30,7 +30,7 @@ module rx
     input i_bit, //Senial que recibe los bit de entrada
     input i_tick, //Senial de control que indica cuando muestrear
     output o_done_data, //Dato listo  LO PUSE COMO CABLE
-    output [NB_DATA-1:0] o_data //Dato de salida DBIT 
+    output reg [NB_DATA-1:0] o_data //Dato de salida DBIT 
    );
    
    //SYMBOLIC STATE DECLARATION
@@ -58,6 +58,7 @@ module rx
         s_reg <= 4'b0;
         n_reg <= 3'b0;
         b_reg <= 8'b0;
+        o_data <= 8'b0;
     end
     else
     begin
@@ -65,6 +66,13 @@ module rx
         s_reg <= s_next;
         n_reg <= n_next;
         b_reg <= b_next;
+        
+        if((s_reg==(SB_TICK-1)) && (state_reg==stop))
+        begin
+            o_data <= b_reg;
+        end
+        else
+            o_data <= o_data;
     end
    end
    
@@ -134,7 +142,7 @@ module rx
    end
    
    //OUTPUT
-   assign o_data = b_reg;
+   //assign o_data = b_reg;
    
    assign o_done_data = ((s_reg==(SB_TICK-1)) && (state_reg==stop))? 1'b1: 1'b0;
    

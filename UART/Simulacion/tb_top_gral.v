@@ -57,8 +57,8 @@ begin
     #10 rst= 1'b1; //Desactiva el reset
     #160 cpu_rx = 1'b0; //bit inicio
             
-    #160 cpu_rx = 1'b1; // dato - 8 bits   6
-    #160 cpu_rx = 1'b0; // 160 viene dado porque cada 5 instantes de tiempo cambia el estado del rate
+    #160 cpu_rx = 1'b0; // dato - 8 bits   6
+    #160 cpu_rx = 1'b1; // 160 viene dado porque cada 5 instantes de tiempo cambia el estado del rate
     #160 cpu_rx = 1'b1; // o sea, cada 10 instantes de tiempo hay un nuevo tick
     #160 cpu_rx = 1'b0; // entonces 16 * 10 = 160
     #160 cpu_rx = 1'b0;
@@ -70,11 +70,11 @@ begin
     
     #160 cpu_rx = 1'b0; //bit inicio
              
-     #160 cpu_rx = 1'b0; // dato - 8 bits  1
-     #160 cpu_rx = 1'b1; // 160 viene dado porque cada 5 instantes de tiempo cambia el estado del rate
+     #160 cpu_rx = 1'b1; // dato - 8 bits  1
+     #160 cpu_rx = 1'b0; // 160 viene dado porque cada 5 instantes de tiempo cambia el estado del rate
      #160 cpu_rx = 1'b0; // o sea, cada 10 instantes de tiempo hay un nuevo tick
-     #160 cpu_rx = 1'b1; // entonces 16 * 10 = 160
-     #160 cpu_rx = 1'b0;
+     #160 cpu_rx = 1'b0; // entonces 16 * 10 = 160
+     #160 cpu_rx = 1'b1;
      #160 cpu_rx = 1'b0;
      #160 cpu_rx = 1'b0;
      #160 cpu_rx = 1'b0;
@@ -83,9 +83,9 @@ begin
      
      #160 cpu_rx = 1'b0; //bit inicio
              
-     #160 cpu_rx = 1'b0; // dato - 8 bits 
-     #160 cpu_rx = 1'b0; // 160 viene dado porque cada 5 instantes de tiempo cambia el estado del rate
-     #160 cpu_rx = 1'b0; // o sea, cada 10 instantes de tiempo hay un nuevo tick
+     #160 cpu_rx = 1'b1; // dato - 8 bits 
+     #160 cpu_rx = 1'b1; // 160 viene dado porque cada 5 instantes de tiempo cambia el estado del rate
+     #160 cpu_rx = 1'b1; // o sea, cada 10 instantes de tiempo hay un nuevo tick
      #160 cpu_rx = 1'b0; // entonces 16 * 10 = 160
      #160 cpu_rx = 1'b0;
      #160 cpu_rx = 1'b1;

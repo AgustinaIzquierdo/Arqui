@@ -1,3 +1,86 @@
+//`timescale 1ns / 1ps
+//`define NB_DATA 8
+//`define SB_TICK 16
+//`define NB_OPERADOR 6
+
+//module top_gral
+//(
+//    clk,
+//    rst,
+//    i_uart_rx,
+//    o_uart_tx,
+//    led
+//);
+
+///// PARAMETERS
+//parameter NB_DATA              = `NB_DATA;
+//parameter NB_OPERADOR          = `NB_OPERADOR;
+//parameter SB_TICK          = `SB_TICK;
+
+///// PORTS
+// input clk;
+// input rst;
+// input i_uart_rx;
+// output o_uart_tx;
+// output [NB_DATA-1:0] led;
+
+////declaracion de señales
+//wire tick;
+//wire o_rx_interfaz_done_data;
+//wire [NB_DATA-1:0] o_rx_interfaz_data;
+//reg [NB_DATA-1:0] pruebita;
+//wire o_tx_interfaz_done_data;
+
+//rx #(.NB_DATA(NB_DATA), .SB_TICK(SB_TICK))
+//(
+//    .i_clk(clk),
+//    .i_rst(rst),
+//    .i_bit(i_uart_rx),                  
+//    .i_tick(tick),
+//    .o_done_data(o_rx_interfaz_done_data),  
+//    .o_data(o_rx_interfaz_data)      
+//);
+
+//tx #(.NB_DATA(NB_DATA), .SB_TICK(SB_TICK))
+//(
+//    .i_clk(clk),
+//    .i_rst(rst),
+//    .i_tx_start(o_rx_interfaz_done_data),
+//    .i_tick(tick),
+//    .i_data(o_rx_interfaz_data),       
+//    .o_done_tx(o_tx_interfaz_done_data),       
+//    .o_tx(o_uart_tx) 
+//);
+    
+//baudrate_gen
+//(
+//    .i_clk(clk),
+//    .i_rst(rst),
+//    .o_tick(tick)
+//);
+
+//always @(posedge clk) 
+//begin
+//    if(!rst)
+//    begin
+//        pruebita <= 8'hff;
+//    end
+//    else
+//    begin
+//        if(o_rx_interfaz_done_data)
+//        begin
+//            pruebita <= o_rx_interfaz_data;
+//        end 
+//        else
+//        begin
+//            pruebita <= pruebita;
+//        end
+//    end
+//end
+
+//assign led = pruebita;
+
+//endmodule
 `timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
 // Company: 
@@ -28,7 +111,7 @@ module top_gral
      clk,
      rst,
      i_uart_rx,
-     o_uart_tx
+     o_uart_tx 
 );
 
 /// PARAMETERS
@@ -66,7 +149,7 @@ wire [NB_DATA-1 : 0] resultado;
     .i_interfaz_tx_data(interfaz_tx_data), //Dato de la interfaz al tx
     .i_rx(i_uart_rx), //Recibe de la computadora bit a bit
     .o_tx_interfaz_done_data(tx_interfaz_done_data), //Tx avisa a la interfaz que esta libre para procesar datos
-    .o_tx(o_uart_tx), //Envia a la computadora bit a bit
+    .o_tx(o_uart_tx), //Envia a la computadora bit a bit 
     .o_rx_interfaz_done_data(rx_interfaz_done_data), //Dato listo para pasarle a la interfaz
     .o_rx_interfaz_data(rx_interfaz_data) //Dato del rx a la interfaz
 );
@@ -104,5 +187,5 @@ wire [NB_DATA-1 : 0] resultado;
      .o_done_alu_tx(done_alu_tx), //ALU notifica que tiene el resultado
      .o_resultado(resultado) 
 );
-    
+   
 endmodule
