@@ -73,6 +73,4 @@ baudrate_gen
 );
 
 
-
-
 endmodule
