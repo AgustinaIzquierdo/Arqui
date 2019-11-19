@@ -22,14 +22,13 @@
 
 module pc
 #(
-    parameter NB_PC = 11,
-    parameter NB_DECODER = 1
+    parameter NB_PC = 11
 )
 (
     input i_clk,
     input i_rst,
     input i_enable,
-    output reg [NB_DECODER-1:0] o_addr
+    output reg [NB_PC-1:0] o_addr
 );
 
 always @(negedge i_clk) 

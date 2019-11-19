@@ -1,5 +1,5 @@
 `timescale 1ns / 1ps
-//////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////
 // Company: 
 // Engineer: 
 // 
@@ -24,9 +24,53 @@
 `define NB_OPCODE 5
 `define RAM_WIDTH 16
 `define NB_DECODER_SEL_A 2
-`define NB_DECODER 1
+
 
 module cpu(
-
+    i_clk,
+    i_rst,
+    i_instruction_pm, //Program Memory
+    o_addr_pm
     );
+
+/// PARAMETERS
+parameter NB_PC              = `NB_PC;
+parameter NB_OPERANDO          = `NB_OPERANDO;
+parameter NB_OPCODE          = `NB_OPCODE;
+parameter RAM_WIDTH          = `RAM_WIDTH;
+parameter NB_DECODER_SEL_A          = `NB_DECODER_SEL_A;
+
+
+//PUERTOS
+input i_clk;
+input i_rst;
+input [RAM_WIDTH-1:0] i_instruction_pm;
+output [NB_PC-1:0] o_addr_pm;
+
+// Variables
+wire [NB_DECODER_SEL_A-1:0] selA;
+wire selB;
+wire wrAcc;
+wire op;
+wire wrRam;
+wire rdRam;
+    control
+#(
+    .NB_OPCODE(NB_OPCODE),
+    .NB_PC(NB_PC),
+    .NB_DECODER_SEL_A(NB_DECODER_SEL_A)
+)
+    u_control
+(
+    .i_clk(i_clk),
+    .i_rst(i_rst),
+    .i_opcode(i_instruction_pm [ (RAM_WIDTH-1) -: NB_OPCODE]), 
+    .o_addr(o_addr_pm),
+    .o_selA(selA),
+    .o_selB(selB),
+    .o_wrAcc(wrAcc),
+    .o_op(op),
+    .o_wrRam(wrRam),
+    .o_rdRam(rdRam)
+);
 endmodule

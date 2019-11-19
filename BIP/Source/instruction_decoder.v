@@ -23,18 +23,17 @@
 module instruction_decoder
 #(
     parameter NB_OPCODE = 5,
-    parameter NB_DECODER_SEL_A = 2,
-    parameter NB_DECODER = 1   
+    parameter NB_DECODER_SEL_A = 2
 )
 (
     input [NB_OPCODE-1:0] i_opcode,
     output reg [NB_DECODER-1:0] o_wrPc,
     output reg [NB_DECODER_SEL_A-1:0] o_selA,
-    output reg [NB_DECODER-1:0] o_selB,
-    output reg [NB_DECODER-1:0] o_wrAcc,
+    output reg o_selB,
+    output reg o_wrAcc,
     output reg [NB_OPCODE-1:0] o_op,
-    output reg [NB_DECODER-1:0] o_wrRam,
-    output reg [NB_DECODER-1:0] o_rdRam
+    output reg o_wrRam,
+    output reg o_rdRam
 );
 always @(*)
 begin
