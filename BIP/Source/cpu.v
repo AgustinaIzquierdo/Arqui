@@ -36,6 +36,8 @@ module cpu
     i_clk,
     i_rst,
     i_instruction_pm, //Program Memory
+    i_data,
+    o_data,
     o_addr_pm
 );
 
@@ -43,13 +45,15 @@ module cpu
 input i_clk;
 input i_rst;
 input [RAM_WIDTH-1:0] i_instruction_pm;
+input [RAM_WIDTH-1:0] i_data;
+output [RAM_WIDTH-1:0] o_data;
 output [NB_ADDR-1:0] o_addr_pm;
 
 // VARIABLES
 wire [NB_DECODER_SEL_A-1:0] selA;
 wire selB;
 wire wrAcc;
-wire op;
+wire [NB_OPCODE-1:0] op;
 wire wrRam;
 wire rdRam;
 
@@ -75,10 +79,21 @@ wire rdRam;
 
     datapath
 #(
-
+    .NB_OPCODE(NB_OPCODE),
+    .NB_DECODER_SEL_A(NB_DECODER_SEL_A),
+    .NB_DATA(RAM_WIDTH),
+    .NB_OPERANDO(NB_OPERANDO)
 )
     u_datapath
 (
-
+   .i_clk(i_clk),
+   .i_rst(i_rst),
+   .i_selA(selA),
+   .i_selB(selB),
+   .i_wrAcc(wrAcc),
+   .i_op(op),
+   .i_operando(i_instruction_pm [NB_OPERANDO-1:0]),
+   .i_data(i_data),
+   .o_data(o_data)
 );
 endmodule

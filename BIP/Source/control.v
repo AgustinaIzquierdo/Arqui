@@ -34,7 +34,7 @@ module control
     output [NB_DECODER_SEL_A-1:0] o_selA,
     output o_selB,
     output o_wrAcc,
-    output o_op,
+    output [NB_OPCODE-1:0] o_op,
     output o_wrRam,
     output o_rdRam
 );

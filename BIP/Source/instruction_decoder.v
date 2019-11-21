@@ -27,7 +27,7 @@ module instruction_decoder
 )
 (
     input [NB_OPCODE-1:0] i_opcode,
-    output reg [NB_DECODER-1:0] o_wrPc,
+    output reg o_wrPc,
     output reg [NB_DECODER_SEL_A-1:0] o_selA,
     output reg o_selB,
     output reg o_wrAcc,
