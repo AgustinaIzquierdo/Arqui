@@ -23,14 +23,14 @@
 module control
 #(
     parameter NB_OPCODE = 5,
-    parameter NB_PC = 11,
+    parameter NB_ADDR = 11,
     parameter NB_DECODER_SEL_A = 2
 )
 (
     input i_clk,
     input i_rst,
     input [NB_OPCODE-1:0] i_opcode,
-    output [NB_PC-1:0] o_addr,
+    output [NB_ADDR-1:0] o_addr,
     output [NB_DECODER_SEL_A-1:0] o_selA,
     output o_selB,
     output o_wrAcc,
@@ -43,7 +43,7 @@ wire wrPc;
 
     pc
 #(
-    .NB_PC(NB_PC)
+    .NB_PC(NB_ADDR)
 )
     u_pc
 (

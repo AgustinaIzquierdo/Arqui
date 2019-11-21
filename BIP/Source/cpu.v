@@ -19,45 +19,44 @@
 // 
 //////////////////////////////////////////////////////////////////////////////////
 
-`define NB_PC 11
-`define NB_OPERANDO 11
 `define NB_OPCODE 5
-`define RAM_WIDTH 16
 `define NB_DECODER_SEL_A 2
 
+// PARAMETERS
+parameter NB_OPCODE          = `NB_OPCODE;
+parameter NB_DECODER_SEL_A          = `NB_DECODER_SEL_A;
 
-module cpu(
+module cpu
+#(
+    parameter NB_ADDR = 11,
+    parameter NB_OPERANDO = 11,
+    parameter RAM_WIDTH = 16
+)
+(
     i_clk,
     i_rst,
     i_instruction_pm, //Program Memory
     o_addr_pm
-    );
-
-/// PARAMETERS
-parameter NB_PC              = `NB_PC;
-parameter NB_OPERANDO          = `NB_OPERANDO;
-parameter NB_OPCODE          = `NB_OPCODE;
-parameter RAM_WIDTH          = `RAM_WIDTH;
-parameter NB_DECODER_SEL_A          = `NB_DECODER_SEL_A;
-
+);
 
 //PUERTOS
 input i_clk;
 input i_rst;
 input [RAM_WIDTH-1:0] i_instruction_pm;
-output [NB_PC-1:0] o_addr_pm;
+output [NB_ADDR-1:0] o_addr_pm;
 
-// Variables
+// VARIABLES
 wire [NB_DECODER_SEL_A-1:0] selA;
 wire selB;
 wire wrAcc;
 wire op;
 wire wrRam;
 wire rdRam;
+
     control
 #(
     .NB_OPCODE(NB_OPCODE),
-    .NB_PC(NB_PC),
+    .NB_ADDR(NB_ADDR),
     .NB_DECODER_SEL_A(NB_DECODER_SEL_A)
 )
     u_control
@@ -72,5 +71,14 @@ wire rdRam;
     .o_op(op),
     .o_wrRam(wrRam),
     .o_rdRam(rdRam)
+);
+
+    datapath
+#(
+
+)
+    u_datapath
+(
+
 );
 endmodule
