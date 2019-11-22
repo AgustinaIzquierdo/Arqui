@@ -19,15 +19,15 @@
 // 
 //////////////////////////////////////////////////////////////////////////////////
 
-`define NB_OPCODE 5
+
 `define NB_DECODER_SEL_A 2
 
 // PARAMETERS
-parameter NB_OPCODE          = `NB_OPCODE;
 parameter NB_DECODER_SEL_A          = `NB_DECODER_SEL_A;
 
 module cpu
 #(
+    parameter NB_OPCODE = 5,
     parameter NB_ADDR = 11,
     parameter NB_OPERANDO = 11,
     parameter RAM_WIDTH = 16
@@ -35,8 +35,10 @@ module cpu
 (
     i_clk,
     i_rst,
-    i_instruction_pm, //Program Memory
+    i_opcode_pm, //Program Memory
+    i_operando_pm, //Program Memory
     i_data,
+    o_wr_en, //En 1 escribe en 0 por default lee
     o_data,
     o_addr_pm
 );
@@ -44,8 +46,10 @@ module cpu
 //PUERTOS
 input i_clk;
 input i_rst;
-input [RAM_WIDTH-1:0] i_instruction_pm;
+input [NB_OPCODE-1:0] i_opcode_pm;
+input [NB_OPERANDO-1:0] i_operando_pm;
 input [RAM_WIDTH-1:0] i_data;
+output o_wr_en;
 output [RAM_WIDTH-1:0] o_data;
 output [NB_ADDR-1:0] o_addr_pm;
 
@@ -57,6 +61,8 @@ wire [NB_OPCODE-1:0] op;
 wire wrRam;
 wire rdRam;
 
+assign o_wr_en = (wrRam == 1'b1) ? 1'b1 : 1'b0;
+
     control
 #(
     .NB_OPCODE(NB_OPCODE),
@@ -67,7 +73,7 @@ wire rdRam;
 (
     .i_clk(i_clk),
     .i_rst(i_rst),
-    .i_opcode(i_instruction_pm [ (RAM_WIDTH-1) -: NB_OPCODE]), 
+    .i_opcode(i_opcode_pm), 
     .o_addr(o_addr_pm),
     .o_selA(selA),
     .o_selB(selB),
@@ -92,7 +98,7 @@ wire rdRam;
    .i_selB(selB),
    .i_wrAcc(wrAcc),
    .i_op(op),
-   .i_operando(i_instruction_pm [NB_OPERANDO-1:0]),
+   .i_operando(i_operando_pm),
    .i_data(i_data),
    .o_data(o_data)
 );

@@ -1,12 +1,11 @@
 `timescale 1ns / 1ps
-
 //////////////////////////////////////////////////////////////////////////////////
 // Company: 
 // Engineer: 
 // 
-// Create Date: 19.11.2019 19:11:18
+// Create Date: 22.11.2019 17:44:32
 // Design Name: 
-// Module Name: program_memory
+// Module Name: data_memory
 // Project Name: 
 // Target Devices: 
 // Tool Versions: 
@@ -20,18 +19,18 @@
 // 
 //////////////////////////////////////////////////////////////////////////////////
 
-module program_memory
+module data_memory
 #(
   parameter RAM_WIDTH = 16,                       // Specify RAM data width
-  parameter RAM_DEPTH = 2048,                     // Specify RAM depth (number of entries)
+  parameter RAM_DEPTH = 1024,                     // Specify RAM depth (number of entries)
   parameter RAM_PERFORMANCE = "LOW_LATENCY", // Select "HIGH_PERFORMANCE" or "LOW_LATENCY"
   parameter INIT_FILE = ""                        // Specify name/location of RAM initialization file if using one (leave blank if not)
 )
 (
   input [clogb2(RAM_DEPTH-1) - 1 : 0] i_addr,   // Address bus, width determined from RAM_DEPTH
-  //input [RAM_WIDTH-1:0] dina,           // RAM input data
+  input [RAM_WIDTH-1:0] i_data,           // RAM input data
   input i_clk,                            // Clock
-  //input wea,                            // Write enable
+  input wea,                            // Write enable
   //input ena,                            // RAM Enable, for additional power savings, disable port when not in use
   //input rsta,                           // Output reset (does not affect memory contents)
   //input regcea,                         // Output register enable
@@ -39,10 +38,8 @@ module program_memory
 );
   
   wire ena = 1 ;                  // RAM Enable, for additional power savings, disable port when not in use
-  wire wea = 0 ;                  // Write enable
   wire rsta = 0 ;                 // Output reset (does not affect memory contents)
   wire regcea = 1;                // Output register enable
-  wire [RAM_WIDTH - 1 : 0] dina = 0;  // RAM input data
 
   reg [RAM_WIDTH - 1 : 0] BRAM [RAM_DEPTH - 1 : 0];
   reg [RAM_WIDTH - 1 : 0] ram_data = {RAM_WIDTH {1'b0}};
@@ -63,9 +60,9 @@ module program_memory
 
   always @(posedge i_clk)
     if (ena)
-      if (wea) //No escribe nunca
-        BRAM [i_addr] <= dina;
-      else
+      if (wea) //Escribe
+        BRAM [i_addr] <= i_data;
+      else    //Lee (Default)
         ram_data <= BRAM [i_addr];
 
   //  The following code generates HIGH_PERFORMANCE (use output register) or LOW_LATENCY (no output register)
@@ -99,8 +96,7 @@ module program_memory
       for (clogb2 = 0; depth > 0; clogb2 = clogb2+1)
         depth = depth >> 1;
   endfunction
-
-endmodule
+ endmodule
 
 // The following is an instantiation template for xilinx_single_port_ram_no_change
 /*
@@ -121,3 +117,4 @@ endmodule
     .douta(douta)     // RAM output data, width determined from RAM_WIDTH
   );
 */
+

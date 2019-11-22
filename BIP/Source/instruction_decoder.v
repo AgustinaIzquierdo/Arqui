@@ -44,7 +44,7 @@ begin
             o_selA = 0;
             o_selB = 0;
             o_wrAcc = 0;
-            o_op = 0;
+            o_op = i_opcode;
             o_wrRam = 0;
             o_rdRam = 0;
         end
@@ -54,7 +54,7 @@ begin
            o_selA = 0; //No interesa dado que no esta habilitado escritura en ACC
            o_selB = 0;
            o_wrAcc = 0; //No se sobreescribe ACC
-           o_op = 0; //No realiza operacion
+           o_op = i_opcode; //No realiza operacion
            o_wrRam = 1; 
            o_rdRam = 0;
         end
@@ -64,7 +64,7 @@ begin
            o_selA = 0; //Trae de memoria
            o_selB = 0;
            o_wrAcc = 1; //Sobreescribe ACC
-           o_op = 0;
+           o_op = i_opcode;
            o_wrRam = 0;
            o_rdRam = 1; 
         end
@@ -74,7 +74,7 @@ begin
            o_selA = 1; //Operando inmediato
            o_selB = 0;
            o_wrAcc = 1; //Sobreescribe ACC
-           o_op = 0;
+           o_op = i_opcode;
            o_wrRam = 0;
            o_rdRam = 0;
         end

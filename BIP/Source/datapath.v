@@ -64,9 +64,9 @@ begin
         acc <= (i_wrAcc==1'b1)? muxA : acc;
 end
 
-assign resultado_op = (i_op==5'b0) ? {NB_DATA{1'b0}} :
+assign resultado_op = (i_op==5'b00110 || i_op==5'b00111) ? acc - muxB :
                       (i_op==5'b00100 || i_op==5'b00101) ? acc + muxB :
-                       acc - muxB;
+                       {NB_DATA{1'b0}};
 
 assign o_data = acc;
 
