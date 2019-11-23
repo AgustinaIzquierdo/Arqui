@@ -18,15 +18,9 @@
 // Additional Comments:
 // 
 //////////////////////////////////////////////////////////////////////////////////
-
-
-`define NB_DECODER_SEL_A 2
-
-// PARAMETERS
-parameter NB_DECODER_SEL_A          = `NB_DECODER_SEL_A;
-
 module cpu
 #(
+    parameter NB_DECODER_SEL_A = 2,
     parameter NB_OPCODE = 5,
     parameter NB_ADDR = 11,
     parameter NB_OPERANDO = 11,
@@ -53,6 +47,10 @@ output o_wr_en;
 output [RAM_WIDTH-1:0] o_data;
 output [NB_ADDR-1:0] o_addr_pm;
 
+
+// PARAMETERS
+
+
 // VARIABLES
 wire [NB_DECODER_SEL_A-1:0] selA;
 wire selB;
@@ -64,7 +62,7 @@ wire rdRam;
 assign o_wr_en = (wrRam == 1'b1) ? 1'b1 : 1'b0;
 
     control
-#(
+#(  
     .NB_OPCODE(NB_OPCODE),
     .NB_ADDR(NB_ADDR),
     .NB_DECODER_SEL_A(NB_DECODER_SEL_A)

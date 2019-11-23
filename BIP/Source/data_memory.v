@@ -30,7 +30,7 @@ module data_memory
   input [clogb2(RAM_DEPTH-1) - 1 : 0] i_addr,   // Address bus, width determined from RAM_DEPTH
   input [RAM_WIDTH-1:0] i_data,           // RAM input data
   input i_clk,                            // Clock
-  input wea,                            // Write enable
+  input i_wea,                            // Write enable
   //input ena,                            // RAM Enable, for additional power savings, disable port when not in use
   //input rsta,                           // Output reset (does not affect memory contents)
   //input regcea,                         // Output register enable

@@ -18,14 +18,16 @@
 // Additional Comments:
 // 
 //////////////////////////////////////////////////////////////////////////////////
+
 `define NB_OPCODE 5
+`define NB_DECODER_SEL_A 2
 `define NB_ADDR 11
 `define NB_OPERANDO 11
 `define RAM_WIDTH 16
 `define RAM_DEPTH_DM 1024
 `define RAM_DEPTH_PM 2048
 `define RAM_PERFORMANCE "LOW_LATENCY"
-`define INIT_FILE_PM " " //PONER PATH 
+`define INIT_FILE_PM "/home/andres/Facultad/Arquitectura_de_Computadoras/Andres/Arqui/BIP/Source/program_memory.txt" 
 
 module bips(
     i_clk,
@@ -35,6 +37,7 @@ module bips(
     
 /// PARAMETERS
 parameter NB_OPCODE          = `NB_OPCODE;
+parameter NB_DECODER_SEL_A          = `NB_DECODER_SEL_A;
 parameter NB_ADDR              = `NB_ADDR;
 parameter NB_OPERANDO          = `NB_OPERANDO;
 parameter RAM_WIDTH          = `RAM_WIDTH;
@@ -62,6 +65,7 @@ assign operando_pm = instruction_pm [NB_OPERANDO-1 : 0];
 
     cpu
 #(  
+    .NB_DECODER_SEL_A(NB_DECODER_SEL_A),
     .NB_OPCODE(NB_OPCODE),
     .NB_ADDR(NB_ADDR),
     .NB_OPERANDO(NB_OPERANDO),
@@ -112,8 +116,9 @@ assign operando_pm = instruction_pm [NB_OPERANDO-1 : 0];
     count_clock
 #(
     .NB_OPCODE(NB_OPCODE),
-    .NB_OPERANDO(NB_OPERANDO)
+    .NB_ADDR(NB_OPERANDO)
 )
+    u_count_clock
 (
     .i_clk(i_clk),
     .i_rst(i_rst),
