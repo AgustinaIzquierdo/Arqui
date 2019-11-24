@@ -54,13 +54,13 @@ module data_memory
       integer ram_index;
       initial
         for (ram_index = 0; ram_index < RAM_DEPTH; ram_index = ram_index + 1)
-          BRAM[ram_index] = {RAM_WIDTH {1'b0}};
+          BRAM[ram_index] = ram_index;
     end
   endgenerate
 
-  always @(posedge i_clk)
+  always @(negedge i_clk)
     if (ena)
-      if (wea) //Escribe
+      if (i_wea) //Escribe
         BRAM [i_addr] <= i_data;
       else    //Lee (Default)
         ram_data <= BRAM [i_addr];

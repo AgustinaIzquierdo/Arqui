@@ -35,19 +35,19 @@ module datapath
     input i_wrAcc,
     input [NB_OPCODE-1:0] i_op,
     input [NB_OPERANDO-1:0] i_operando,
-    input [NB_DATA-1:0] i_data,
-    output [NB_DATA-1:0] o_data
+    input signed [NB_DATA-1:0] i_data,
+    output signed [NB_DATA-1:0] o_data
 );
 
 localparam NB_EXT = (NB_DATA-NB_OPERANDO);
 
-wire [NB_DATA-1:0] operando_ext;
-wire [NB_DATA-1:0] muxA;
-wire [NB_DATA-1:0] muxB;
-wire [NB_DATA-1:0] resultado_op;
-reg [NB_DATA-1:0] acc;
+wire signed [NB_DATA-1:0] operando_ext;
+wire signed [NB_DATA-1:0] muxA;
+wire signed [NB_DATA-1:0] muxB;
+wire signed [NB_DATA-1:0] resultado_op;
+reg signed [NB_DATA-1:0] acc;
 
-assign operando_ext = (i_operando[NB_DATA-1]==1'b1)? {{(NB_EXT){1'b1}},i_operando}: {{(NB_EXT){1'b0}},i_operando} ;
+assign operando_ext = (i_operando[NB_OPERANDO-1]==1'b1)? {{(NB_EXT){1'b1}},i_operando}: {{(NB_EXT){1'b0}},i_operando};
 
 assign muxA = (i_selA==2'b00) ? i_data : 
                 (i_selA==2'b01) ? operando_ext:

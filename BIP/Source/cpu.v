@@ -48,9 +48,6 @@ output [RAM_WIDTH-1:0] o_data;
 output [NB_ADDR-1:0] o_addr_pm;
 
 
-// PARAMETERS
-
-
 // VARIABLES
 wire [NB_DECODER_SEL_A-1:0] selA;
 wire selB;

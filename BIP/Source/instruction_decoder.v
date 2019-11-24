@@ -108,7 +108,7 @@ begin
             o_wrRam = 0;
             o_rdRam = 1; 
         end
-        5'b00101: //Substract immediate
+        5'b00111: //Substract immediate
         begin
             o_wrPc = 1;
             o_selA = 2; //Resultado operacion
@@ -117,6 +117,16 @@ begin
             o_op = i_opcode;
             o_wrRam = 0;
             o_rdRam = 0; 
+        end
+        default:
+        begin
+            o_wrPc = 0;
+            o_selA = 0;
+            o_selB = 0;
+            o_wrAcc = 0;
+            o_op = 0;
+            o_wrRam= 0;
+            o_rdRam= 0;
         end
     endcase
 end

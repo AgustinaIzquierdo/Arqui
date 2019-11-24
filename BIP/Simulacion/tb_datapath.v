@@ -52,7 +52,7 @@ initial begin
   rst = 1'b0;
   clk = 1'b0;
    
-  #1  rst = 1'b1;
+  #2  rst = 1'b1;
   
   
   #1000 $finish;
@@ -99,7 +99,7 @@ always #1 clk = ~clk;
     .RAM_WIDTH(RAM_WIDTH),
     .RAM_DEPTH(RAM_DEPTH_DM),
     .RAM_PERFORMANCE(RAM_PERFORMANCE),
-    .INIT_FILE(INIT_FILE_PM)
+    .INIT_FILE("")
 )
      u_data_memory
 (
