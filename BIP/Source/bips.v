@@ -27,7 +27,7 @@
 `define RAM_DEPTH_DM 2048
 `define RAM_DEPTH_PM 2048
 `define RAM_PERFORMANCE "LOW_LATENCY"
-`define INIT_FILE_PM "/home/andres/Facultad/Arquitectura_de_Computadoras/Andres/Arqui/BIP/Source/program_memory.txt" 
+`define INIT_FILE_PM "/home/andres/Facultad/Arquitectura_de_Computadoras/Andres/Arqui/BIP/Source/instrucciones.txt" 
 `define NB_DATA  8
 `define SB_TICK 16
 
@@ -35,7 +35,8 @@ module bips(
     i_clk,
     i_rst,
     i_uart_rx,
-    o_uart_tx
+    o_uart_tx,
+    led
     );
     
 /// PARAMETERS
@@ -56,6 +57,7 @@ input i_clk;
 input i_rst;
 input i_uart_rx;
 output o_uart_tx;
+output [8-1:0] led;
 
 //VARIABLES
 wire [NB_OPCODE-1:0] opcode_pm;
@@ -66,7 +68,6 @@ wire [RAM_WIDTH-1:0] in_data_dm;
 wire [RAM_WIDTH-1:0] o_data_dm;
 wire [NB_ADDR-1:0] o_counter;
 wire wr_en;
-wire bip_enable;
 wire tick;
 wire i_int_tx; //Indicador de dato valido para transmitir
 wire [NB_DATA-1:0] i_interfaz_tx_data; //Dato de la interfaz al tx
@@ -78,8 +79,7 @@ wire reset;
 
 assign opcode_pm = instruction_pm [RAM_WIDTH -1 -: NB_OPCODE];
 assign operando_pm = instruction_pm [NB_OPERANDO-1 : 0];
-assign reset = (!i_rst || !bip_enable);
- 
+assign led = {in_data_dm [4-1:0], o_counter [4-1:0]}; 
     cpu
 #(  
     .NB_DECODER_SEL_A(NB_DECODER_SEL_A),
@@ -119,7 +119,7 @@ assign reset = (!i_rst || !bip_enable);
     .RAM_WIDTH(RAM_WIDTH),
     .RAM_DEPTH(RAM_DEPTH_DM),
     .RAM_PERFORMANCE(RAM_PERFORMANCE),
-    .INIT_FILE(INIT_FILE_PM)
+    .INIT_FILE("")
 )
      u_data_memory
 (
@@ -189,7 +189,7 @@ interfaz
     .i_done_tx(o_tx_interfaz_done_data),
     .o_int_tx(i_int_tx),
     .o_uart(i_interfaz_tx_data),
-    .o_bip(bip_enable)
+    .o_ctrl_reset(reset)
 );
 
 endmodule

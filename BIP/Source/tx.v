@@ -30,7 +30,7 @@ module tx
     input i_tx_start, //Tiene un resultado la interfaz
     input i_tick,
     input [NB_DATA-1:0] i_data, //Resultado de la ALU
-    output o_done_tx, //Ya transmiti el dato a la PC y le notifico a la interfaz que estoy libre
+    output o_done_tx, //Ya transmiti el dato a la PC
     output o_tx
    );
    
@@ -44,10 +44,10 @@ module tx
    reg [2-1:0] state_reg;
    reg [2-1:0] state_next;
    reg [4-1:0] s_reg;
-   reg [4-1:0] s_next; //Seguimiento de ticks
-   reg [3-1:0] n_reg;  //Seguimiento de la cantidad de datos
+   reg [4-1:0] s_next;
+   reg [3-1:0] n_reg;
    reg [3-1:0] n_next;
-   reg [NB_DATA-1:0] b_reg; //Recibimos el dato de la interfaz
+   reg [NB_DATA-1:0] b_reg;
    reg [NB_DATA-1:0] b_next;
    reg tx_reg;
    reg tx_next; //En los estados IDLE-START-STOP lo usa para empezar y cerrar la trama

@@ -3,9 +3,9 @@
 // Company: 
 // Engineer: 
 // 
-// Create Date: 24.11.2019 18:47:10
+// Create Date: 25.11.2019 16:11:27
 // Design Name: 
-// Module Name: tb_interfaz
+// Module Name: tb_general
 // Project Name: 
 // Target Devices: 
 // Tool Versions: 
@@ -20,20 +20,22 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module tb_interfaz();
+module tb_general();
 
+localparam DECODER_SEL_A=5;
 localparam DATA = 8;
 localparam ADDR =11;
 localparam OPCODE =5;
+localparam OPERANDO =11;
 localparam RAM =16;
 localparam TICK= 16;
+localparam DEPTH=2048;
+localparam RAM_PER= "LOW_LATENCY";
+localparam FILE_PM ="/home/andres/Facultad/Arquitectura_de_Computadoras/Andres/Arqui/BIP/Source/instrucciones.txt" ;
+
 
 reg clk;
 reg rst;
-reg [OPCODE-1:0] opcode;
-reg [RAM-1:0] acc;
-reg [ADDR-1:0] pc;
-wire bip_enable;
 reg tick;
 wire i_int_tx; //Indicador de dato valido para transmitir
 wire [DATA-1:0] i_interfaz_tx_data; //Dato de la interfaz al tx
@@ -42,13 +44,21 @@ wire o_tx_interfaz_done_data; //Tx avisa a la interfaz que esta libre para proce
 wire o_tx; //Envia a la computadora bit a bit
 wire o_rx_interfaz_done_data; //Dato listo para pasarle a la interfaz
 wire [DATA-1:0] o_rx_interfaz_data; //Dato del rx a la interfaz
+wire [OPCODE-1:0] opcode_pm;
+wire [OPERANDO-1:0] operando_pm;
+wire [RAM-1:0] instruction_pm;
+wire [RAM-1:0] o_data_dm;
+wire [ADDR-1:0] o_counter;
+wire wr_en;
+wire [RAM-1:0] in_data_dm;
+wire [ADDR-1:0] addr_pm;
+wire reset;
 
 initial
 begin
     clk = 1'b0;
     tick = 1'b0;
     rst = 1'b0;
-    opcode= 5'b1;
     i_rx= 1'b1; //Bit parada
     #10 rst= 1'b1; //Desactiva el reset
     #160 i_rx = 1'b0; //bit inicio
@@ -64,16 +74,79 @@ begin
     
     #160 i_rx = 1'b1; //bits stop
     
-    #20 opcode = 5'b01100;
     
-    #20 opcode = 0;
-    #500000000 $finish;
+    #5000 $finish;
 end
 
 
 always #2.5 clk=~clk;
 always #5 tick=~tick;
 
+assign opcode_pm = instruction_pm [RAM -1 -: OPCODE];
+assign operando_pm = instruction_pm [OPERANDO-1 : 0];
+
+cpu
+#(  
+    .NB_DECODER_SEL_A(DECODER_SEL_A),
+    .NB_OPCODE(OPCODE),
+    .NB_ADDR(ADDR),
+    .NB_OPERANDO(OPERANDO),
+    .RAM_WIDTH(RAM)
+)
+    u_cpu
+(
+    .i_clk(clk),
+    .i_rst(reset),
+    .i_opcode_pm(opcode_pm),
+    .i_operando_pm(operando_pm),
+    .i_data(o_data_dm), //DATA MEMORY
+    .o_wr_en(wr_en),
+    .o_data(in_data_dm), //DATA MEMORY
+    .o_addr_pm(addr_pm)
+);
+    
+    program_memory
+#(
+    .RAM_WIDTH(RAM),
+    .RAM_DEPTH(DEPTH),
+    .RAM_PERFORMANCE(RAM_PER),
+    .INIT_FILE(FILE_PM)
+)
+    u_program_memory
+(
+    .i_clk(clk),
+    .i_addr(addr_pm),
+    .o_data(instruction_pm)
+);
+
+   data_memory
+#(
+    .RAM_WIDTH(RAM),
+    .RAM_DEPTH(DEPTH),
+    .RAM_PERFORMANCE(RAM_PER),
+    .INIT_FILE("")
+)
+     u_data_memory
+(
+     .i_clk(clk),
+     .i_addr(operando_pm),
+     .i_data(in_data_dm),
+     .i_wea(wr_en),
+     .o_data(o_data_dm)
+);
+
+    count_clock
+#(
+    .NB_OPCODE(OPCODE),
+    .NB_ADDR(ADDR)
+)
+    u_count2_clock
+(
+    .i_clk(clk),
+    .i_rst(reset),
+    .i_opcode(opcode_pm),
+    .o_counter(o_counter)
+);
 
 
 interfaz
@@ -89,13 +162,13 @@ u_agu
     .i_rst(rst),
     .i_data(o_rx_interfaz_data),
     .i_done_data(o_rx_interfaz_done_data),
-    .i_opcode(opcode),
-    .i_acc(acc),
-    .i_pc(pc),
+    .i_opcode(opcode_pm),
+    .i_acc(in_data_dm),
+    .i_pc(o_counter),
     .i_done_tx(o_tx_interfaz_done_data),
     .o_int_tx(i_int_tx),
     .o_uart(i_interfaz_tx_data),
-    .o_bip(bip_enable)
+    .o_ctrl_reset(reset)
 );
 
 tx #(.NB_DATA(DATA), .SB_TICK(TICK))
@@ -120,6 +193,5 @@ u_agu2
     .o_done_data(o_rx_interfaz_done_data),  
     .o_data(o_rx_interfaz_data)      
 );
-
 
 endmodule

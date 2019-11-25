@@ -17,8 +17,8 @@ module interfaz
     input [NB_ADDR -1:0] i_pc,
     input i_done_tx, //TX_LIBRE
     output o_int_tx, //TENEMOS DATA
-    output reg [NB_DATA -1:0] o_uart,
-    output reg o_bip //Habilita el BIP
+    output [NB_DATA -1:0] o_uart,
+    output reg o_ctrl_reset
 );
 
 localparam [3-1:0] idle = 3'b000;
@@ -27,14 +27,13 @@ localparam [3-1:0] acc_l = 3'b010;
 localparam [3-1:0] acc_h = 3'b011;
 localparam [3-1:0] pc_l = 3'b100;
 localparam [3-1:0] pc_h = 3'b101;
-
+localparam [3-1:0] waitt = 3'b110;
 
 reg [3-1:0] state_reg;
 reg [3-1:0] state_next;
-reg bip_next;
 reg done_data_prev;
-reg [NB_DATA-1:0] uart_next;
-
+reg reset_next;
+reg done_tx_prev;
 //FSMD STATE & DATA REGISTERS
 always @(posedge i_clk)
 begin
@@ -42,15 +41,15 @@ begin
     begin
         state_reg <= idle;
         done_data_prev <= 0;
-        o_bip <= 0;
-        o_uart <= 0;
+        o_ctrl_reset <= 0;
+        done_tx_prev <=0;
     end
     else
     begin
         state_reg <= state_next;
         done_data_prev <= i_done_data;
-        o_bip <= bip_next;
-        o_uart <= uart_next;
+        o_ctrl_reset <= reset_next;
+        done_tx_prev <= i_done_tx;
     end
 end
 
@@ -59,44 +58,40 @@ always @(*) begin
         
         idle:
         begin
-            bip_next = 0;
-            uart_next =0;
+            reset_next =1'b0;
         end
         
         recibir:
         begin
-            bip_next = 1'b1;
-            uart_next = 0;
+            reset_next = 1'b1;
         end
         
         acc_l:
         begin
-            bip_next = 1'b1;
-            uart_next = i_acc[NB_DATA-1:0];
+            reset_next = 1'b1;
         end
         
         acc_h:
         begin
-            bip_next = 1'b1;
-            uart_next = i_acc[RAM_WIDTH -1 :NB_DATA];
+            reset_next = 1'b1;
         end
         
         pc_l:
         begin
-            bip_next = 1'b1;
-            uart_next = i_pc[NB_DATA-1:0];
+            reset_next = 1'b1;
         end
         
         pc_h:
         begin
-            bip_next = 1'b1;
-            uart_next = {{(NB_OPCODE){1'b0}},i_pc[NB_ADDR -1 :NB_DATA]};
+            reset_next = 1'b1;
         end
-
+        waitt:
+        begin
+            reset_next = 1'b1;
+        end
         default:
         begin
-            bip_next = 0;
-            uart_next = 0;
+            reset_next = 1'b0;
         end
     endcase
 end
@@ -121,33 +116,41 @@ begin
         
         acc_l:
         begin
-            if(i_done_tx==1'b1)
+            if((i_done_tx==1)&&(done_tx_prev == 0))
                 state_next = acc_h;
         end
         
         acc_h:
         begin
-            if(i_done_tx==1'b1)
+            if((i_done_tx==1)&&(done_tx_prev == 0))
                 state_next = pc_l;
         end
         
         pc_l:
         begin
-            if(i_done_tx==1'b1)
+            if((i_done_tx==1)&&(done_tx_prev == 0))
                 state_next = pc_h;
         end
         
         pc_h:
         begin
-            if(i_done_tx==1'b1)
-                state_next = idle;
+            if((i_done_tx==1)&&(done_tx_prev == 0))
+                state_next = waitt;
         end
-                
+        waitt:
+        begin
+            state_next = waitt;
+        end        
+        
         default:
             state_next=idle;
     endcase
 end
 
 assign o_int_tx = (state_reg == acc_l || state_reg == acc_h || state_reg == pc_l || state_reg == pc_h) ? 1'b1 : 1'b0; 
-
+assign o_uart = (state_reg == acc_l)? i_acc[NB_DATA-1:0]: 
+                (state_reg == acc_h)? i_acc[RAM_WIDTH -1 : NB_DATA]:
+                (state_reg == pc_l)? i_pc[NB_DATA-1:0]:
+                (state_reg == pc_h)? {{(NB_OPCODE){1'b0}},i_pc[NB_ADDR -1 :NB_DATA]}:
+                8'b0;
 endmodule
