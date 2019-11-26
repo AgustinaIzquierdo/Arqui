@@ -35,7 +35,7 @@ module count_clock
 always @(posedge i_clk)
 begin
     if(!i_rst)
-        o_counter <= 1'b1;
+        o_counter <= 1'b0;
     else if(i_opcode != 0)
         o_counter <= o_counter + 1'b1;
     else

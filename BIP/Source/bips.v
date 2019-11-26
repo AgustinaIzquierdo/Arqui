@@ -79,7 +79,7 @@ wire reset;
 
 assign opcode_pm = instruction_pm [RAM_WIDTH -1 -: NB_OPCODE];
 assign operando_pm = instruction_pm [NB_OPERANDO-1 : 0];
-assign led = {in_data_dm [4-1:0], o_counter [4-1:0]}; 
+assign led = {addr_pm [4-1:0], o_counter [4-1:0]}; 
     cpu
 #(  
     .NB_DECODER_SEL_A(NB_DECODER_SEL_A),
