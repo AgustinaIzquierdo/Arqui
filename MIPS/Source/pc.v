@@ -28,6 +28,14 @@ module pc
         input i_clk,
         input i_rst,
         input [len-1:0] i_mux,
-        output [len-1:0] o_pc
+        output reg [len-1:0] o_pc
     );
+    
+always @(negedge i_clk)
+begin
+    if(!i_rst)
+        o_pc <= 0;
+    else
+        o_pc <= i_mux;    
+end
 endmodule

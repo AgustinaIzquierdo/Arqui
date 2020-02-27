@@ -26,9 +26,9 @@ module pc_adder
     )
     (
         input [len-1:0] i_pc,
-        input i_offset,
+        input i_cte,
         output [len-1:0] o_adder
     );
     
-    assign o_adder = i_pc + i_offset; 
+    assign o_adder = i_pc + i_cte; 
 endmodule

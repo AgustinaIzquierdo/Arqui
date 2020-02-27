@@ -25,9 +25,12 @@ module mux_pc
         parameter len = 32
      )
      (
-        input [len-1:0] i_pc_adder,
-        input [len-1:0] i_execute_add,
+        input [len-1:0] i_pc,
+        input [len-1:0] i_branch,
         input i_selector,
         output [len-1:0] o_mux_pc
      );
+     
+     
+     assign o_mux_pc = (i_selector) ? i_branch : i_pc;
 endmodule

@@ -26,19 +26,26 @@ module tl_instruction_fetch
     )
     (
         input i_clk,
-        input i_rst
+        input i_rst,
+        input [len-1:0] i_branch_dir, //Salto condicional
+        
+        output [len-1:0] o_contador_programa,
+        output [len-1:0] o_instruccion
     );
     
+    wire [len-1:0] adder_mux;
+    wire [len-1:0] mux_pc;
+
  //mux_PC
  mux_pc
  #(
     .len(len)
   )
   (
-    .i_pc_adder(), //VER A DONDE VA
-    .i_execute_add(),  //VER A DONDE VA
-    .i_selector(),  //VER A DONDE VA
-    .o_mux_pc() //VER A DONDE VA
+    .i_pc(adder_mux),
+    .i_branch(i_branch_dir),  
+    .i_selector(),  //Aca va la linea de control PCSrc
+    .o_mux_pc(mux_pc)
   );
  
  //pc
@@ -50,8 +57,8 @@ module tl_instruction_fetch
   (
     .i_clk(i_clk),
     .i_rst(i_rst),
-    .i_mux(), //VER A DONDE VA
-    .o_pc() //VER A DONDE VA
+    .i_mux(mux_pc),
+    .o_pc(o_contador_programa)
   );
   
  //ram_instrucciones
@@ -59,12 +66,19 @@ module tl_instruction_fetch
  #(
     .RAM_WIDTH(len),
     .RAM_DEPTH(2048),
-    .RAM_PERFORMANCE(), //VER QUE VA
-    .INIT_FILE()        //VER QUE VA
+    .RAM_PERFORMANCE("LOW_LATENCY"), //VER QUE VA
+    .INIT_FILE("")        //VER QUE VA
  )
  u_ram_instrucciones
  (
-    // COMPLETAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAR
+  .i_addra(o_contador_programa),
+  .i_dina(),
+  .i_clka(i_clk),
+  .i_wea(),
+  .i_ena(),
+  .i_rsta(i_rst),
+  .i_regcea(),
+  .o_douta(o_instruccion)  
  );
  
  //sumador
@@ -74,9 +88,9 @@ module tl_instruction_fetch
   )
   u_pc_adder
   (
-    .i_pc(), //VER A DONDE VA
-    .i_offset(1),
-    .o_adder() //VER A DONDE VA
+    .i_pc(o_contador_programa), //VER A DONDE VA
+    .i_cte(1),
+    .o_adder(adder_mux) //VER A DONDE VA
   );
     
     
