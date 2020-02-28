@@ -66,18 +66,18 @@ module tl_instruction_fetch
  #(
     .RAM_WIDTH(len),
     .RAM_DEPTH(2048),
-    .RAM_PERFORMANCE("LOW_LATENCY"), //VER QUE VA
-    .INIT_FILE("")        //VER QUE VA
+    .RAM_PERFORMANCE("LOW_LATENCY"), //Ver por que
+    .INIT_FILE("")        
  )
  u_ram_instrucciones
  (
   .i_addra(o_contador_programa),
-  .i_dina(),
+  .i_dina(), //Ver de donde viene
   .i_clka(i_clk),
-  .i_wea(),
-  .i_ena(),
+  .i_wea(),  //Ver de donde viene
+  .i_ena(), //Algo del control
   .i_rsta(i_rst),
-  .i_regcea(),
+  .i_regcea(), //Ver de donde viene
   .o_douta(o_instruccion)  
  );
  
