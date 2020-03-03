@@ -25,7 +25,12 @@ module tl_execute
     parameter len = 32    
 )
 (
-    
+    input i_clk,
+    input i_rst,
+    input [len-1:0] i_pc,
+    input [len-1:0] i_reg_1,
+    input [len-1:0] i_reg_2,
+    input [len-1:0] i_sign_extend    
 );
 
 //El shift_left_2 deberia ir acá
@@ -52,5 +57,19 @@ u_mux_execute
     .i_extend_sign()   
 );
 
+alu
+#(
+    .NB_alu_control(),
+    .len(len)
+)
+u_alu
+(
+    .i_datoA(),
+    .i_datoB(),
+    .i_opcode(),
+    .o_result(),
+    .o_zero_flag()
+    
+);
 
 endmodule
