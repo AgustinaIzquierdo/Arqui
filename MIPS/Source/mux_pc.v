@@ -20,17 +20,17 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module mux_pc
+module mux
     #(
         parameter len = 32
      )
      (
-        input [len-1:0] i_pc,
-        input [len-1:0] i_branch,
+        input [len-1:0] i_a,
+        input [len-1:0] i_b,
         input i_selector,
-        output [len-1:0] o_mux_pc
+        output [len-1:0] o_mux
      );
      
+     assign o_mux = (i_selector) ? i_b : i_a;
      
-     assign o_mux_pc = (i_selector) ? i_branch : i_pc;
 endmodule

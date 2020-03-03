@@ -29,23 +29,32 @@ module tl_instruction_fetch
         input i_rst,
         input [len-1:0] i_branch_dir, //Salto condicional
         
-        output [len-1:0] o_contador_programa,
-        output [len-1:0] o_instruccion
+        output [len-1:0] o_instruccion,
+        output [len-1:0] o_adder
     );
     
-    wire [len-1:0] adder_mux;
     wire [len-1:0] mux_pc;
-
+    wire [len-1:0] o_contador_programa;
+    wire rsta_mem;
+    wire regcea_mem;
+    wire cablecito;
+    
+    //Control Memoria
+    assign rsta_mem =0;
+    assign regcea_mem=1;
+    assign cablecito =0;
+    
  //mux_PC
- mux_pc
+ mux
  #(
     .len(len)
   )
+  u_mux
   (
-    .i_pc(adder_mux),
-    .i_branch(i_branch_dir),  
+    .i_a(o_adder),
+    .i_b(i_branch_dir),  
     .i_selector(),  //Aca va la linea de control PCSrc
-    .o_mux_pc(mux_pc)
+    .o_mux(mux_pc)
   );
  
  //pc
@@ -66,18 +75,18 @@ module tl_instruction_fetch
  #(
     .RAM_WIDTH(len),
     .RAM_DEPTH(2048),
-    .RAM_PERFORMANCE("LOW_LATENCY"), //Ver por que
+    .RAM_PERFORMANCE("LOW_LATENCY"), //No hace uso de registros (ahorra un ciclo de clock al no usar reg)
     .INIT_FILE("")        
  )
  u_ram_instrucciones
  (
   .i_addra(o_contador_programa),
-  .i_dina(), //Ver de donde viene
+  .i_dina(cablecito), //Ver de donde viene
   .i_clka(i_clk),
-  .i_wea(),  //Ver de donde viene
-  .i_ena(), //Algo del control
-  .i_rsta(i_rst),
-  .i_regcea(), //Ver de donde viene
+  .i_wea(cablecito),  //Ver de donde viene
+  .i_ena(cablecito), //Ver de donde viene
+  .i_rsta(rsta_mem),
+  .i_regcea(regcea_mem), 
   .o_douta(o_instruccion)  
  );
  
@@ -88,9 +97,9 @@ module tl_instruction_fetch
   )
   u_pc_adder
   (
-    .i_pc(o_contador_programa), //VER A DONDE VA
+    .i_pc(o_contador_programa), 
     .i_cte(1),
-    .o_adder(adder_mux) //VER A DONDE VA
+    .o_adder(o_adder) 
   );
     
     

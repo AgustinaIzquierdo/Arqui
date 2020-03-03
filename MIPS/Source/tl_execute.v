@@ -27,48 +27,53 @@ module tl_execute
 (
     input i_clk,
     input i_rst,
-    input [len-1:0] i_pc,
-    input [len-1:0] i_reg_1,
-    input [len-1:0] i_reg_2,
-    input [len-1:0] i_sign_extend    
+    input [len-1:0] i_adder_if,
+    input [len-1:0] i_dato1,
+    input [len-1:0] i_dato2,
+    input [len-1:0] i_sign_extend,
+    output [len-1:0] o_add_excute,    
+    output [len-1:0] o_alu_result,
+    output o_alu_zero
 );
 
-//El shift_left_2 deberia ir acá
-//como logica del top este, no módulo aparte.
-
+// El shift_left_2 deberia ir?
+    wire [len-1:0] mux_alu;
+    
 add_execute
 #(  
     .len(len)
 )
 u_add_execute
 (
-    .i_add_pc(add_pc),
-    .i_shift_sign_extend(shift_sign_extend),
-    .o_data(add_excute)
+    .i_add_pc(i_adder_if),
+    .i_shift_sign_extend(i_sign_extend),
+    .o_data(o_add_excute)
 );
 
-mux_execute
+mux
 #(  
     .len(len)
 )
-u_mux_execute
+u_mux
 (
-    .i_dato2(),
-    .i_extend_sign()   
+    .i_a(i_dato2),
+    .i_b(i_sign_extend),
+    .i_selector(), //Señal de control AluScr
+    .o_mux(mux_alu)   
 );
 
 alu
 #(
-    .NB_alu_control(),
+    .NB_alu_control(), //Ver que ponemos
     .len(len)
 )
 u_alu
 (
-    .i_datoA(),
-    .i_datoB(),
-    .i_opcode(),
-    .o_result(),
-    .o_zero_flag()
+    .i_datoA(i_dato1),
+    .i_datoB(mux_alu),
+    .i_opcode(), //Control
+    .o_result(o_alu_result),
+    .o_zero_flag(o_alu_zero)
     
 );
 

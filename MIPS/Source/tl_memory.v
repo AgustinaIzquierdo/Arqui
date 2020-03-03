@@ -29,18 +29,34 @@ module tl_memory
         input i_rst,
         input [len-1:0] i_address,
         input [len-1:0] i_write_data,
+        //input i_mem_write,
+        //input i_mem_read,
         output [len-1:0] o_read_data
     );
+    
+    wire rsta_mem;  
+    wire regcea_mem;
+    
+    //Control Memoria
+    assign rsta_mem =0;
+    assign regcea_mem=1;
     
     ram_datos
     #(
         .RAM_WIDTH(len),
-        .RAM_DEPTH(),        //VER QUE VA
-        .RAM_PERFORMANCE(), //VER QUE VA
-        .INIT_FILE()        //VER QUE VA
+        .RAM_DEPTH(2048),        
+        .RAM_PERFORMANCE("LOW_LATENCY"),
+        .INIT_FILE()        
      )
      u_ram_datos
      (
-        // COMPLETAAAAAAAAAR
+        .i_addra(i_address),
+        .i_dina(i_write_data), //Ver de donde viene
+        .i_clka(i_clk),
+        .i_wea(i_mem_write),  //Ver de donde viene
+        .i_ena(i_mem_read), //Ver de donde viene
+        .i_rsta(rsta_mem),
+        .i_regcea(regcea_mem), 
+        .o_douta(o_instruccion) 
      );
 endmodule

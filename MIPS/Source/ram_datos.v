@@ -56,14 +56,15 @@ module ram_datos #(
   parameter RAM_PERFORMANCE = "HIGH_PERFORMANCE", // Select "HIGH_PERFORMANCE" or "LOW_LATENCY" 
   parameter INIT_FILE = ""                        // Specify name/location of RAM initialization file if using one (leave blank if not)
 ) (
-  input [clogb2(RAM_DEPTH-1)-1:0] addra,  // Address bus, width determined from RAM_DEPTH
-  input [RAM_WIDTH-1:0] dina,           // RAM input data
-  input clka,                           // Clock
-  input wea,                            // Write enable
-  input ena,                            // RAM Enable, for additional power savings, disable port when not in use
-  input rsta,                           // Output reset (does not affect memory contents)
-  input regcea,                         // Output register enable
-  output [RAM_WIDTH-1:0] douta          // RAM output data
+  //input [clogb2(RAM_DEPTH-1)-1:0] addra,  // Address bus, width determined from RAM_DEPTH
+  input [RAM_WIDTH-1:0] i_addra,
+  input [RAM_WIDTH-1:0] i_dina,           // RAM input data
+  input i_clka,                           // Clock
+  input i_wea,                            // Write enable
+  input i_ena,                            // RAM Enable, for additional power savings, disable port when not in use
+  input i_rsta,                           // Output reset (does not affect memory contents)
+  input i_regcea,                         // Output register enable
+  output [RAM_WIDTH-1:0] o_douta          // RAM output data
 );
 
   reg [RAM_WIDTH-1:0] BRAM [RAM_DEPTH-1:0];
@@ -78,23 +79,24 @@ module ram_datos #(
       integer ram_index;
       initial
         for (ram_index = 0; ram_index < RAM_DEPTH; ram_index = ram_index + 1)
-          BRAM[ram_index] = {RAM_WIDTH{1'b0}};
+          BRAM[ram_index] = ram_index;
     end
   endgenerate
 
-  always @(posedge clka)
-    if (ena)
-      if (wea)
-        BRAM[addra] <= dina;
-      else
-        ram_data <= BRAM[addra];
+  always @(posedge i_clka) 
+  begin
+      if (i_wea) //QUE PASA EN CASO DE ELSE
+        BRAM[i_addra] <= i_dina;
 
+      if (i_ena)
+        ram_data <= BRAM[i_addra];
+  end
   //  The following code generates HIGH_PERFORMANCE (use output register) or LOW_LATENCY (no output register)
   generate
     if (RAM_PERFORMANCE == "LOW_LATENCY") begin: no_output_register
 
       // The following is a 1 clock cycle read latency at the cost of a longer clock-to-out timing
-       assign douta = ram_data;
+       assign o_douta = ram_data;
 
     end else begin: output_register
 
@@ -102,13 +104,13 @@ module ram_datos #(
 
       reg [RAM_WIDTH-1:0] douta_reg = {RAM_WIDTH{1'b0}};
 
-      always @(posedge clka)
-        if (rsta)
+      always @(posedge i_clka)
+        if (i_rsta)
           douta_reg <= {RAM_WIDTH{1'b0}};
-        else if (regcea)
+        else if (i_regcea)
           douta_reg <= ram_data;
 
-      assign douta = douta_reg;
+      assign o_douta = douta_reg;
 
     end
   endgenerate
