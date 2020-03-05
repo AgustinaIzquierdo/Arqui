@@ -25,7 +25,11 @@ module tl_instruction_decode
     parameter len = 32,
     parameter cantidad_registros=32,
     parameter NB_address_registros=$clog2(cantidad_registros),
-    parameter NB_sign_extend = 16
+    parameter NB_sign_extend = 16,
+    parameter NB_INSTRUCCION = 6,
+    parameter NB_SENIAL_CONTROL = 8,
+    parameter NB_ALU_CONTROL = 4,
+    parameter NB_ALU_OP = 2
 )
 (
   input i_clk,
@@ -34,7 +38,9 @@ module tl_instruction_decode
   input [len-1:0] i_write_data, //Ver de donde viene
   output [len-1:0] o_dato1,
   output [len-1:0] o_dato2,
-  output [len-1:0] o_sign_extend
+  output [len-1:0] o_sign_extend,
+  output [NB_SENIAL_CONTROL-1:0] o_senial_control,
+  output [NB_ALU_CONTROL-1:0] o_alu_control
 );
 
 wire [NB_address_registros-1:0] write_reg;
@@ -62,7 +68,7 @@ assign o_sign_extend = (i_instruccion[15]==1) ? {{(16){1'b1}},i_instruccion[15:0
     .o_read_data_2(o_dato2)
  );
  
-  mux
+ mux
  #(
     .len(len)
   )
@@ -73,5 +79,20 @@ assign o_sign_extend = (i_instruccion[15]==1) ? {{(16){1'b1}},i_instruccion[15:0
     .i_selector(),  //Aca va la linea de control RegDst
     .o_mux(write_reg)
   );
+  
+control
+#(
+    .NB_ALU_CONTROL(NB_ALU_CONTROL),
+    .NB_ALU_OP(NB_ALU_OP),
+    .NB_INSTRUCCION(NB_INSTRUCCION),
+    .NB_SENIAL_CONTROL(NB_SENIAL_CONTROL)
+)
+u_control
+(
+    .i_inst_funcion(i_instruccion[5:0]),
+    .i_opcode(i_instruccion[31:26]),
+    .o_senial_control(o_senial_control),
+    .o_alu_control(o_alu_control)
+);
 
 endmodule
