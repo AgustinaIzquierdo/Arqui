@@ -28,7 +28,7 @@ module tl_instruction_fetch
         input i_clk,
         input i_rst,
         input [len-1:0] i_branch_dir, //Salto condicional
-        
+        input i_PCSrc,
         output [len-1:0] o_instruccion,
         output [len-1:0] o_adder
     );
@@ -53,7 +53,7 @@ module tl_instruction_fetch
   (
     .i_a(o_adder),
     .i_b(i_branch_dir),  
-    .i_selector(),  //Aca va la linea de control PCSrc
+    .i_selector(i_PCSrc),  
     .o_mux(mux_pc)
   );
  

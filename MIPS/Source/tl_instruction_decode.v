@@ -39,15 +39,13 @@ module tl_instruction_decode
   output [len-1:0] o_dato1,
   output [len-1:0] o_dato2,
   output [len-1:0] o_sign_extend,
-  output [NB_SENIAL_CONTROL-1:0] o_senial_control,
+  output [NB_SENIAL_CONTROL-1:0] o_senial_control, //En un futuro no salen todas estas, va depender de la segmentacion
   output [NB_ALU_CONTROL-1:0] o_alu_control
 );
 
 wire [NB_address_registros-1:0] write_reg;
 
 assign o_sign_extend = (i_instruccion[15]==1) ? {{(16){1'b1}},i_instruccion[15:0]}: {{(16){1'b0}},i_instruccion[15:0]};
-
-//control
 
 //registers
  banco_registros
@@ -63,7 +61,7 @@ assign o_sign_extend = (i_instruccion[15]==1) ? {{(16){1'b1}},i_instruccion[15:0
     .i_read_reg_2(i_instruccion[20:16]),
     .i_write_reg(write_reg),
     .i_write_data(i_write_data),
-    .i_reg_write_ctrl(), //Control 
+    .i_reg_write_ctrl(o_senial_control[7]), //RegWrite 
     .o_read_data_1(o_dato1),
     .o_read_data_2(o_dato2)
  );
@@ -76,9 +74,19 @@ assign o_sign_extend = (i_instruccion[15]==1) ? {{(16){1'b1}},i_instruccion[15:0
   (
     .i_a(i_instruccion[20:16]),
     .i_b(i_instruccion[15:11]),  
-    .i_selector(),  //Aca va la linea de control RegDst
+    .i_selector(o_senial_control[0]),  //RegDst
     .o_mux(write_reg)
   );
+  
+  //control
+  //senial_control[0]=RegDst --
+  //senial_control[1]=Jump --
+  //senial_control[2]=Branch --
+  //senial_control[3]=MemRead
+  //senial_control[4]=MemtoReg
+  //senial_control[5]=MemWrite
+  //senial_control[6]=ALUSrc --
+  //senial_control[7]=RegWrite --
   
 control
 #(

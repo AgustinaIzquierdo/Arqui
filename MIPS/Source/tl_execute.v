@@ -22,7 +22,9 @@
 
 module tl_execute
 #(  
-    parameter len = 32    
+    parameter len = 32,
+    parameter NB_SENIAL_CONTROL = 8,
+    parameter NB_ALU_CONTROL = 4    
 )
 (
     input i_clk,
@@ -31,13 +33,18 @@ module tl_execute
     input [len-1:0] i_dato1,
     input [len-1:0] i_dato2,
     input [len-1:0] i_sign_extend,
+    input [NB_SENIAL_CONTROL-1:0] i_senial_control, //En un futuro no salen todas estas, va depender de la segmentacion
+    input [NB_ALU_CONTROL-1:0] i_alu_control,
     output [len-1:0] o_add_excute,    
     output [len-1:0] o_alu_result,
-    output o_alu_zero
+    output o_PCSrc
 );
 
 // El shift_left_2 deberia ir?
     wire [len-1:0] mux_alu;
+    wire alu_zero;
+    
+assign o_PCSrc = i_senial_control[2] && alu_zero;
     
 add_execute
 #(  
@@ -58,22 +65,22 @@ u_mux
 (
     .i_a(i_dato2),
     .i_b(i_sign_extend),
-    .i_selector(), //Señal de control AluScr
+    .i_selector(i_senial_control[6]), //AluScr
     .o_mux(mux_alu)   
 );
 
 alu
 #(
-    .NB_alu_control(), //Ver que ponemos
+    .NB_alu_control(NB_ALU_CONTROL), //Ver que ponemos
     .len(len)
 )
 u_alu
 (
     .i_datoA(i_dato1),
     .i_datoB(mux_alu),
-    .i_opcode(), //Control
+    .i_opcode(i_alu_control), //Control
     .o_result(o_alu_result),
-    .o_zero_flag(o_alu_zero)
+    .o_zero_flag(alu_zero)
     
 );
 
