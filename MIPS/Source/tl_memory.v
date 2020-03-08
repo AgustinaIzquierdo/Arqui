@@ -22,15 +22,15 @@
 
 module tl_memory
     #(
-        parameter len = 32
+        parameter len = 32,
+        parameter NB_SENIAL_CONTROL = 8
     )
     (
         input i_clk,
         input i_rst,
         input [len-1:0] i_address,
         input [len-1:0] i_write_data,
-        //input i_mem_write,
-        //input i_mem_read,
+        input [NB_SENIAL_CONTROL-1:0] i_senial_control,
         output [len-1:0] o_read_data
     );
     
@@ -53,10 +53,10 @@ module tl_memory
         .i_addra(i_address),
         .i_dina(i_write_data), //Ver de donde viene
         .i_clka(i_clk),
-        .i_wea(i_mem_write),  //Ver de donde viene
-        .i_ena(i_mem_read), //Ver de donde viene
+        .i_wea(i_senial_control[5]),  //Ver de donde viene
+        .i_ena(i_senial_control[3]), //Ver de donde viene
         .i_rsta(rsta_mem),
         .i_regcea(regcea_mem), 
-        .o_douta(o_instruccion) 
+        .o_douta(o_read_data) 
      );
 endmodule

@@ -23,13 +23,34 @@
 module alu
 #(
     parameter len=32,
-    parameter NB_alu_control=4 //VER QUE NUMERO
+    parameter NB_alu_control=4
 )
 (
     input [len-1:0] i_datoA,
     input [len-1:0] i_datoB,
     input [NB_alu_control-1:0] i_opcode,
-    output [len-1:0] o_result,
-    output o_zero_flag
+    output reg [len-1:0] o_result,
+    output reg o_zero_flag
 );
+
+always @(*)
+	begin
+		o_zero_flag = 0;
+
+		case (i_opcode)
+			4'b 0000: o_result = i_datoA & i_datoB; //AND
+			4'b 0001: o_result = i_datoA | i_datoB; //OR
+			4'b 0010: o_result = i_datoA + i_datoB; //ADD
+			4'b 0110: 
+			begin
+			     o_result = i_datoA - i_datoB; //SUBTRACT
+			     o_zero_flag = (i_datoA==i_datoB) ? 1'b1 : 1'b0; //BRANCH
+            end
+			4'b 0111: 
+				o_result = i_datoA < i_datoB; //SLT
+			default: o_result = 0;
+		endcase	
+	end
+
+    
 endmodule

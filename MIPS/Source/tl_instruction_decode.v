@@ -80,11 +80,11 @@ assign o_sign_extend = (i_instruccion[15]==1) ? {{(16){1'b1}},i_instruccion[15:0
   
   //control
   //senial_control[0]=RegDst --
-  //senial_control[1]=Jump --
+  //senial_control[1]=Jump 
   //senial_control[2]=Branch --
-  //senial_control[3]=MemRead
-  //senial_control[4]=MemtoReg
-  //senial_control[5]=MemWrite
+  //senial_control[3]=MemRead --
+  //senial_control[4]=MemtoReg --
+  //senial_control[5]=MemWrite --
   //senial_control[6]=ALUSrc --
   //senial_control[7]=RegWrite --
   

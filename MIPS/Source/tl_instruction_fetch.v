@@ -22,7 +22,8 @@
 
 module tl_instruction_fetch 
     #(
-        parameter len = 32
+        parameter len = 32,
+        parameter INIT_FILE_IM=""
     )
     (
         input i_clk,
@@ -37,12 +38,14 @@ module tl_instruction_fetch
     wire [len-1:0] o_contador_programa;
     wire rsta_mem;
     wire regcea_mem;
+    wire [len-1:0] cablecito1;
     wire cablecito;
     
     //Control Memoria
     assign rsta_mem =0;
     assign regcea_mem=1;
     assign cablecito =0;
+    assign cablecito1 =0;
     
  //mux_PC
  mux
@@ -76,12 +79,12 @@ module tl_instruction_fetch
     .RAM_WIDTH(len),
     .RAM_DEPTH(2048),
     .RAM_PERFORMANCE("LOW_LATENCY"), //No hace uso de registros (ahorra un ciclo de clock al no usar reg)
-    .INIT_FILE("")        
+    .INIT_FILE(INIT_FILE_IM)        
  )
  u_ram_instrucciones
  (
   .i_addra(o_contador_programa),
-  .i_dina(cablecito), //Ver de donde viene
+  .i_dina(cablecito1), //Ver de donde viene
   .i_clka(i_clk),
   .i_wea(cablecito),  //Ver de donde viene
   .i_ena(cablecito), //Ver de donde viene
@@ -98,7 +101,7 @@ module tl_instruction_fetch
   u_pc_adder
   (
     .i_pc(o_contador_programa), 
-    .i_cte(1),
+    .i_cte(1'b1),
     .o_adder(o_adder) 
   );
     

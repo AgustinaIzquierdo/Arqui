@@ -27,8 +27,6 @@ module tl_execute
     parameter NB_ALU_CONTROL = 4    
 )
 (
-    input i_clk,
-    input i_rst,
     input [len-1:0] i_adder_if,
     input [len-1:0] i_dato1,
     input [len-1:0] i_dato2,
