@@ -55,25 +55,25 @@ begin
         6'b100011: // Tipo-Load
         begin
             alu_op = 2'b00;
-            o_senial_control = 8'b00011011;
+            o_senial_control = 8'b11011000;
         end
         
         6'b101011: // Tipo-Store
         begin
             alu_op = 2'b00;
-            o_senial_control = 8'b00000110;
+            o_senial_control = 8'b01100000;
         end
         
-        6'b000100: // Tipo-Load
+        6'b000100: // Tipo-branch
         begin
             alu_op = 2'b01;
-            o_senial_control = 8'b00100000;
+            o_senial_control = 8'b00000100;
         end
         
         6'b000010: // Tipo-Jump
         begin
             alu_op = 2'b00;
-            o_senial_control = 8'b01000000;
+            o_senial_control = 8'b00000010;
         end
     endcase
 end

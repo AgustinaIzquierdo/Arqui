@@ -40,7 +40,7 @@ begin
             o_alu_code = 4'b0010;
         end
         
-        2'b00: //branch
+        2'b01: //branch
         begin
             o_alu_code = 4'b0110;
         end

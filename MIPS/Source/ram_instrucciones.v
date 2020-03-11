@@ -81,7 +81,7 @@ module ram_instrucciones #(
 
       reg [RAM_WIDTH-1:0] douta_reg = {RAM_WIDTH{1'b0}};
 
-      always @(posedge i_clka)
+      always @(negedge i_clka)
         if (i_rsta)
           douta_reg <= {RAM_WIDTH{1'b0}};
         else if (i_regcea)

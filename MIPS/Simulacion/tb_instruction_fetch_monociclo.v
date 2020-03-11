@@ -39,11 +39,12 @@ begin
     branch_dir =0;
     PCSrc =0;
     #10 rst= 1'b1; //Desactiva el reset
-    #1000 branch_dir = 32'h00100000;
-          PCSrc =1'b1;
+    #10   PCSrc =1'b1;
+        branch_dir = 32'h00000040;
+        
     #1 PCSrc = 1'b0;
     
-    #500000000 $finish;
+    #500 $finish;
 end
 
 
@@ -54,7 +55,7 @@ always #2.5 clk=~clk;
 tl_instruction_fetch
 #(
     .len(len),
-    .INIT_FILE_IM("/home/andres/Facultad/Arquitectura_de_Computadoras/Andres/Arqui/MIPS/Source") //
+    .INIT_FILE_IM("/home/andres/Facultad/Arquitectura_de_Computadoras/Andres/Arqui/MIPS/Source/instruction_memory.txt") //
 )
     u_tl_instruction_fetch
 (

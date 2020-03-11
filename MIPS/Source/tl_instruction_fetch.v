@@ -23,7 +23,7 @@
 module tl_instruction_fetch 
     #(
         parameter len = 32,
-        parameter INIT_FILE_IM=""
+        parameter INIT_FILE_IM="/home/andres/Facultad/Arquitectura_de_Computadoras/Andres/Arqui/MIPS/Source/instruction_memory.txt"
     )
     (
         input i_clk,
@@ -44,7 +44,7 @@ module tl_instruction_fetch
     //Control Memoria
     assign rsta_mem =0;
     assign regcea_mem=1;
-    assign cablecito =0;
+    assign cablecito =1;
     assign cablecito1 =0;
     
  //mux_PC
@@ -86,7 +86,7 @@ module tl_instruction_fetch
   .i_addra(o_contador_programa),
   .i_dina(cablecito1), //Ver de donde viene
   .i_clka(i_clk),
-  .i_wea(cablecito),  //Ver de donde viene
+  .i_wea(cablecito1),  //Ver de donde viene
   .i_ena(cablecito), //Ver de donde viene
   .i_rsta(rsta_mem),
   .i_regcea(regcea_mem), 

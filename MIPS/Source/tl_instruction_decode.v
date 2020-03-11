@@ -44,8 +44,26 @@ module tl_instruction_decode
 );
 
 wire [NB_address_registros-1:0] write_reg;
+wire [NB_address_registros-1:0] rs;
+wire [NB_address_registros-1:0] rd;
+wire [NB_address_registros-1:0] rt;
+wire [NB_INSTRUCCION-1:0] opcode;
+wire [NB_INSTRUCCION-1:0] funct;
+wire [NB_sign_extend-1:0] address;
 
-assign o_sign_extend = (i_instruccion[15]==1) ? {{(16){1'b1}},i_instruccion[15:0]}: {{(16){1'b0}},i_instruccion[15:0]};
+assign opcode = i_instruccion[31:26];
+
+assign rs = i_instruccion[25:21];
+
+assign rt = i_instruccion[20:16];
+
+assign rd = i_instruccion[15:11];
+
+assign funct = i_instruccion[5:0];
+
+assign address = i_instruccion[15:0];
+
+assign o_sign_extend = (i_instruccion[15]==1) ? {{(16){1'b1}},address}: {{(16){1'b0}},address};
 
 //registers
  banco_registros
@@ -54,11 +72,12 @@ assign o_sign_extend = (i_instruccion[15]==1) ? {{(16){1'b1}},i_instruccion[15:0
     .cantidad_registros(cantidad_registros),
     .NB_address_registros(NB_address_registros)
  )
+ u_banco_registros
  (
     .i_clk(i_clk),
     .i_rst(i_rst),
-    .i_read_reg_1(i_instruccion[25:21]),
-    .i_read_reg_2(i_instruccion[20:16]),
+    .i_read_reg_1(rs),
+    .i_read_reg_2(rt),
     .i_write_reg(write_reg),
     .i_write_data(i_write_data),
     .i_reg_write_ctrl(o_senial_control[7]), //RegWrite 
@@ -68,12 +87,12 @@ assign o_sign_extend = (i_instruccion[15]==1) ? {{(16){1'b1}},i_instruccion[15:0
  
  mux
  #(
-    .len(len)
+    .len(NB_address_registros)
   )
-  u_mux
+  u_mux_decode
   (
-    .i_a(i_instruccion[20:16]),
-    .i_b(i_instruccion[15:11]),  
+    .i_a(rt),
+    .i_b(rd),  
     .i_selector(o_senial_control[0]),  //RegDst
     .o_mux(write_reg)
   );
@@ -97,8 +116,8 @@ control
 )
 u_control
 (
-    .i_inst_funcion(i_instruccion[5:0]),
-    .i_opcode(i_instruccion[31:26]),
+    .i_inst_funcion(funct),
+    .i_opcode(opcode),
     .o_senial_control(o_senial_control),
     .o_alu_control(o_alu_control)
 );
