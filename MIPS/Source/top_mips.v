@@ -31,8 +31,12 @@
 
 module top_mips
 (
-    input i_clk,
-    input i_rst
+    i_clk,
+    i_rst,
+    o_if_id,
+    o_id_ex,
+    o_ex_mem,
+    o_mem_wb
 );
 
 parameter len = `len;
@@ -45,10 +49,20 @@ parameter NB_ALU_CONTROL = `NB_ALU_CONTROL;
 parameter NB_ALU_OP = `NB_ALU_OP;
 parameter INIT_FILE_IM = `INIT_FILE_IM;
 
+parameter NB_IF_ID = 64;
+parameter NB_ID_EX = 192;
+parameter NB_EX_MEM = 128;
+parameter NB_MEM_WB = 64;
+ 
 wire [len-1:0] branch_dir;
 wire PCScr;
 wire [len-1:0] instruccion;
-wire [len-1:0] PC_next;
+wire [len-1:0] out_adder_if_id;
+wire [len-1:0] out_adder_id_exe;
+wire [NB_address_registros-1:0] rs;
+wire [NB_address_registros-1:0] rd;
+wire [NB_address_registros-1:0] rt;
+wire [NB_address_registros-1:0] shamt;
 wire [len-1:0] write_data_banco_reg;
 wire [len-1:0] dato1;
 wire [len-1:0] dato2;
@@ -57,6 +71,27 @@ wire [NB_SENIAL_CONTROL-1:0] senial_control;
 wire [NB_ALU_CONTROL-1:0] alu_control;
 wire [len-1:0] result_alu;
 wire [len-1:0] read_data_memory;
+
+input i_clk;
+input i_rst;
+output [NB_IF_ID-1:0] o_if_id;
+output [NB_ID_EX-1:0] o_id_ex;
+output [NB_EX_MEM-1:0] o_ex_mem;
+output [NB_MEM_WB-1:0] o_mem_wb;
+
+//Latches intermedios
+assign o_if_id = {out_adder_if_id, //32 bits
+                  instruccion}; //32 bits
+//FALTA CONTROL
+assign o_id_ex = {out_adder_id_exe, //32 bits 
+                   sign_extend, //32 bits
+                   dato1,       //32 bits
+                   dato2,       //32 bits
+                   shamt, //5 bits
+                   rs,  //5 bits
+                   rt,  //5 bits
+                   rd};   //5 bits
+
 
 tl_instruction_fetch
 #(
@@ -70,7 +105,7 @@ tl_instruction_fetch
     .i_branch_dir(branch_dir),
     .i_PCScr(PCScr),
     .o_instruccion(instruccion),
-    .o_adder(PC_next)
+    .o_adder(out_adder_if_id)
 );
 
 tl_instruction_decode
@@ -90,6 +125,12 @@ tl_instruction_decode
     .i_rst(i_rst),
     .i_instruccion(instruccion),
     .i_write_data(write_data_banco_reg),
+    .i_adder_pc(out_adder_if_id),
+    .o_adder_pc(out_adder_id_exe), 
+    .o_rs(rs),
+    .o_rd(rd),
+    .o_rt(rt),    
+    .o_shamt(shamt),   
     .o_dato1(dato1),
     .o_dato2(dato2),
     .o_sign_extend(sign_extend),
@@ -105,7 +146,7 @@ tl_execute
 )
     u_tl_execute
 (
-    .i_adder_if(PC_next),
+    .i_adder_if(out_adder_id_exe),
     .i_dato1(dato1),
     .i_dato2(dato2),
     .i_sign_extend(sign_extend),

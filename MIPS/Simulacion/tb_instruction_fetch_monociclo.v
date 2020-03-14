@@ -39,10 +39,10 @@ begin
     branch_dir =0;
     PCSrc =0;
     #10 rst= 1'b1; //Desactiva el reset
-    #10   PCSrc =1'b1;
-        branch_dir = 32'h00000040;
+   // #10   PCSrc =1'b1;
+     //   branch_dir = 32'h00000040;
         
-    #1 PCSrc = 1'b0;
+    //#1 PCSrc = 1'b0;
     
     #500 $finish;
 end

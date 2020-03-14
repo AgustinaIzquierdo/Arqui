@@ -30,14 +30,17 @@ module tl_instruction_fetch
         input i_rst,
         input [len-1:0] i_branch_dir, //Salto condicional
         input i_PCSrc,
-        output [len-1:0] o_instruccion,
-        output [len-1:0] o_adder
+        output reg [len-1:0] o_instruccion,
+        output reg [len-1:0] o_adder
     );
     
     wire [len-1:0] mux_pc;
     wire [len-1:0] o_contador_programa;
     wire rsta_mem;
     wire regcea_mem;
+    wire [len-1:0] instruccion;
+    wire [len-1:0] adder;
+    
     wire [len-1:0] cablecito1;
     wire cablecito;
     
@@ -47,6 +50,21 @@ module tl_instruction_fetch
     assign cablecito =1;
     assign cablecito1 =0;
     
+ 
+ always @(negedge i_clk)
+ begin
+    if(!i_rst)
+    begin
+        o_adder <= 32'b0;
+        o_instruccion <= 32'b0;
+    end
+    else
+    begin
+        o_adder <= adder;
+        o_instruccion <= instruccion;
+    end
+ end
+ 
  //mux_PC
  mux
  #(
@@ -54,7 +72,7 @@ module tl_instruction_fetch
   )
   u_mux
   (
-    .i_a(o_adder),
+    .i_a(adder),
     .i_b(i_branch_dir),  
     .i_selector(i_PCSrc),  
     .o_mux(mux_pc)
@@ -90,7 +108,7 @@ module tl_instruction_fetch
   .i_ena(cablecito), //Ver de donde viene
   .i_rsta(rsta_mem),
   .i_regcea(regcea_mem), 
-  .o_douta(o_instruccion)  
+  .o_douta(instruccion)  
  );
  
  //sumador
@@ -102,7 +120,7 @@ module tl_instruction_fetch
   (
     .i_a(o_contador_programa), 
     .i_b(32'h00000001),
-    .o_adder(o_adder) 
+    .o_adder(adder) 
   );
     
     
