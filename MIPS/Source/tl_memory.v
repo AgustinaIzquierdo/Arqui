@@ -46,7 +46,7 @@ module tl_memory
         .RAM_WIDTH(len),
         .RAM_DEPTH(2048),        
         .RAM_PERFORMANCE("LOW_LATENCY"),
-        .INIT_FILE()        
+        .INIT_FILE("")        
      )
      u_ram_datos
      (

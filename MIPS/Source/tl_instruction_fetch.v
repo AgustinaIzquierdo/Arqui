@@ -94,14 +94,14 @@ module tl_instruction_fetch
  );
  
  //sumador
- pc_adder 
+ adder 
  #(
     .len(len)
   )
-  u_pc_adder
+  u_adder
   (
-    .i_pc(o_contador_programa), 
-    .i_cte(1'b1),
+    .i_a(o_contador_programa), 
+    .i_b(32'h00000001),
     .o_adder(o_adder) 
   );
     

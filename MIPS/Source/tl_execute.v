@@ -44,15 +44,15 @@ module tl_execute
     
 assign o_PCSrc = i_senial_control[2] && alu_zero;
     
-add_execute
+adder
 #(  
     .len(len)
 )
-u_add_execute
+u_add
 (
-    .i_add_pc(i_adder_if),
-    .i_shift_sign_extend(i_sign_extend),
-    .o_data(o_add_excute)
+    .i_a(i_adder_if),
+    .i_b(i_sign_extend),
+    .o_adder(o_add_excute)
 );
 
 mux

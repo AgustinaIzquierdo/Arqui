@@ -27,7 +27,7 @@
 `define NB_SENIAL_CONTROL  8
 `define NB_ALU_CONTROL  4
 `define NB_ALU_OP  2
-`define INIT_FILE_IM  ""
+`define INIT_FILE_IM "/home/andres/Facultad/Arquitectura_de_Computadoras/Andres/Arqui/MIPS/Source/instruction_memory.txt"
 
 module top_mips
 (

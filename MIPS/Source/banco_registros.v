@@ -47,7 +47,7 @@ generate
             registros[indice] <= {len{1'b0+indice}};
 endgenerate
 
-always @(posedge i_clk) //Lectura del banco de registros
+always @(negedge i_clk) //Lectura del banco de registros
 begin
     if(!i_rst)
     begin

@@ -35,7 +35,7 @@ module alu_control
 always @(*)
 begin
     case(i_alu_op)
-        2'b00: //lw o sw
+        2'b00: //ld o sw
         begin
             o_alu_code = 4'b0010;
         end
@@ -48,27 +48,27 @@ begin
         2'b10: //Tipo-R
         begin
             case(i_inst_funcion)
-                6'b100000:
+                6'b100000: //add
                 begin
                      o_alu_code = 4'b0010;
                 end
                 
-                6'b100010:
+                6'b100010: //subtract
                 begin
                      o_alu_code = 4'b0110;
                 end
                 
-                6'b100100:
+                6'b100100: //and
                 begin
                      o_alu_code = 4'b0000;
                 end
                 
-                6'b100101:
+                6'b100101: //or
                 begin
                      o_alu_code = 4'b0001;
                 end
                 
-                6'b101010:
+                6'b101010: //set on less than
                 begin
                      o_alu_code = 4'b0111;
                 end

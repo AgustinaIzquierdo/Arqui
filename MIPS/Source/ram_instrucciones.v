@@ -52,7 +52,7 @@ module ram_instrucciones #(
   generate
     if (INIT_FILE != "") begin: use_init_file
       initial
-        $readmemh(INIT_FILE, BRAM, 0, RAM_DEPTH-1);
+        $readmemb(INIT_FILE, BRAM, 0, RAM_DEPTH-1);
     end else begin: init_bram_to_zero
       integer ram_index;
       initial
@@ -75,7 +75,7 @@ module ram_instrucciones #(
       // The following is a 1 clock cycle read latency at the cost of a longer clock-to-out timing
        assign o_douta = ram_data;
 
-    end else begin: output_register
+    end else begin: output_register //NO SE USA
 
       // The following is a 2 clock cycle read latency with improve clock-to-out timing
 
