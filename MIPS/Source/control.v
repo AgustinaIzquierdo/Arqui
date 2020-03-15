@@ -22,15 +22,18 @@
 
 module control
 #(  parameter NB_INSTRUCCION = 6,
-    parameter NB_SENIAL_CONTROL = 8,
+    parameter NB_CTRL_WB = 2,
+    parameter NB_CTRL_MEM = 3,
+    parameter NB_CTRL_EX = 7,
     parameter NB_ALU_CONTROL = 4,
     parameter NB_ALU_OP = 2
 )
 (
     input [NB_INSTRUCCION-1:0] i_opcode,
     input [NB_INSTRUCCION-1:0] i_inst_funcion,
-    output reg [NB_SENIAL_CONTROL-1:0] o_senial_control,
-    output [NB_ALU_CONTROL-1:0] o_alu_control
+    output reg [NB_CTRL_WB-1:0] o_ctrl_wb,//RegWrite Y MemtoReg
+    output reg [NB_CTRL_MEM-1:0] o_ctrl_mem,//Branch , MemRead Y MemWrite
+    output reg [NB_CTRL_EX-1:0] o_ctrl_ex // RegDst , ALUSrc, Jump y alu_code(4)
 );
 //senial_control[0]=RegDst
 //senial_control[1]=Jump
@@ -42,6 +45,7 @@ module control
 //senial_control[7]=RegWrite
 
 reg [NB_ALU_OP-1:0] alu_op;
+wire [NB_ALU_CONTROL-1:0] o_alu_control;
 
 always @(*)
 begin
@@ -49,31 +53,41 @@ begin
         6'b000000: //Tipo-R
         begin
             alu_op = 2'b10;
-            o_senial_control = 8'b10000001;
+            o_ctrl_wb = 2'b10;
+            o_ctrl_mem = 3'b000;
+            o_ctrl_ex = {3'b100,o_alu_control};
         end
         
         6'b100011: // Tipo-Load
         begin
             alu_op = 2'b00;
-            o_senial_control = 8'b11011000;
+            o_ctrl_wb = 2'b11;
+            o_ctrl_mem = 3'b010;
+            o_ctrl_ex = {3'b000,o_alu_control};
         end
         
         6'b101011: // Tipo-Store
         begin
             alu_op = 2'b00;
-            o_senial_control = 8'b01100000;
+            o_ctrl_wb = 2'b00;
+            o_ctrl_mem = 3'b001;
+            o_ctrl_ex = {3'b010,o_alu_control};
         end
         
         6'b000100: // Tipo-branch
         begin
             alu_op = 2'b01;
-            o_senial_control = 8'b00000100;
+            o_ctrl_wb = 2'b00;
+            o_ctrl_mem = 3'b100;
+            o_ctrl_ex = {3'b000,o_alu_control};
         end
         
         6'b000010: // Tipo-Jump
         begin
             alu_op = 2'b00;
-            o_senial_control = 8'b00000010;
+            o_ctrl_wb = 2'b00;
+            o_ctrl_mem = 3'b000;
+            o_ctrl_ex = {3'b001,o_alu_control};
         end
     endcase
 end

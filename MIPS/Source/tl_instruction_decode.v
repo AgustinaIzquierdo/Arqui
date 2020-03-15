@@ -29,7 +29,10 @@ module tl_instruction_decode
     parameter NB_INSTRUCCION = 6,
     parameter NB_SENIAL_CONTROL = 8,
     parameter NB_ALU_CONTROL = 4,
-    parameter NB_ALU_OP = 2
+    parameter NB_ALU_OP = 2,
+    parameter NB_CTRL_WB = 2,
+    parameter NB_CTRL_MEM = 3,
+    parameter NB_CTRL_EX = 7
 )
 (
   input i_clk,
@@ -37,6 +40,8 @@ module tl_instruction_decode
   input [len-1:0] i_instruccion,
   input [len-1:0] i_write_data, //Ver de donde viene
   input [len-1:0] i_adder_pc,
+  input i_RegWrite,
+  input [NB_address_registros-1:0] i_write_reg,
   output reg [len-1:0] o_adder_pc,
   output reg [NB_address_registros-1:0] o_rs,
   output reg [NB_address_registros-1:0] o_rd,
@@ -45,11 +50,10 @@ module tl_instruction_decode
   output [len-1:0] o_dato1,
   output [len-1:0] o_dato2,
   output reg [len-1:0] o_sign_extend,
-  output [NB_SENIAL_CONTROL-1:0] o_senial_control, //En un futuro no salen todas estas, va depender de la segmentacion
-  output [NB_ALU_CONTROL-1:0] o_alu_control
+  output reg [NB_CTRL_WB-1:0] o_ctrl_wb,//RegWrite Y MemtoReg
+  output reg [NB_CTRL_MEM-1:0] o_ctrl_mem,//Branch , MemRead Y MemWrite
+  output reg [NB_CTRL_EX-1:0] o_ctrl_ex // RegDst , ALUSrc, Jump y alu_code(4)
 );
-
-wire [NB_address_registros-1:0] write_reg;
 
 wire [NB_address_registros-1:0] rs;
 wire [NB_address_registros-1:0] rd;
@@ -60,6 +64,10 @@ wire [len-1:0] sign_extend;
 wire [NB_INSTRUCCION-1:0] opcode;
 wire [NB_INSTRUCCION-1:0] funct;
 wire [NB_sign_extend-1:0] address;
+
+wire [NB_CTRL_WB-1:0] ctrl_wb;
+wire [NB_CTRL_WB-1:0] ctrl_mem;
+wire [NB_CTRL_WB-1:0] ctrl_ex;
 
 assign opcode = i_instruccion[31:26];
 
@@ -112,48 +120,41 @@ assign sign_extend = (i_instruccion[15]==1) ? {{(16){1'b1}},address}: {{(16){1'b
     .i_rst(i_rst),
     .i_read_reg_1(rs),
     .i_read_reg_2(rt),
-    .i_write_reg(write_reg),
+    .i_write_reg(i_write_reg),
     .i_write_data(i_write_data),
-    .i_reg_write_ctrl(o_senial_control[7]), //RegWrite 
+    .i_reg_write_ctrl(i_RegWrite), //RegWrite 
     .o_read_data_1(o_dato1),
     .o_read_data_2(o_dato2)
  );
  
- mux
- #(
-    .len(NB_address_registros)
-  )
-  u_mux_decode
-  (
-    .i_a(rt),
-    .i_b(rd),  
-    .i_selector(o_senial_control[0]),  //RegDst
-    .o_mux(write_reg)
-  );
-  
-  //control
-  //senial_control[0]=RegDst --
-  //senial_control[1]=Jump 
-  //senial_control[2]=Branch --
-  //senial_control[3]=MemRead --
-  //senial_control[4]=MemtoReg --
-  //senial_control[5]=MemWrite --
-  //senial_control[6]=ALUSrc --
-  //senial_control[7]=RegWrite --
+// mux
+// #(
+//    .len(NB_address_registros)
+//  )
+//  u_mux_decode
+//  (
+//    .i_a(rt),
+//    .i_b(rd),  
+//    .i_selector(o_senial_control[0]),  //RegDst
+//    .o_mux(write_reg)
+//  );
   
 control
 #(
     .NB_ALU_CONTROL(NB_ALU_CONTROL),
     .NB_ALU_OP(NB_ALU_OP),
     .NB_INSTRUCCION(NB_INSTRUCCION),
-    .NB_SENIAL_CONTROL(NB_SENIAL_CONTROL)
+    .NB_CTRL_WB(NB_CTRL_WB),
+    .NB_CTRL_MEM(NB_CTRL_MEM),
+    .NB_CTRL_EX(NB_CTRL_EX)
 )
 u_control
 (
     .i_inst_funcion(funct),
     .i_opcode(opcode),
-    .o_senial_control(o_senial_control),
-    .o_alu_control(o_alu_control)
+    .o_ctrl_wb(ctrl_wb),
+    .o_ctrl_mem(ctrl_mem),
+    .o_ctrl_ex(ctrl_ex)
 );
 
 endmodule

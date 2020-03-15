@@ -31,16 +31,30 @@ module tl_memory
         input [len-1:0] i_address,
         input [len-1:0] i_write_data,
         input [NB_SENIAL_CONTROL-1:0] i_senial_control,
-        output [len-1:0] o_read_data
+        output reg [len-1:0] o_address,
+        output reg [len-1:0] o_read_data
     );
     
     wire rsta_mem;  
     wire regcea_mem;
-    
+    wire [len-1:0] read_data;
+  
     //Control Memoria
     assign rsta_mem =0;
     assign regcea_mem=1;
     
+    always @(negedge i_clk)
+    if(!i_rst)
+    begin
+        o_address <= 32'b0;
+        o_read_data <= 32'b0;
+    end
+    else
+    begin
+        o_address <= i_address;
+        o_read_data <= read_data;
+    end
+      
     ram_datos
     #(
         .RAM_WIDTH(len),
@@ -57,6 +71,6 @@ module tl_memory
         .i_ena(i_senial_control[3]), //Ver de donde viene
         .i_rsta(rsta_mem),
         .i_regcea(regcea_mem), 
-        .o_douta(o_read_data) 
+        .o_douta(read_data) 
      );
 endmodule
