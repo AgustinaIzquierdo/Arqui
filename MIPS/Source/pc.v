@@ -22,13 +22,13 @@
 
 module pc
     #(
-        parameter len = 32
+        parameter LEN = 32
     )
     (
         input i_clk,
         input i_rst,
-        input [len-1:0] i_mux,
-        output reg [len-1:0] o_pc
+        input [LEN-1:0] i_mux,
+        output reg [LEN-1:0] o_pc
     );
     
 always @(negedge i_clk)

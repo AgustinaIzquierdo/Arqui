@@ -22,30 +22,34 @@
 
 module tl_execute
 #(  
-    parameter len = 32,
+    parameter LEN = 32,
     parameter NB_SENIAL_CONTROL = 8,
     parameter NB_ALU_CONTROL = 4    
 )
 (
     input i_clk,
     input i_rst,
-    input [len-1:0] i_adder_id,
-    input [len-1:0] i_dato1,
-    input [len-1:0] i_dato2,
-    input [len-1:0] i_sign_extend,
+    input [LEN-1:0] i_adder_id,
+    input [LEN-1:0] i_dato1,
+    input [LEN-1:0] i_dato2,
+    input [LEN-1:0] i_sign_extend,
     input [NB_SENIAL_CONTROL-1:0] i_senial_control, //En un futuro no salen todas estas, va depender de la segmentacion
     input [NB_ALU_CONTROL-1:0] i_alu_control,
-    output reg [len-1:0] o_add_execute,    
-    output reg [len-1:0] o_alu_result,
-    output reg [len-1:0] o_dato2,
+    output reg [LEN-1:0] o_add_execute,    
+    output reg [LEN-1:0] o_alu_result,
+    output reg [LEN-1:0] o_dato2,
     output o_PCSrc
 ); //Falta el cero flag y el mux, y el control//////////////////////////////////!!!
 
-// El shift_left_2 deberia ir?
-    wire [len-1:0] mux_alu;
-    wire alu_zero;
-    wire [len-1:0] add_execute;
-    wire [len-1:0] alu_result;
+//Cables-Reg hacia/desde adder
+wire [LEN-1:0] add_execute;
+
+//Cables-Reg hacia/desde mux
+wire [LEN-1:0] mux_alu;
+
+//Cables-Reg hacia/desde alu
+wire alu_zero;
+wire [LEN-1:0] alu_result;
     
 assign o_PCSrc = i_senial_control[2] && alu_zero;
 
@@ -67,7 +71,7 @@ end
     
 adder
 #(  
-    .len(len)
+    .LEN(LEN)
 )
 u_add
 (
@@ -78,7 +82,7 @@ u_add
 
 mux
 #(  
-    .len(len)
+    .LEN(LEN)
 )
 u_mux
 (
@@ -91,7 +95,7 @@ u_mux
 alu
 #(
     .NB_alu_control(NB_ALU_CONTROL), //Ver que ponemos
-    .len(len)
+    .LEN(LEN)
 )
 u_alu
 (

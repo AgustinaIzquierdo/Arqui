@@ -22,14 +22,14 @@
 
 module alu
 #(
-    parameter len=32,
+    parameter LEN=32,
     parameter NB_alu_control=4
 )
 (
-    input [len-1:0] i_datoA,
-    input [len-1:0] i_datoB,
+    input [LEN-1:0] i_datoA,
+    input [LEN-1:0] i_datoB,
     input [NB_alu_control-1:0] i_opcode,
-    output reg [len-1:0] o_result,
+    output reg [LEN-1:0] o_result,
     output reg o_zero_flag
 );
 

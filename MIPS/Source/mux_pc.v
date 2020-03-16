@@ -22,13 +22,13 @@
 
 module mux
     #(
-        parameter len = 32
+        parameter LEN = 32
      )
      (
-        input [len-1:0] i_a,
-        input [len-1:0] i_b,
+        input [LEN-1:0] i_a,
+        input [LEN-1:0] i_b,
         input i_selector,
-        output [len-1:0] o_mux
+        output [LEN-1:0] o_mux
      );
      
      assign o_mux = (i_selector) ? i_b : i_a;

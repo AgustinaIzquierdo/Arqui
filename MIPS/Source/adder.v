@@ -22,12 +22,12 @@
 
 module adder 
     #(
-        parameter len=32
+        parameter LEN=32
     )
     (
-        input [len-1:0] i_a,
-        input [len-1:0] i_b,
-        output [len-1:0] o_adder
+        input [LEN-1:0] i_a,
+        input [LEN-1:0] i_b,
+        output [LEN-1:0] o_adder
     );
     
     assign o_adder = i_a + i_b; 

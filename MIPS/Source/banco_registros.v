@@ -22,29 +22,29 @@
 
 module banco_registros
 #(
-    parameter len = 32,
-    parameter cantidad_registros=32,
-    parameter NB_address_registros=$clog2(cantidad_registros)
+    parameter LEN = 32,
+    parameter CANTIDAD_REGISTROS=32,
+    parameter NB_ADDRESS_REGISTROS=$clog2(CANTIDAD_REGISTROS)
 )
 (
     input i_clk,
     input i_rst,
-    input [NB_address_registros-1:0] i_read_reg_1,
-    input [NB_address_registros-1:0] i_read_reg_2,
-    input [NB_address_registros-1:0] i_write_reg,
+    input [NB_ADDRESS_REGISTROS-1:0] i_read_reg_1,
+    input [NB_ADDRESS_REGISTROS-1:0] i_read_reg_2,
+    input [NB_ADDRESS_REGISTROS-1:0] i_write_reg,
     input i_reg_write_ctrl,
-    input [len-1:0] i_write_data,
-    output reg [len-1:0] o_read_data_1,
-    output reg [len-1:0] o_read_data_2
+    input [LEN-1:0] i_write_data,
+    output reg [LEN-1:0] o_read_data_1,
+    output reg [LEN-1:0] o_read_data_2
 );
 
-reg [cantidad_registros-1:0] registros [len-1:0];
+reg [CANTIDAD_REGISTROS-1:0] registros [LEN-1:0];
 //Inicializacion del banco de registros
 generate
     integer indice;
     initial
-        for (indice=0; indice < cantidad_registros; indice =indice+1)
-            registros[indice] <= {len{1'b0+indice}};
+        for (indice=0; indice < CANTIDAD_REGISTROS; indice =indice+1)
+            registros[indice] <= {LEN{1'b0+indice}};
 endgenerate
 
 always @(negedge i_clk) //Lectura del banco de registros

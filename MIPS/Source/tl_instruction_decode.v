@@ -22,10 +22,10 @@
 
 module tl_instruction_decode
 #(
-    parameter len = 32,
-    parameter cantidad_registros=32,
-    parameter NB_address_registros=$clog2(cantidad_registros),
-    parameter NB_sign_extend = 16,
+    parameter LEN = 32,
+    parameter CANTIDAD_REGISTROS=32,
+    parameter NB_ADDRESS_REGISTROS=$clog2(CANTIDAD_REGISTROS),
+    parameter NB_SIGN_EXTEND = 16,
     parameter NB_INSTRUCCION = 6,
     parameter NB_SENIAL_CONTROL = 8,
     parameter NB_ALU_CONTROL = 4,
@@ -37,37 +37,41 @@ module tl_instruction_decode
 (
   input i_clk,
   input i_rst,
-  input [len-1:0] i_instruccion,
-  input [len-1:0] i_write_data, //Ver de donde viene
-  input [len-1:0] i_adder_pc,
+  input [LEN-1:0] i_instruccion,
+  input [LEN-1:0] i_write_data, //Ver de donde viene
+  input [NB_ADDRESS_REGISTROS-1:0] i_write_reg,
+  input [LEN-1:0] i_adder_pc,
   input i_RegWrite,
-  input [NB_address_registros-1:0] i_write_reg,
-  output reg [len-1:0] o_adder_pc,
-  output reg [NB_address_registros-1:0] o_rs,
-  output reg [NB_address_registros-1:0] o_rd,
-  output reg [NB_address_registros-1:0] o_rt,
-  output reg [NB_address_registros-1:0] o_shamt,
-  output [len-1:0] o_dato1,
-  output [len-1:0] o_dato2,
-  output reg [len-1:0] o_sign_extend,
+  output reg [LEN-1:0] o_adder_pc,
+  output reg [NB_ADDRESS_REGISTROS-1:0] o_rs,
+  output reg [NB_ADDRESS_REGISTROS-1:0] o_rd,
+  output reg [NB_ADDRESS_REGISTROS-1:0] o_rt,
+  output reg [NB_ADDRESS_REGISTROS-1:0] o_shamt,
+  output [LEN-1:0] o_dato1,
+  output [LEN-1:0] o_dato2,
+  output reg [LEN-1:0] o_sign_extend,
   output reg [NB_CTRL_WB-1:0] o_ctrl_wb,//RegWrite Y MemtoReg
   output reg [NB_CTRL_MEM-1:0] o_ctrl_mem,//Branch , MemRead Y MemWrite
   output reg [NB_CTRL_EX-1:0] o_ctrl_ex // RegDst , ALUSrc, Jump y alu_code(4)
 );
 
-wire [NB_address_registros-1:0] rs;
-wire [NB_address_registros-1:0] rd;
-wire [NB_address_registros-1:0] rt;
-wire [NB_address_registros-1:0] shamt;
-wire [len-1:0] sign_extend;
+//Cables-Reg hacia/desde banco de registros 
+wire [NB_ADDRESS_REGISTROS-1:0] rs;
+wire [NB_ADDRESS_REGISTROS-1:0] rt;
 
+//Cables-Reg hacia/desde unidad de control
 wire [NB_INSTRUCCION-1:0] opcode;
 wire [NB_INSTRUCCION-1:0] funct;
-wire [NB_sign_extend-1:0] address;
-
 wire [NB_CTRL_WB-1:0] ctrl_wb;
 wire [NB_CTRL_WB-1:0] ctrl_mem;
 wire [NB_CTRL_WB-1:0] ctrl_ex;
+
+wire [NB_ADDRESS_REGISTROS-1:0] rd;
+wire [NB_SIGN_EXTEND-1:0] address;
+wire [LEN-1:0] sign_extend;
+wire [NB_ADDRESS_REGISTROS-1:0] shamt;
+
+
 
 assign opcode = i_instruccion[31:26];
 
@@ -110,9 +114,9 @@ assign sign_extend = (i_instruccion[15]==1) ? {{(16){1'b1}},address}: {{(16){1'b
 //registers
  banco_registros
  #(
-    .len(len),
-    .cantidad_registros(cantidad_registros),
-    .NB_address_registros(NB_address_registros)
+    .LEN(LEN),
+    .CANTIDAD_REGISTROS(CANTIDAD_REGISTROS),
+    .NB_ADDRESS_REGISTROS(NB_ADDRESS_REGISTROS)
  )
  u_banco_registros
  (
@@ -122,7 +126,7 @@ assign sign_extend = (i_instruccion[15]==1) ? {{(16){1'b1}},address}: {{(16){1'b
     .i_read_reg_2(rt),
     .i_write_reg(i_write_reg),
     .i_write_data(i_write_data),
-    .i_reg_write_ctrl(i_RegWrite), //RegWrite 
+    .i_reg_write_ctrl(i_RegWrite),  
     .o_read_data_1(o_dato1),
     .o_read_data_2(o_dato2)
  );

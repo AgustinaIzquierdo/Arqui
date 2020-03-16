@@ -22,27 +22,33 @@
 
 module tl_instruction_fetch 
     #(
-        parameter len = 32,
+        parameter LEN = 32,
         parameter INIT_FILE_IM="/home/andres/Facultad/Arquitectura_de_Computadoras/Andres/Arqui/MIPS/Source/instruction_memory.txt"
     )
     (
         input i_clk,
         input i_rst,
-        input [len-1:0] i_branch_dir, //Salto condicional
+        input [LEN-1:0] i_branch_dir, //Salto condicional
         input i_PCSrc,
-        output reg [len-1:0] o_instruccion,
-        output reg [len-1:0] o_adder
+        output reg [LEN-1:0] o_instruccion,
+        output reg [LEN-1:0] o_adder
     );
     
-    wire [len-1:0] mux_pc;
-    wire [len-1:0] o_contador_programa;
+    //Cables-Reg hacia/desde mux 
+    wire [LEN-1:0] mux_pc;
+    
+    //Cables-Reg hacia/desde adder 
+    wire [LEN-1:0] adder;
+    
+    //Cables-Reg hacia/desde PC
+    wire [LEN-1:0] o_contador_programa;
+      
+    //Cables-Reg hacia/desde memoria 
+    wire [LEN-1:0] instruccion;
     wire rsta_mem;
     wire regcea_mem;
-    wire [len-1:0] instruccion;
-    wire [len-1:0] adder;
-    
-    wire [len-1:0] cablecito1;
-    wire cablecito;
+    wire [LEN-1:0] cablecito1;                      //VER
+    wire cablecito;                                 //VER
     
     //Control Memoria
     assign rsta_mem =0;
@@ -68,7 +74,7 @@ module tl_instruction_fetch
  //mux_PC
  mux
  #(
-    .len(len)
+    .LEN(LEN)
   )
   u_mux
   (
@@ -81,7 +87,7 @@ module tl_instruction_fetch
  //pc
  pc
  #(
-    .len(len)
+    .LEN(LEN)
   )
   u_pc
   (
@@ -94,7 +100,7 @@ module tl_instruction_fetch
  //ram_instrucciones
  ram_instrucciones
  #(
-    .RAM_WIDTH(len),
+    .RAM_WIDTH(LEN),
     .RAM_DEPTH(2048),
     .RAM_PERFORMANCE("LOW_LATENCY"), //No hace uso de registros (ahorra un ciclo de clock al no usar reg)
     .INIT_FILE(INIT_FILE_IM)        
@@ -114,7 +120,7 @@ module tl_instruction_fetch
  //sumador
  adder 
  #(
-    .len(len)
+    .LEN(LEN)
   )
   u_adder
   (

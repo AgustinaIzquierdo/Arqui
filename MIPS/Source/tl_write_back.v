@@ -21,25 +21,26 @@
 
 module tl_write_back
     #(
-        parameter len = 32,
+        parameter LEN = 32,
         parameter NB_SENIAL_CONTROL = 8
     )
     (
-        input [len-1:0] i_read_data,
-        input [len-1:0] i_result_alu,
+        input [LEN-1:0] i_read_data,
+        input [LEN-1:0] i_result_alu,
         input [NB_SENIAL_CONTROL-1:0] i_senial_control,
-        output [len-1:0] o_write_data
+        output [LEN-1:0] o_write_data
     );
-    
-    mux
-    #(
-        .len(len)
-    )
-    u_mux
-    (
-        .i_a(i_result_alu),
-        .i_b(i_read_data),
-        .i_selector(i_senial_control[4]),
-        .o_mux(o_write_data)
-    );
+
+//Cables-Reg hacia/desde mux    
+mux
+#(
+    .LEN(LEN)
+)
+u_mux
+(
+    .i_a(i_result_alu),
+    .i_b(i_read_data),
+    .i_selector(i_senial_control[4]),
+    .o_mux(o_write_data)
+);
 endmodule
