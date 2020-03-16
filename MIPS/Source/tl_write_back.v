@@ -22,14 +22,21 @@
 module tl_write_back
     #(
         parameter LEN = 32,
-        parameter NB_SENIAL_CONTROL = 8
+        parameter NB_CTRL_WB = 2,
+        parameter NB_ADDRESS_REGISTROS = 5
     )
     (
         input [LEN-1:0] i_read_data,
         input [LEN-1:0] i_result_alu,
-        input [NB_SENIAL_CONTROL-1:0] i_senial_control,
-        output [LEN-1:0] o_write_data
+        input [NB_CTRL_WB-1:0] i_ctrl_wb,//RegWrite Y MemtoReg
+        input [NB_ADDRESS_REGISTROS-1:0] i_write_reg,
+        output [LEN-1:0] o_write_data,
+        output [NB_ADDRESS_REGISTROS-1:0] o_write_reg,
+        output o_RegWrite
     );
+
+assign o_write_reg = i_write_reg;
+assign o_RegWrite = i_ctrl_wb[1];
 
 //Cables-Reg hacia/desde mux    
 mux
@@ -40,7 +47,7 @@ u_mux
 (
     .i_a(i_result_alu),
     .i_b(i_read_data),
-    .i_selector(i_senial_control[4]),
+    .i_selector(i_ctrl_wb[0]),
     .o_mux(o_write_data)
 );
 endmodule

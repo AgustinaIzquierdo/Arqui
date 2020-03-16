@@ -27,7 +27,6 @@ module tl_instruction_decode
     parameter NB_ADDRESS_REGISTROS=$clog2(CANTIDAD_REGISTROS),
     parameter NB_SIGN_EXTEND = 16,
     parameter NB_INSTRUCCION = 6,
-    parameter NB_SENIAL_CONTROL = 8,
     parameter NB_ALU_CONTROL = 4,
     parameter NB_ALU_OP = 2,
     parameter NB_CTRL_WB = 2,
@@ -130,19 +129,7 @@ assign sign_extend = (i_instruccion[15]==1) ? {{(16){1'b1}},address}: {{(16){1'b
     .o_read_data_1(o_dato1),
     .o_read_data_2(o_dato2)
  );
- 
-// mux
-// #(
-//    .len(NB_address_registros)
-//  )
-//  u_mux_decode
-//  (
-//    .i_a(rt),
-//    .i_b(rd),  
-//    .i_selector(o_senial_control[0]),  //RegDst
-//    .o_mux(write_reg)
-//  );
-  
+   
 control
 #(
     .NB_ALU_CONTROL(NB_ALU_CONTROL),

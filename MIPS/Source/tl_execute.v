@@ -23,8 +23,11 @@
 module tl_execute
 #(  
     parameter LEN = 32,
-    parameter NB_SENIAL_CONTROL = 8,
-    parameter NB_ALU_CONTROL = 4    
+    parameter NB_ADDRESS_REGISTROS = 5,
+    parameter NB_ALU_CONTROL = 4,
+    parameter NB_CTRL_WB = 2,
+    parameter NB_CTRL_MEM = 3,
+    parameter NB_CTRL_EX = 7    
 )
 (
     input i_clk,
@@ -33,26 +36,32 @@ module tl_execute
     input [LEN-1:0] i_dato1,
     input [LEN-1:0] i_dato2,
     input [LEN-1:0] i_sign_extend,
-    input [NB_SENIAL_CONTROL-1:0] i_senial_control, //En un futuro no salen todas estas, va depender de la segmentacion
-    input [NB_ALU_CONTROL-1:0] i_alu_control,
+    input [NB_CTRL_WB-1:0] i_ctrl_wb,
+    input [NB_CTRL_MEM-1:0] i_ctrl_mem,
+    input [NB_CTRL_EX-1:0] i_ctrl_ex, // RegDst , ALUSrc, Jump y alu_code(4)
+    input [NB_ADDRESS_REGISTROS-1:0] i_rd,
+    input [NB_ADDRESS_REGISTROS-1:0] i_rt,
+    output reg o_alu_zero,
+    output reg [NB_ADDRESS_REGISTROS-1:0] o_write_reg,
+    output reg [NB_CTRL_WB-1:0] o_ctrl_wb,
+    output reg [NB_CTRL_MEM-1:0] o_ctrl_mem,
     output reg [LEN-1:0] o_add_execute,    
     output reg [LEN-1:0] o_alu_result,
-    output reg [LEN-1:0] o_dato2,
-    output o_PCSrc
-); //Falta el cero flag y el mux, y el control//////////////////////////////////!!!
+    output reg [LEN-1:0] o_dato2
+   
+); 
 
 //Cables-Reg hacia/desde adder
 wire [LEN-1:0] add_execute;
 
 //Cables-Reg hacia/desde mux
 wire [LEN-1:0] mux_alu;
+wire [NB_ADDRESS_REGISTROS-1:0] write_reg;
 
 //Cables-Reg hacia/desde alu
 wire alu_zero;
 wire [LEN-1:0] alu_result;
     
-assign o_PCSrc = i_senial_control[2] && alu_zero;
-
 always @(negedge i_clk)
 begin
     if(!i_rst)
@@ -60,14 +69,34 @@ begin
         o_add_execute <= 32'b0;
         o_alu_result <= 32'b0;
         o_dato2 <= 32'b0;
+        o_ctrl_wb <= 2'b0;
+        o_ctrl_mem <= 3'b0;
+        o_write_reg <= 5'b0;
+        o_alu_zero <= 1'b0;
     end
     else
     begin
         o_add_execute <= add_execute;
         o_alu_result <= alu_result;
         o_dato2 <= i_dato2;
+        o_ctrl_wb <= i_ctrl_wb;
+        o_ctrl_mem <= i_ctrl_mem;
+        o_write_reg <= write_reg;
+        o_alu_zero <= alu_zero;
     end  
 end
+
+ mux
+ #(
+    .len(NB_ADDRESS_REGISTROS)
+  )
+  u_mux_decode
+  (
+    .i_a(i_rt),
+    .i_b(i_rd),  
+    .i_selector(i_ctrl_ex[6]),  //RegDst
+    .o_mux(write_reg)
+  );
     
 adder
 #(  
@@ -88,23 +117,22 @@ u_mux
 (
     .i_a(i_dato2),
     .i_b(i_sign_extend),
-    .i_selector(i_senial_control[6]), //AluScr
+    .i_selector(i_ctrl_ex[5]), //AluScr
     .o_mux(mux_alu)   
 );
 
 alu
 #(
-    .NB_alu_control(NB_ALU_CONTROL), //Ver que ponemos
+    .NB_ALU_CONTROL(NB_ALU_CONTROL), 
     .LEN(LEN)
 )
 u_alu
 (
     .i_datoA(i_dato1),
     .i_datoB(mux_alu),
-    .i_opcode(i_alu_control), //Control
+    .i_opcode(i_ctrl_ex[NB_ALU_CONTROL-1:0]), //Control
     .o_result(alu_result),
-    .o_zero_flag(alu_zero) //Con el controool
-    
+    .o_zero_flag(alu_zero)    
 );
 
 endmodule
