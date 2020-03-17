@@ -27,9 +27,11 @@ localparam cantidad_registros=32;
 localparam NB_address_registros= $clog2(cantidad_registros);
 localparam NB_sign_extend = 16;
 localparam NB_INSTRUCCION = 6;
-localparam NB_SENIAL_CONTROL = 8;
 localparam NB_ALU_CONTROL = 4;
 localparam NB_ALU_OP = 2;
+localparam NB_CTRL_WB = 2;
+localparam NB_CTRL_MEM = 3;
+localparam NB_CTRL_EX = 7;
 
 reg clk;
 reg rst;
@@ -38,8 +40,18 @@ reg [len-1:0] write_data_banco_reg;
 wire [len-1:0] dato1;
 wire [len-1:0] dato2;
 wire [len-1:0] sign_extend;
-wire [NB_SENIAL_CONTROL-1:0] senial_control;
 wire [NB_ALU_CONTROL-1:0] alu_control;
+wire [NB_address_registros-1:0] write_reg;
+wire [len-1:0] adder_pc_if;
+wire [len-1:0] adder_pc_id;
+wire RegWrite;
+wire [NB_address_registros-1:0] rs;
+wire [NB_address_registros-1:0] rd;
+wire [NB_address_registros-1:0] rt;
+wire [NB_address_registros-1:0] shamt;
+wire [NB_CTRL_WB-1:0] ctrl_wb;
+wire [NB_CTRL_MEM-1:0] ctrl_mem;
+wire [NB_CTRL_EX-1:0] ctrl_ex;
 
 
 initial
@@ -67,9 +79,11 @@ tl_instruction_decode
     .NB_address_registros(NB_address_registros),
     .NB_sign_extend(NB_sign_extend),
     .NB_INSTRUCCION(NB_INSTRUCCION),
-    .NB_SENIAL_CONTROL(NB_SENIAL_CONTROL),
     .NB_ALU_CONTROL(NB_ALU_CONTROL),
-    .NB_ALU_OP(NB_ALU_OP)
+    .NB_ALU_OP(NB_ALU_OP),
+    .NB_CTRL_WB(NB_CTRL_WB),
+    .NB_CTRL_MEM(NB_CTRL_MEM),
+    .NB_CTRL_EX(NB_CTRL_EX)
 )
     u_tl_instruction_decode
 (
@@ -77,11 +91,20 @@ tl_instruction_decode
     .i_rst(rst),
     .i_instruccion(instr),
     .i_write_data(write_data_banco_reg),
+    .i_write_reg(write_reg),
+    .i_adder_pc(adder_pc_if),
+    .i_RegWrite(RegWrite),
+    .o_adder_pc(adder_pc_id),
+    .o_rs(rs),
+    .o_rd(rd),
+    .o_rt(rt),
+    .o_shamt(shamt),
     .o_dato1(dato1),
     .o_dato2(dato2),
     .o_sign_extend(sign_extend),
-    .o_senial_control(senial_control),
-    .o_alu_control(alu_control)
+    .o_ctrl_wb(ctrl_wb),
+    .o_ctrl_mem(ctrl_mem),
+    .o_ctrl_ex(ctrl_ex)
 );
 
 endmodule
