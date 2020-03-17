@@ -43,9 +43,14 @@ wire PCSrc;
 
 initial
 begin
-//    clk = 1'b0;
-//    rsta_mem = 1'b0;
-//    regcea_mem =1'b1;
+    clk = 1'b0;
+    rst = 1'b1;
+    address_ex = 32'b0;
+    write_data = 32'b0;
+    ctrl_wb_ex = 2'b0;
+    ctrl_mem_ex = 3'b0;
+    alu_zero_ex = 1'b0;
+    write_reg_ex = 5'b0;
     
 //    #10 i_address=32'h00000003;    //LOAD
 //        i_write_data=32'h00000010;

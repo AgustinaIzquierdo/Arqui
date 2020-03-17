@@ -61,6 +61,7 @@ wire [NB_ADDRESS_REGISTROS-1:0] rt;
 //Cables-Reg hacia/desde unidad de control
 wire [NB_INSTRUCCION-1:0] opcode;
 wire [NB_INSTRUCCION-1:0] funct;
+
 wire [NB_CTRL_WB-1:0] ctrl_wb;
 wire [NB_CTRL_WB-1:0] ctrl_mem;
 wire [NB_CTRL_WB-1:0] ctrl_ex;
@@ -96,6 +97,9 @@ assign sign_extend = (i_instruccion[15]==1) ? {{(16){1'b1}},address}: {{(16){1'b
         o_rs <= 5'b0;
         o_rd <= 5'b0;
         o_rt <= 5'b0;
+        o_ctrl_wb <= 2'b0;
+        o_ctrl_mem <= 3'b0;
+        o_ctrl_ex <= 7'b0;
         o_sign_extend <= 32'b0;
         o_shamt <= 5'b0;
     end
@@ -105,6 +109,9 @@ assign sign_extend = (i_instruccion[15]==1) ? {{(16){1'b1}},address}: {{(16){1'b
         o_rs <= rs;
         o_rd <= rd;
         o_rt <= rt;
+        o_ctrl_wb <= ctrl_wb;
+        o_ctrl_mem <= ctrl_mem;
+        o_ctrl_ex <= ctrl_ex;
         o_sign_extend <= sign_extend;
         o_shamt <= shamt;
     end

@@ -21,30 +21,88 @@
 
 
 module tb_top_mips();
-localparam len= 32;
-localparam cantidad_registros= 32;
-localparam NB_address_registros= $clog2(cantidad_registros);
-localparam NB_sign_extend=  16;
-localparam NB_INSTRUCCION=  6;
-localparam NB_SENIAL_CONTROL=  8;
-localparam NB_ALU_CONTROL=  4;
-localparam NB_ALU_OP=  2;
-localparam INIT_FILE_IM= "/home/andres/Facultad/Arquitectura_de_Computadoras/Andres/Arqui/MIPS/Source/instruction_memory.txt";
+`define LEN 32
+`define CANTIDAD_REGISTROS 32
+`define NB_ADDRESS_REGISTROS $clog2(CANTIDAD_REGISTROS)
+`define NB_SIGN_EXTEND  16
+`define NB_INSTRUCCION  6
+`define NB_ALU_CONTROL  4       
+`define NB_ALU_OP  2
+`define INIT_FILE_IM "/home/anij/facu/Arquitectura_de_Computadoras/agus-arqui/Arqui/MIPS/Source/instruction_memory.txt"
+//gil:  "/home/andres/Facultad/Arquitectura_de_Computadoras/Andres/Arqui/MIPS/Source/instruction_memory.txt"
 
+//Tamanio de los latches 
+`define NB_IF_ID  64
+`define NB_ID_EX  192
+`define NB_EX_MEM  128
+`define NB_MEM_WB  64
+
+//Tamanio de los registros de control
+`define NB_CTRL_WB  2
+`define NB_CTRL_MEM  3
+`define NB_CTRL_EX  7
+
+//Parametros
+parameter LEN = `LEN;
+parameter CANTIDAD_REGISTROS = `CANTIDAD_REGISTROS;
+parameter NB_ADDRESS_REGISTROS = `NB_ADDRESS_REGISTROS;
+parameter NB_SIGN_EXTEND = `NB_SIGN_EXTEND;
+parameter NB_INSTRUCCION = `NB_INSTRUCCION;
+parameter NB_ALU_CONTROL = `NB_ALU_CONTROL;
+parameter NB_ALU_OP = `NB_ALU_OP;
+parameter INIT_FILE_IM = `INIT_FILE_IM;
+
+                                                            //(Ver si realmente son estos los tamanios)
+parameter NB_IF_ID = `NB_IF_ID; 
+parameter NB_ID_EX = `NB_ID_EX; 
+parameter NB_EX_MEM = `NB_EX_MEM; 
+parameter NB_MEM_WB = `NB_MEM_WB; 
+
+                                                           //(Ver si realmente son estos los tamanios)
+parameter NB_CTRL_WB = `NB_CTRL_WB; 
+parameter NB_CTRL_MEM = `NB_CTRL_MEM; 
+parameter NB_CTRL_EX = `NB_CTRL_EX; 
+
+//
 reg i_clk;
 reg i_rst;
-wire [len-1:0] branch_dir;
-wire PCScr;
-wire [len-1:0] instruccion;
-wire [len-1:0] PC_next;
-wire [len-1:0] write_data_banco_reg;
-wire [len-1:0] dato1;
-wire [len-1:0] dato2;
-wire [len-1:0] sign_extend;
-wire [NB_SENIAL_CONTROL-1:0] senial_control;
-wire [NB_ALU_CONTROL-1:0] alu_control;
-wire [len-1:0] result_alu;
-wire [len-1:0] read_data_memory;
+//Cables hacia/desde instruction_fetch 
+wire [LEN-1:0] branch_dir;
+wire PCSrc;
+wire [LEN-1:0] instruccion;
+wire [LEN-1:0] out_adder_if_id;
+
+//Cables hacia/desde instruction_decode 
+wire [LEN-1:0] write_data_banco_reg;
+wire [LEN-1:0] out_adder_id_exe;
+wire [NB_ADDRESS_REGISTROS-1:0] rs;
+wire [NB_ADDRESS_REGISTROS-1:0] rd;
+wire [NB_ADDRESS_REGISTROS-1:0] rt;
+wire [NB_ADDRESS_REGISTROS-1:0] shamt;
+wire [LEN-1:0] dato1;
+wire [LEN-1:0] dato2_if_ex;
+wire [LEN-1:0] sign_extend;
+wire [NB_CTRL_WB-1:0] ctrl_wb_id_ex;
+wire [NB_CTRL_MEM-1:0] ctrl_mem_id_ex;
+wire [NB_CTRL_EX-1:0] ctrl_ex_id_ex;
+
+//Cables hacia/desde execute 
+wire [LEN-1:0] dato2_ex_mem;
+wire [LEN-1:0] result_alu_ex_mem;
+wire alu_zero;
+wire [NB_CTRL_WB-1:0] ctrl_wb_ex_mem;
+wire [NB_CTRL_MEM-1:0] ctrl_mem_ex_mem;
+wire [NB_ADDRESS_REGISTROS-1:0] write_reg_ex_mem;
+
+//Cables hacia/desde memoria
+wire [LEN-1:0] result_alu_mem_wb;
+wire [LEN-1:0] read_data_memory;
+wire [NB_ADDRESS_REGISTROS-1:0] write_reg_mem_wb;
+wire [NB_CTRL_WB-1:0] ctrl_wb_mem_wb;
+
+//Cables hacia/desde wb
+wire regwrite_wb_id;
+wire [NB_ADDRESS_REGISTROS-1:0] write_reg_wb_id;
 
 
 initial
@@ -59,9 +117,10 @@ end
 
 always #2.5 i_clk=~i_clk;
 
+//Instruction fetch
 tl_instruction_fetch
 #(
-    .len(len),
+    .LEN(LEN),
     .INIT_FILE_IM(INIT_FILE_IM)
 )
     u_tl_instruction_fetch
@@ -69,19 +128,22 @@ tl_instruction_fetch
     .i_clk(i_clk),
     .i_rst(i_rst),
     .i_branch_dir(branch_dir),
-    .i_PCSrc(PCScr),
+    .i_PCSrc(PCSrc),
     .o_instruccion(instruccion),
-    .o_adder(PC_next)
+    .o_adder(out_adder_if_id)
 );
 
+//Instruction decode
 tl_instruction_decode
 #(
-    .len(len),
-    .cantidad_registros(cantidad_registros),
-    .NB_address_registros(NB_address_registros),
-    .NB_sign_extend(NB_sign_extend),
-    .NB_INSTRUCCION(NB_INSTRUCCION),
-    .NB_SENIAL_CONTROL(NB_SENIAL_CONTROL),
+    .LEN(LEN),
+    .CANTIDAD_REGISTROS(CANTIDAD_REGISTROS),
+    .NB_ADDRESS_REGISTROS(NB_ADDRESS_REGISTROS),
+    .NB_SIGN_EXTEND(NB_SIGN_EXTEND),
+    .NB_INSTRUCCION(NB_INSTRUCCION),    
+    .NB_CTRL_WB(NB_CTRL_WB),
+    .NB_CTRL_MEM(NB_CTRL_MEM),
+    .NB_CTRL_EX(NB_CTRL_EX),
     .NB_ALU_CONTROL(NB_ALU_CONTROL),
     .NB_ALU_OP(NB_ALU_OP)
 )
@@ -91,57 +153,97 @@ tl_instruction_decode
     .i_rst(i_rst),
     .i_instruccion(instruccion),
     .i_write_data(write_data_banco_reg),
+    .i_write_reg(write_reg_wb_id),
+    .i_adder_pc(out_adder_if_id),
+    .i_RegWrite(regwrite_wb_id), 
+    .o_adder_pc(out_adder_id_exe), 
+    .o_rs(rs),
+    .o_rd(rd),
+    .o_rt(rt),    
+    .o_shamt(shamt),   
     .o_dato1(dato1),
-    .o_dato2(dato2),
+    .o_dato2(dato2_if_ex),
     .o_sign_extend(sign_extend),
-    .o_senial_control(senial_control),
-    .o_alu_control(alu_control)
+    .o_ctrl_wb(ctrl_wb_id_ex), //RegWrite Y MemtoReg
+    .o_ctrl_mem(ctrl_mem_id_ex), //Branch , MemRead Y MemWrite
+    .o_ctrl_ex(ctrl_ex_id_ex) // RegDst , ALUSrc, Jump y alu_code(4)
 );
 
+//Execute
 tl_execute
 #(
-    .len(len),
-    .NB_SENIAL_CONTROL(NB_SENIAL_CONTROL),
-    .NB_ALU_CONTROL(NB_ALU_CONTROL)
+    .LEN(LEN),
+    .NB_ALU_CONTROL(NB_ALU_CONTROL),
+    .NB_ADDRESS_REGISTROS(NB_ADDRESS_REGISTROS),
+    .NB_CTRL_WB(NB_CTRL_WB),
+    .NB_CTRL_MEM(NB_CTRL_MEM),
+    .NB_CTRL_EX(NB_CTRL_EX)
+    
 )
     u_tl_execute
 (
-    .i_adder_if(PC_next),
+    .i_clk(i_clk),
+    .i_rst(i_rst),
+    .i_adder_id(out_adder_id_exe),
     .i_dato1(dato1),
-    .i_dato2(dato2),
+    .i_dato2(dato2_if_ex),
     .i_sign_extend(sign_extend),
-    .i_senial_control(senial_control),
-    .i_alu_control(alu_control),
-    .o_add_excute(branch_dir),
-    .o_alu_result(result_alu),
-    .o_PCSrc(PCScr)
+    .i_ctrl_wb(ctrl_wb_id_ex),
+    .i_ctrl_mem(ctrl_mem_id_ex),
+    .i_ctrl_ex(ctrl_ex_id_ex),
+    .i_rd(rd),
+    .i_rt(rt),
+    .o_alu_zero(alu_zero),
+    .o_write_reg(write_reg_ex_mem),
+    .o_ctrl_wb(ctrl_wb_ex_mem),
+    .o_ctrl_mem(ctrl_mem_ex_mem),
+    .o_add_execute(branch_dir),
+    .o_alu_result(result_alu_ex_mem),
+    .o_dato2(dato2_ex_mem)
 );
 
+//Memory
 tl_memory
 #(
-    .len(len),
-    .NB_SENIAL_CONTROL(NB_SENIAL_CONTROL)
+    .LEN(LEN),
+    .NB_CTRL_WB(NB_CTRL_WB),
+    .NB_CTRL_MEM(NB_CTRL_MEM),
+    .NB_ADDRESS_REGISTROS(NB_ADDRESS_REGISTROS)
+
 )
     u_tl_memory
 (
     .i_clk(i_clk),
     .i_rst(i_rst),
-    .i_address(result_alu),
-    .i_write_data(dato2),
-    .i_senial_control(senial_control),
-    .o_read_data(read_data_memory)
+    .i_address(result_alu_ex_mem),
+    .i_write_data(dato2_ex_mem),
+    .i_ctrl_wb(ctrl_wb_ex_mem),
+    .i_ctrl_mem(ctrl_mem_ex_mem),
+    .i_alu_zero(alu_zero),
+    .i_write_reg(write_reg_ex_mem),
+    .o_address(result_alu_mem_wb),  
+    .o_read_data(read_data_memory),
+    .o_write_reg(write_reg_mem_wb),
+    .o_ctrl_wb(ctrl_wb_mem_wb),
+    .o_PCSrc(PCSrc)
 );
 
+//Write Back
 tl_write_back
 #(
-    .len(len),
-    .NB_SENIAL_CONTROL(NB_SENIAL_CONTROL)
+    .LEN(LEN),
+    .NB_CTRL_WB(NB_CTRL_WB),
+    .NB_ADDRESS_REGISTROS(NB_ADDRESS_REGISTROS)
+  
 )
     u_tl_write_back
 (
     .i_read_data(read_data_memory),
-    .i_result_alu(result_alu),
-    .i_senial_control(senial_control),
-    .o_write_data(write_data_banco_reg)
+    .i_result_alu(result_alu_mem_wb),
+    .i_ctrl_wb(ctrl_wb_mem_wb),
+    .i_write_reg(write_reg_mem_wb),
+    .o_write_data(write_data_banco_reg),
+    .o_write_reg(write_reg_wb_id),
+    .o_RegWrite(regwrite_wb_id)
 );
 endmodule

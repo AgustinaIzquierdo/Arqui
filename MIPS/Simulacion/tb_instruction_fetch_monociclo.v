@@ -55,7 +55,9 @@ always #2.5 clk=~clk;
 tl_instruction_fetch
 #(
     .len(len),
-    .INIT_FILE_IM("/home/andres/Facultad/Arquitectura_de_Computadoras/Andres/Arqui/MIPS/Source/instruction_memory.txt") //
+    .INIT_FILE_IM("/home/anij/facu/Arquitectura_de_Computadoras/agus-arqui/Arqui/MIPS/Source/instruction_memory.txt")
+    // pad de la mas peola: "/home/anij/facu/Arquitectura_de_Computadoras/agus-arqui/Arqui/MIPS/Source"
+    // "/home/andres/Facultad/Arquitectura_de_Computadoras/Andres/Arqui/MIPS/Source/instruction_memory.txt"
 )
     u_tl_instruction_fetch
 (

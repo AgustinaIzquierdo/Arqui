@@ -26,7 +26,8 @@
 `define NB_INSTRUCCION  6
 `define NB_ALU_CONTROL  4       
 `define NB_ALU_OP  2
-`define INIT_FILE_IM "/home/andres/Facultad/Arquitectura_de_Computadoras/Andres/Arqui/MIPS/Source/instruction_memory.txt"
+`define INIT_FILE_IM "/home/anij/facu/Arquitectura_de_Computadoras/agus-arqui/Arqui/MIPS/Source/instruction_memory.txt"
+//gil:  "/home/andres/Facultad/Arquitectura_de_Computadoras/Andres/Arqui/MIPS/Source/instruction_memory.txt"
 
 //Tamanio de los latches 
 `define NB_IF_ID  64
@@ -72,7 +73,7 @@ parameter NB_CTRL_EX = `NB_CTRL_EX;
 
 //Cables hacia/desde instruction_fetch 
 wire [LEN-1:0] branch_dir;
-wire PCScr;
+wire PCSrc;
 wire [LEN-1:0] instruccion;
 wire [LEN-1:0] out_adder_if_id;
 
@@ -118,7 +119,7 @@ output [NB_MEM_WB-1:0] o_mem_wb;
 //Latches intermedios
 assign o_if_id = {out_adder_if_id, //32 bits
                   instruccion}; //32 bits
-//FALTA CONTROL
+
 assign o_id_ex = { 
                    ctrl_wb_id_ex,  //2bits
                    ctrl_mem_id_ex, //3bits
@@ -159,7 +160,7 @@ tl_instruction_fetch
     .i_clk(i_clk),
     .i_rst(i_rst),
     .i_branch_dir(branch_dir),
-    .i_PCScr(PCScr),
+    .i_PCSrc(PCSrc),
     .o_instruccion(instruccion),
     .o_adder(out_adder_if_id)
 );
@@ -256,7 +257,7 @@ tl_memory
     .o_read_data(read_data_memory),
     .o_write_reg(write_reg_mem_wb),
     .o_ctrl_wb(ctrl_wb_mem_wb),
-    .o_PCSrc(PCScr)
+    .o_PCSrc(PCSrc)
 );
 
 //Write Back

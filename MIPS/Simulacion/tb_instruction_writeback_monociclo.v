@@ -31,16 +31,16 @@ reg [len-1:0] result_alu;
 reg [NB_CTRL_WB-1:0] ctrl_wb;
 reg [NB_ADDRESS_REGISTROS-1:0] write_reg_mem;
 wire [len-1:0] write_data_banco_reg;
-wire [len-1:0] write_reg_wb;
+wire [NB_ADDRESS_REGISTROS-1:0] write_reg_wb;
 wire RegWrite;
 
 initial
 begin
     
-//    #10 read_data_memory=32'h00000003;    //LOAD
-//        result_alu=32'h00000010;
-//        senial_control=8'b11011000;
-    
+  #10 read_data_memory=32'h00000003;    //LOAD
+      result_alu=32'h00000010;
+      ctrl_wb = 2'b0;
+      write_reg_mem = 5'b0;
 //    #10 read_data_memory=32'h00000002;    //R
 //        result_alu=32'h00000110;
 //        senial_control=8'b10000001;

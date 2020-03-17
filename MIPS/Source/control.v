@@ -89,6 +89,13 @@ begin
             o_ctrl_mem = 3'b000;
             o_ctrl_ex = {3'b001,o_alu_control};
         end
+        default:
+        begin
+            alu_op = 2'b00;
+            o_ctrl_wb = 2'b00;
+            o_ctrl_mem = 3'b000;
+            o_ctrl_ex = {3'b000,o_alu_control};
+        end
     endcase
 end
 

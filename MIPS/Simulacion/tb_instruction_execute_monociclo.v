@@ -50,30 +50,23 @@ wire [LEN-1:0] dato2_ex;
 
 initial
 begin
-//    #2 PC_next=1; //Tipo R
-//       dato1=2;
-//       dato2=3;
-//       sign_extend=32'h00000010;
-//       senial_control= 8'b10000001;
-//       alu_control=4'b0010;
-    
-//    #10 PC_next=10; //Branch
-//        dato1=2;
-//        dato2=2;
-//        sign_extend=32'h00000010;
-//        senial_control= 8'b00000100;
-//        alu_control=4'b0110;
-    
-//    #10 PC_next=10; //Load
-//        dato1=2;
-//        dato2=2;
-//        sign_extend=32'h00000010;
-//        senial_control= 8'b11011000;
-//        alu_control=4'b0010;
-            
+    clk = 1'b0;
+    rst = 1'b0;
+    adder_id = 32'b0;
+    dato1_id = 32'b0;
+    dato2_id = 32'b0;
+    sign_extend_id = 32'b0;
+    ctrl_wb_id = 2'b0;
+    ctrl_mem_id = 3'b0;
+    ctrl_ex_id = 7'b0;
+    rd_id = 5'b0;
+    rt_id = 5'b0;
+    #10 rst= 1'b1;
     #500 $finish;
 end
 
+
+always #2.5 clk=~clk;
 
 tl_execute
 #(
@@ -101,7 +94,7 @@ tl_execute
     .o_write_reg(write_reg_ex),
     .o_ctrl_wb(ctrl_wb_ex),
     .o_ctrl_mem(ctrl_mem_ex),
-    .o_add_excute(branch_dir_ex),
+    .o_add_execute(branch_dir_ex),
     .o_alu_result(result_alu_ex),
     .o_dato2(dato2_ex)
 );

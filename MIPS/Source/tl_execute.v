@@ -90,7 +90,7 @@ end
  #(
     .len(NB_ADDRESS_REGISTROS)
   )
-  u_mux_decode
+  u_mux_execute
   (
     .i_a(i_rt),
     .i_b(i_rd),  

@@ -40,11 +40,10 @@ reg [len-1:0] write_data_banco_reg;
 wire [len-1:0] dato1;
 wire [len-1:0] dato2;
 wire [len-1:0] sign_extend;
-wire [NB_ALU_CONTROL-1:0] alu_control;
-wire [NB_address_registros-1:0] write_reg;
-wire [len-1:0] adder_pc_if;
+reg [NB_address_registros-1:0] write_reg;
+reg [len-1:0] adder_pc_if;
 wire [len-1:0] adder_pc_id;
-wire RegWrite;
+reg RegWrite;
 wire [NB_address_registros-1:0] rs;
 wire [NB_address_registros-1:0] rd;
 wire [NB_address_registros-1:0] rt;
@@ -58,13 +57,16 @@ initial
 begin
     clk = 1'b0;
     rst = 1'b0;
-    //instr =32'b00000000001000100001100000100000; //TIPO R suma
+    instr =32'b00000000001000100001100000100000; //TIPO R suma
     write_data_banco_reg =32'b0;
+    write_reg =5'b0;
+    adder_pc_if =32'b0;
+    RegWrite =1'b0;
     #10 rst= 1'b1; //Desactiva el reset
     //#10 instr=32'b00000000100000110010000000100010; //TIPO R resta
     //instr=32'b10001100001000101000000000100000; //TIPO LOAD
     //instr=32'b10101100001000100000000000000000; //TIPO SW
-    instr=32'b00010000010000100000000000010000; //TIPO BRANCH
+    //instr=32'b00010000010000100000000000010000; //TIPO BRANCH
     #500 $finish;
 end
 
