@@ -22,42 +22,54 @@
 
 module tb_instruction_execute_monociclo();
 
-localparam len=32;
-localparam NB_SENIAL_CONTROL = 8;
+localparam LEN=32;
+localparam NB_ADDRESS_REGISTROS = 5;
 localparam NB_ALU_CONTROL = 4;
+localparam NB_CTRL_WB = 2;
+localparam NB_CTRL_MEM = 3;
+localparam NB_CTRL_EX = 7;
 
-reg [len-1:0] PC_next;
-reg [len-1:0] dato1;
-reg [len-1:0] dato2;
-reg [len-1:0] sign_extend;
-reg [NB_SENIAL_CONTROL-1:0] senial_control;
-reg [NB_ALU_CONTROL-1:0] alu_control;
-wire [len-1:0] branch_dir;
-wire [len-1:0] result_alu;
-wire PCScr;
+reg clk;
+reg rst;
+reg [LEN-1:0] adder_id;
+reg [LEN-1:0] dato1_id;
+reg [LEN-1:0] dato2_id;
+reg [LEN-1:0] sign_extend_id;
+reg [NB_CTRL_WB-1:0] ctrl_wb_id;
+reg [NB_CTRL_MEM-1:0] ctrl_mem_id;
+reg [NB_CTRL_EX-1:0] ctrl_ex_id;
+reg [NB_ADDRESS_REGISTROS-1:0] rd_id;
+reg [NB_ADDRESS_REGISTROS-1:0] rt_id;
+wire alu_zero_ex;
+wire [NB_ADDRESS_REGISTROS-1:0] write_reg_ex;
+wire [NB_CTRL_WB-1:0] ctrl_wb_ex;
+wire [NB_CTRL_MEM-1:0] ctrl_mem_ex; 
+wire [LEN-1:0] branch_dir_ex;
+wire [LEN-1:0] result_alu_ex;
+wire [LEN-1:0] dato2_ex;
 
 initial
 begin
-    #2 PC_next=1; //Tipo R
-       dato1=2;
-       dato2=3;
-       sign_extend=32'h00000010;
-       senial_control= 8'b10000001;
-       alu_control=4'b0010;
+//    #2 PC_next=1; //Tipo R
+//       dato1=2;
+//       dato2=3;
+//       sign_extend=32'h00000010;
+//       senial_control= 8'b10000001;
+//       alu_control=4'b0010;
     
-    #10 PC_next=10; //Branch
-        dato1=2;
-        dato2=2;
-        sign_extend=32'h00000010;
-        senial_control= 8'b00000100;
-        alu_control=4'b0110;
+//    #10 PC_next=10; //Branch
+//        dato1=2;
+//        dato2=2;
+//        sign_extend=32'h00000010;
+//        senial_control= 8'b00000100;
+//        alu_control=4'b0110;
     
-    #10 PC_next=10; //Load
-        dato1=2;
-        dato2=2;
-        sign_extend=32'h00000010;
-        senial_control= 8'b11011000;
-        alu_control=4'b0010;
+//    #10 PC_next=10; //Load
+//        dato1=2;
+//        dato2=2;
+//        sign_extend=32'h00000010;
+//        senial_control= 8'b11011000;
+//        alu_control=4'b0010;
             
     #500 $finish;
 end
@@ -65,21 +77,33 @@ end
 
 tl_execute
 #(
-    .len(len),
-    .NB_SENIAL_CONTROL(NB_SENIAL_CONTROL),
-    .NB_ALU_CONTROL(NB_ALU_CONTROL)
+    .LEN(LEN),
+    .NB_ADDRESS_REGISTROS(NB_ADDRESS_REGISTROS),
+    .NB_ALU_CONTROL(NB_ALU_CONTROL),
+    .NB_CTRL_WB(NB_CTRL_WB),
+    .NB_CTRL_MEM(NB_CTRL_MEM),
+    .NB_CTRL_EX(NB_CTRL_EX)
 )
     u_tl_execute
 (
-    .i_adder_if(PC_next),
-    .i_dato1(dato1),
-    .i_dato2(dato2),
-    .i_sign_extend(sign_extend),
-    .i_senial_control(senial_control),
-    .i_alu_control(alu_control),
-    .o_add_excute(branch_dir),
-    .o_alu_result(result_alu),
-    .o_PCSrc(PCScr)
+    .i_clk(clk),
+    .i_rst(rst),
+    .i_adder_id(adder_id),
+    .i_dato1(dato1_id),
+    .i_dato2(dato2_id),
+    .i_sign_extend(sign_extend_id),
+    .i_ctrl_wb(ctrl_wb_id),
+    .i_ctrl_mem(ctrl_mem_id),
+    .i_ctrl_ex(ctrl_ex_id),
+    .i_rd(rd_id),
+    .i_rt(rt_id),
+    .o_alu_zero(alu_zero_ex),
+    .o_write_reg(write_reg_ex),
+    .o_ctrl_wb(ctrl_wb_ex),
+    .o_ctrl_mem(ctrl_mem_ex),
+    .o_add_excute(branch_dir_ex),
+    .o_alu_result(result_alu_ex),
+    .o_dato2(dato2_ex)
 );
 
 endmodule
