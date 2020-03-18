@@ -72,6 +72,11 @@ begin
                 begin
                      o_alu_code = 4'b0111;
                 end
+                
+                default:
+                begin
+                    o_alu_code = 4'b0010;
+                end
             endcase
         end
     endcase

@@ -37,7 +37,7 @@ module tl_instruction_decode
   input i_clk,
   input i_rst,
   input [LEN-1:0] i_instruccion,
-  input [LEN-1:0] i_write_data, //Ver de donde viene
+  input [LEN-1:0] i_write_data, 
   input [NB_ADDRESS_REGISTROS-1:0] i_write_reg,
   input [LEN-1:0] i_adder_pc,
   input i_RegWrite,
@@ -63,8 +63,8 @@ wire [NB_INSTRUCCION-1:0] opcode;
 wire [NB_INSTRUCCION-1:0] funct;
 
 wire [NB_CTRL_WB-1:0] ctrl_wb;
-wire [NB_CTRL_WB-1:0] ctrl_mem;
-wire [NB_CTRL_WB-1:0] ctrl_ex;
+wire [NB_CTRL_MEM-1:0] ctrl_mem;
+wire [NB_CTRL_EX-1:0] ctrl_ex;
 
 wire [NB_ADDRESS_REGISTROS-1:0] rd;
 wire [NB_SIGN_EXTEND-1:0] address;

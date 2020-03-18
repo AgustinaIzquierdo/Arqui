@@ -28,8 +28,9 @@ module tb_top_mips();
 `define NB_INSTRUCCION  6
 `define NB_ALU_CONTROL  4       
 `define NB_ALU_OP  2
-`define INIT_FILE_IM "/home/anij/facu/Arquitectura_de_Computadoras/agus-arqui/Arqui/MIPS/Source/instruction_memory.txt"
+`define INIT_FILE_IM "/home/andres/Facultad/Arquitectura_de_Computadoras/Andres/Arqui/MIPS/Source/instruction_memory.txt"
 //gil:  "/home/andres/Facultad/Arquitectura_de_Computadoras/Andres/Arqui/MIPS/Source/instruction_memory.txt"
+//gila: "/home/anij/facu/Arquitectura_de_Computadoras/agus-arqui/Arqui/MIPS/Source/instruction_memory.txt"
 
 //Tamanio de los latches 
 `define NB_IF_ID  64
@@ -82,9 +83,9 @@ wire [NB_ADDRESS_REGISTROS-1:0] shamt;
 wire [LEN-1:0] dato1;
 wire [LEN-1:0] dato2_if_ex;
 wire [LEN-1:0] sign_extend;
-wire [NB_CTRL_WB-1:0] ctrl_wb_id_ex;
-wire [NB_CTRL_MEM-1:0] ctrl_mem_id_ex;
-wire [NB_CTRL_EX-1:0] ctrl_ex_id_ex;
+wire [NB_CTRL_WB-1:0] ctrl_wb_id_ex;    //RegWrite Y MemtoReg
+wire [NB_CTRL_MEM-1:0] ctrl_mem_id_ex;  //Branch , MemRead Y MemWrite
+wire [NB_CTRL_EX-1:0] ctrl_ex_id_ex;    // RegDst , ALUSrc, Jump y alu_code(4)
 
 //Cables hacia/desde execute 
 wire [LEN-1:0] dato2_ex_mem;

@@ -41,7 +41,7 @@ module tl_instruction_fetch
     wire [LEN-1:0] adder;
     
     //Cables-Reg hacia/desde PC
-    wire [LEN-1:0] o_contador_programa;
+    wire [LEN-1:0] contador_programa;
       
     //Cables-Reg hacia/desde memoria 
     wire [LEN-1:0] instruccion;
@@ -94,7 +94,7 @@ module tl_instruction_fetch
     .i_clk(i_clk),
     .i_rst(i_rst),
     .i_mux(mux_pc),
-    .o_pc(o_contador_programa)
+    .o_pc(contador_programa)
   );
   
  //ram_instrucciones
@@ -107,7 +107,7 @@ module tl_instruction_fetch
  )
  u_ram_instrucciones
  (
-  .i_addra(o_contador_programa),
+  .i_addra(contador_programa),
   .i_dina(cablecito1), //Ver de donde viene
   .i_clka(i_clk),
   .i_wea(cablecito1),  //Ver de donde viene
@@ -124,7 +124,7 @@ module tl_instruction_fetch
   )
   u_adder
   (
-    .i_a(o_contador_programa), 
+    .i_a(contador_programa), 
     .i_b(32'h00000001),
     .o_adder(adder) 
   );

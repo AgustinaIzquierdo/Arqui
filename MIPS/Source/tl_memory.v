@@ -55,6 +55,7 @@ assign regcea_mem=1;
 //Control Mux Instruction Fetch
 assign o_PCSrc = i_ctrl_mem[2] && i_alu_zero;
 
+//assign o_read_data = read_data;
 
 always @(negedge i_clk)
 if(!i_rst)

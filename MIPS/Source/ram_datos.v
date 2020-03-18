@@ -83,7 +83,7 @@ module ram_datos #(
     end
   endgenerate
 
-  always @(negedge i_clka) 
+  always @(posedge i_clka) 
   begin
       if (i_wea) //QUE PASA EN CASO DE ELSE
         BRAM[i_addra] <= i_dina;
