@@ -37,46 +37,41 @@ begin
     case(i_alu_op)
         2'b00: //ld o sw
         begin
-            o_alu_code = 4'b0010;
+            o_alu_code = 4'b0110; //addu
         end
         
         2'b01: //branch
         begin
-            o_alu_code = 4'b0110;
+            o_alu_code = 4'b0110; //cambiar
         end
         
         2'b10: //Tipo-R
         begin
             case(i_inst_funcion)
-                6'b100000: //add
-                begin
-                     o_alu_code = 4'b0010;
-                end
-                
-                6'b100010: //subtract
-                begin
-                     o_alu_code = 4'b0110;
-                end
-                
-                6'b100100: //and
-                begin
-                     o_alu_code = 4'b0000;
-                end
-                
-                6'b100101: //or
-                begin
-                     o_alu_code = 4'b0001;
-                end
-                
-                6'b101010: //set on less than
-                begin
-                     o_alu_code = 4'b0111;
-                end
-                
-                default:
-                begin
-                    o_alu_code = 4'b0010;
-                end
+                6'b000000: o_alu_code = 4'b0000; //sll
+                6'b000010: o_alu_code = 4'b0001; //srl
+                6'b000011: o_alu_code = 4'b0010; //sra
+                6'b000100: o_alu_code = 4'b0000; //sllv
+                6'b000110: o_alu_code = 4'b0001; //srlv
+                6'b000111: o_alu_code = 4'b0010; //srav
+                6'b100001: o_alu_code = 4'b0110; //addu
+                6'b100011: o_alu_code = 4'b0111; //subu
+                6'b100100: o_alu_code = 4'b1000; //and
+                6'b100101: o_alu_code = 4'b1001; //or
+                6'b100110: o_alu_code = 4'b1010; //xor
+                6'b100111: o_alu_code = 4'b1011; //nor
+                6'b101010: o_alu_code = 4'b1100; //set on less than
+                default: o_alu_code = 4'b1000;
+            endcase
+        end
+        2'b11:
+        begin
+            case(i_inst_funcion)
+                6'b001100: o_alu_code=4'b1000; //and
+                6'b001101: o_alu_code=4'b1001; //or
+                6'b001110: o_alu_code=4'b1010; //xor
+                6'b001111: o_alu_code=4'b0011; //lui
+                default: o_alu_code = 4'b1000; 
             endcase
         end
     endcase

@@ -38,16 +38,21 @@ always @(*)
 		o_zero_flag = 0;
 
 		case (i_opcode)
-			4'b 0000: o_result = i_datoA & i_datoB; //AND
-			4'b 0001: o_result = i_datoA | i_datoB; //OR
-			4'b 0010: o_result = i_datoA + i_datoB; //ADD
-			4'b 0110: 
+		    4'b 0000: o_result = i_datoB << i_datoA; //SLL SLLV (shift left)
+		    4'b 0001: o_result = i_datoB >> i_datoA; //SRL SRLV (right logico)
+		    4'b 0010: o_result = i_datoB >>> i_datoA; //SRA SRAV(right aritmetico)
+		    4'b 0011: o_result = i_datoB << 16; //LUI //PROBAR QUE NO SEA CIRCULAR SI NO CONCATENAR 00
+		    4'b 0110: o_result = i_datoA + i_datoB; //ADDU
+			4'b 0111: 
 			begin
-			     o_result = i_datoA - i_datoB; //SUBTRACT
+			     o_result = i_datoA - i_datoB; //SUBU
 			     o_zero_flag = (i_datoA==i_datoB) ? 1'b1 : 1'b0; //BRANCH
             end
-			4'b 0111: 
-				o_result = i_datoA < i_datoB; //SLT
+			4'b 1000: o_result = i_datoA & i_datoB; //AND
+			4'b 1001: o_result = i_datoA | i_datoB; //OR
+			4'b 1010: o_result = i_datoA ^ i_datoB; // XOR
+			4'b 1011: o_result = ~(i_datoA | i_datoB); //NOR		
+			4'b 1100: o_result = i_datoA < i_datoB; //SLT
 			default: o_result = 0;
 		endcase	
 	end

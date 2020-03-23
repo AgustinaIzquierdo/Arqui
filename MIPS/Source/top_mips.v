@@ -37,8 +37,8 @@
 
 //Tamanio de los registros de control
 `define NB_CTRL_WB  2
-`define NB_CTRL_MEM  3
-`define NB_CTRL_EX  7
+`define NB_CTRL_MEM  9
+`define NB_CTRL_EX 8 
 
 module top_mips
 (
@@ -225,6 +225,7 @@ tl_execute
     .i_ctrl_ex(ctrl_ex_id_ex),
     .i_rd(rd),
     .i_rt(rt),
+    .i_shamt(shamt),
     .o_alu_zero(alu_zero),
     .o_write_reg(write_reg_ex_mem),
     .o_ctrl_wb(ctrl_wb_ex_mem),

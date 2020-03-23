@@ -26,8 +26,8 @@ module tl_execute
     parameter NB_ADDRESS_REGISTROS = 5,
     parameter NB_ALU_CONTROL = 4,
     parameter NB_CTRL_WB = 2,
-    parameter NB_CTRL_MEM = 3,
-    parameter NB_CTRL_EX = 7    
+    parameter NB_CTRL_MEM = 9,
+    parameter NB_CTRL_EX = 8    
 )
 (
     input i_clk,
@@ -38,9 +38,10 @@ module tl_execute
     input [LEN-1:0] i_sign_extend,
     input [NB_CTRL_WB-1:0] i_ctrl_wb,
     input [NB_CTRL_MEM-1:0] i_ctrl_mem,
-    input [NB_CTRL_EX-1:0] i_ctrl_ex, // RegDst , ALUSrc, Jump y alu_code(4)
+    input [NB_CTRL_EX-1:0] i_ctrl_ex, // RegDst , ALUSrc1, ALUSrc2, Jump y alu_code(4)
     input [NB_ADDRESS_REGISTROS-1:0] i_rd,
     input [NB_ADDRESS_REGISTROS-1:0] i_rt,
+    input [NB_ADDRESS_REGISTROS-1:0] i_shamt,
     output reg o_alu_zero,
     output reg [NB_ADDRESS_REGISTROS-1:0] o_write_reg,
     output reg [NB_CTRL_WB-1:0] o_ctrl_wb,
@@ -55,7 +56,8 @@ module tl_execute
 wire [LEN-1:0] add_execute;
 
 //Cables-Reg hacia/desde mux
-wire [LEN-1:0] mux_alu;
+wire [LEN-1:0] mux_alu_B;
+wire [LEN-1:0] mux_alu_A;
 wire [NB_ADDRESS_REGISTROS-1:0] write_reg;
 
 //Cables-Reg hacia/desde alu
@@ -70,7 +72,7 @@ begin
         o_alu_result <= 32'b0;
         o_dato2 <= 32'b0;
         o_ctrl_wb <= 2'b0;
-        o_ctrl_mem <= 3'b0;
+        o_ctrl_mem <= 9'b0;
         o_write_reg <= 5'b0;
         o_alu_zero <= 1'b0;
     end
@@ -113,12 +115,24 @@ mux
 #(  
     .LEN(LEN)
 )
-u_mux
+u_mux_datoA
+(
+    .i_a(i_dato1),
+    .i_b({{(27){1'b0}},i_shamt}),
+    .i_selector(i_ctrl_ex[6]), //AluScr1
+    .o_mux(mux_alu_A)   
+);
+
+mux
+#(  
+    .LEN(LEN)
+)
+u_mux_datoB
 (
     .i_a(i_dato2),
     .i_b(i_sign_extend),
-    .i_selector(i_ctrl_ex[5]), //AluScr
-    .o_mux(mux_alu)   
+    .i_selector(i_ctrl_ex[5]), //AluScr2
+    .o_mux(mux_alu_B)   
 );
 
 alu
@@ -128,8 +142,8 @@ alu
 )
 u_alu
 (
-    .i_datoA(i_dato1),
-    .i_datoB(mux_alu),
+    .i_datoA(mux_alu_A),
+    .i_datoB(mux_alu_B),
     .i_opcode(i_ctrl_ex[NB_ALU_CONTROL-1:0]), //Control
     .o_result(alu_result),
     .o_zero_flag(alu_zero)    

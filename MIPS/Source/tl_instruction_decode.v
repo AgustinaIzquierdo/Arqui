@@ -31,7 +31,7 @@ module tl_instruction_decode
     parameter NB_ALU_OP = 2,
     parameter NB_CTRL_WB = 2,
     parameter NB_CTRL_MEM = 3,
-    parameter NB_CTRL_EX = 7
+    parameter NB_CTRL_EX = 8
 )
 (
   input i_clk,
@@ -99,7 +99,7 @@ assign sign_extend = (i_instruccion[15]==1) ? {{(16){1'b1}},address}: {{(16){1'b
         o_rt <= 5'b0;
         o_ctrl_wb <= 2'b0;
         o_ctrl_mem <= 3'b0;
-        o_ctrl_ex <= 7'b0;
+        o_ctrl_ex <= 8'b0;
         o_sign_extend <= 32'b0;
         o_shamt <= 5'b0;
     end
