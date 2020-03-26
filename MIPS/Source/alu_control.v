@@ -28,6 +28,7 @@ module alu_control
 )
 (
     input [NB_INSTRUCCION-1:0] i_inst_funcion,
+    input [NB_INSTRUCCION-1:0] i_opcode,
     input [NB_ALU_OP-1:0] i_alu_op,
     output reg [NB_ALU_CONTROL-1:0] o_alu_code
 );
@@ -42,7 +43,7 @@ begin
         
         2'b01: //branch
         begin
-            o_alu_code = 4'b0110; //cambiar
+            o_alu_code = 4'b0111;
         end
         
         2'b10: //Tipo-R
@@ -66,11 +67,12 @@ begin
         end
         2'b11:
         begin
-            case(i_inst_funcion)
-                6'b001100: o_alu_code=4'b1000; //and
-                6'b001101: o_alu_code=4'b1001; //or
-                6'b001110: o_alu_code=4'b1010; //xor
+            case(i_opcode)
+                6'b001100: o_alu_code=4'b1000; //andi
+                6'b001101: o_alu_code=4'b1001; //ori
+                6'b001110: o_alu_code=4'b1010; //xori
                 6'b001111: o_alu_code=4'b0011; //lui
+                6'b001010: o_alu_code=4'b1100; //slti
                 default: o_alu_code = 4'b1000; 
             endcase
         end

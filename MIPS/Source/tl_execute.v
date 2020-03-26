@@ -96,7 +96,7 @@ end
   (
     .i_a(i_rt),
     .i_b(i_rd),  
-    .i_selector(i_ctrl_ex[6]),  //RegDst
+    .i_selector(i_ctrl_ex[7]),  //RegDst
     .o_mux(write_reg)
   );
     

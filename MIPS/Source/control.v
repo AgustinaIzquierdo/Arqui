@@ -69,7 +69,15 @@ begin
             o_ctrl_mem = 9'b000010010; 
         end
         
-        6'b100011: //LOAD LW, LWU
+        6'b100011: //LOAD LW
+        begin
+            alu_op = 2'b00;
+            o_ctrl_wb = 2'b11;
+            o_ctrl_ex = {4'b0010,o_alu_control};
+            o_ctrl_mem = 9'b000000010;  
+        end
+        
+        6'b100111: //LOAD LWU
         begin
             alu_op = 2'b00;
             o_ctrl_wb = 2'b11;
@@ -157,15 +165,31 @@ begin
             o_ctrl_ex = {4'b0010,o_alu_control};  
         end
         
-        /*6'b000100: // Tipo-branch
+        6'b001010: //SLTI
+        begin
+            alu_op = 2'b11;
+            o_ctrl_wb = 2'b10;
+            o_ctrl_mem = 9'b000000000;
+            o_ctrl_ex = {4'b0010,o_alu_control};  
+        end
+        
+        6'b000100: // Tipo-branch on equal
         begin
             alu_op = 2'b01;
             o_ctrl_wb = 2'b00;
-            o_ctrl_mem = 3'b100; //CAMBIAR
-            o_ctrl_ex = {4'b0000,o_alu_control};
+            o_ctrl_mem = 9'b000000100;  
+            o_ctrl_ex = {4'b0000,o_alu_control}; 
         end
         
-        6'b000010: // Tipo-Jump
+        6'b000101: // Tipo-branch on not equal
+        begin
+            alu_op = 2'b01;
+            o_ctrl_wb = 2'b00;
+            o_ctrl_mem = 9'b100000100;  
+            o_ctrl_ex = {4'b0000,o_alu_control}; 
+        end
+        
+        /*6'b000010: // Tipo-Jump
         begin
             alu_op = 2'b00;
             o_ctrl_wb = 2'b00;
@@ -193,6 +217,7 @@ alu_control
 u_alu_control
 (
     .i_inst_funcion(i_inst_funcion),
+    .i_opcode(i_opcode),
     .i_alu_op(alu_op),
     .o_alu_code(o_alu_control)
 );

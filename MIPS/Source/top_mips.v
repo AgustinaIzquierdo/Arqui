@@ -279,4 +279,20 @@ tl_write_back
     .o_write_reg(write_reg_wb_id),
     .o_RegWrite(regwrite_wb_id)
 );
+
+unidad_cortocircuito
+#(
+    .LEN(LEN),
+    .NB_ADDRESS_REGISTROS(NB_ADDRESS_REGISTROS)
+)
+(
+   .i_rs_id_ex(rs),
+   .i_rt_id_ex(rt),
+   .i_write_reg_ex_mem(write_reg_ex_mem),
+   .i_write_reg_mem_wb(write_reg_wb_id), 
+   .i_reg_write_ex_mem(ctrl_wb_ex_mem[1]),
+   .i_reg_write_mem_wb(regwrite_wb_id),
+   .o_muxA_alu(),
+   .o_muxB_alu()
+);
 endmodule
