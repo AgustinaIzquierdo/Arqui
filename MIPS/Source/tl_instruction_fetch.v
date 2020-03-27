@@ -30,6 +30,7 @@ module tl_instruction_fetch
         input i_rst,
         input [LEN-1:0] i_branch_dir, //Salto condicional
         input i_PCSrc,
+        input i_flag_stall,
         output reg [LEN-1:0] o_instruccion,
         output reg [LEN-1:0] o_adder
     );
@@ -48,12 +49,10 @@ module tl_instruction_fetch
     wire rsta_mem;
     wire regcea_mem;
     wire [LEN-1:0] cablecito1;                      //VER
-    wire cablecito;                                 //VER
     
     //Control Memoria
     assign rsta_mem =0;
     assign regcea_mem=1;
-    assign cablecito =1;
     assign cablecito1 =0;
     
  
@@ -94,6 +93,7 @@ module tl_instruction_fetch
     .i_clk(i_clk),
     .i_rst(i_rst),
     .i_mux(mux_pc),
+    .i_enable(i_flag_stall),
     .o_pc(contador_programa)
   );
   
@@ -111,7 +111,7 @@ module tl_instruction_fetch
   .i_dina(cablecito1), //Ver de donde viene
   .i_clka(i_clk),
   .i_wea(cablecito1),  //Ver de donde viene
-  .i_ena(cablecito), //Ver de donde viene
+  .i_ena(!i_flag_stall),
   .i_rsta(rsta_mem),
   .i_regcea(regcea_mem), 
   .o_douta(instruccion)  

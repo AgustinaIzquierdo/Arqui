@@ -90,6 +90,7 @@ wire [LEN-1:0] sign_extend;
 wire [NB_CTRL_WB-1:0] ctrl_wb_id_ex;
 wire [NB_CTRL_MEM-1:0] ctrl_mem_id_ex;
 wire [NB_CTRL_EX-1:0] ctrl_ex_id_ex;
+wire flag_stall;
 
 //Cables hacia/desde execute 
 wire [LEN-1:0] dato2_ex_mem;
@@ -108,6 +109,10 @@ wire [NB_CTRL_WB-1:0] ctrl_wb_mem_wb;
 //Cables hacia/desde wb
 wire regwrite_wb_id;
 wire [NB_ADDRESS_REGISTROS-1:0] write_reg_wb_id;
+
+//Cables hacia/desde Unidad de cortocircuito
+wire [1:0] ctrl_muxA_corto;
+wire [1:0] ctrl_muxB_corto;
 
 input i_clk;
 input i_rst;
@@ -161,6 +166,7 @@ tl_instruction_fetch
     .i_rst(i_rst),
     .i_branch_dir(branch_dir),
     .i_PCSrc(PCSrc),
+    .i_flag_stall(flag_stall),
     .o_instruccion(instruccion),
     .o_adder(out_adder_if_id)
 );
@@ -197,8 +203,9 @@ tl_instruction_decode
     .o_dato2(dato2_if_ex),
     .o_sign_extend(sign_extend),
     .o_ctrl_wb(ctrl_wb_id_ex), //RegWrite Y MemtoReg
-    .o_ctrl_mem(ctrl_mem_id_ex), //Branch , MemRead Y MemWrite
-    .o_ctrl_ex(ctrl_ex_id_ex) // RegDst , ALUSrc, Jump y alu_code(4)
+    .o_ctrl_mem(ctrl_mem_id_ex), //BranchNotEqual, SB, SH, LB, LH, Unsigned , Branch , MemRead Y MemWrite
+    .o_ctrl_ex(ctrl_ex_id_ex), // RegDst ,ALUSrc1(MUX de la entrada A de la ALU), ALUSrc2(MUX de la entrada B de la ALU), Jump y alu_code(4)
+    .o_flag_stall(flag_stall)
 );
 
 //Execute
@@ -226,6 +233,10 @@ tl_execute
     .i_rd(rd),
     .i_rt(rt),
     .i_shamt(shamt),
+    .i_ctrl_muxA_corto(ctrl_muxA_corto),
+    .i_ctrl_muxB_corto(ctrl_muxB_corto),
+    .i_rd_mem_corto(result_alu_ex_mem),
+    .i_rd_wb_corto(write_data_banco_reg),
     .o_alu_zero(alu_zero),
     .o_write_reg(write_reg_ex_mem),
     .o_ctrl_wb(ctrl_wb_ex_mem),
@@ -292,7 +303,7 @@ unidad_cortocircuito
    .i_write_reg_mem_wb(write_reg_wb_id), 
    .i_reg_write_ex_mem(ctrl_wb_ex_mem[1]),
    .i_reg_write_mem_wb(regwrite_wb_id),
-   .o_muxA_alu(),
-   .o_muxB_alu()
+   .o_muxA_alu(ctrl_muxA_corto),
+   .o_muxB_alu(ctrl_muxB_corto)
 );
 endmodule

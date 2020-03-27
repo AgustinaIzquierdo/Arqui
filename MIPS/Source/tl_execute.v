@@ -42,6 +42,10 @@ module tl_execute
     input [NB_ADDRESS_REGISTROS-1:0] i_rd,
     input [NB_ADDRESS_REGISTROS-1:0] i_rt,
     input [NB_ADDRESS_REGISTROS-1:0] i_shamt,
+    input [1:0] i_ctrl_muxA_corto,
+    input [1:0] i_ctrl_muxB_corto,
+    input [LEN-1:0] i_rd_mem_corto,
+    input [LEN-1:0] i_rd_wb_corto,
     output reg o_alu_zero,
     output reg [NB_ADDRESS_REGISTROS-1:0] o_write_reg,
     output reg [NB_CTRL_WB-1:0] o_ctrl_wb,
@@ -63,6 +67,10 @@ wire [NB_ADDRESS_REGISTROS-1:0] write_reg;
 //Cables-Reg hacia/desde alu
 wire alu_zero;
 wire [LEN-1:0] alu_result;
+
+//Cables mux_cortocircuitos 
+wire [LEN-1:0] mux_aluA_corto;
+wire [LEN-1:0] mux_aluB_corto;
     
 always @(negedge i_clk)
 begin
@@ -88,9 +96,36 @@ begin
     end  
 end
 
+
+ mux_cortocircuito
+ #(
+    .LEN(LEN)
+  )
+  u_muxA_cortocircuito
+  (
+    .i_dato(i_dato1),
+    .i_mem_corto(i_rd_mem_corto),
+    .i_wb_corto(i_rd_wb_corto),  
+    .i_selector(i_ctrl_muxA_corto),
+    .o_mux(mux_aluA_corto)
+  );
+  
+  mux_cortocircuito
+ #(
+    .LEN(LEN)
+  )
+  u_muxB_cortocircuito
+  (
+    .i_dato(i_dato2),
+    .i_mem_corto(i_rd_mem_corto),
+    .i_wb_corto(i_rd_wb_corto),  
+    .i_selector(i_ctrl_muxB_corto),
+    .o_mux(mux_aluB_corto)
+  );
+  
  mux
  #(
-    .len(NB_ADDRESS_REGISTROS)
+    .LEN(NB_ADDRESS_REGISTROS)
   )
   u_mux_execute
   (
@@ -117,7 +152,7 @@ mux
 )
 u_mux_datoA
 (
-    .i_a(i_dato1),
+    .i_a(mux_aluA_corto),
     .i_b({{(27){1'b0}},i_shamt}),
     .i_selector(i_ctrl_ex[6]), //AluScr1
     .o_mux(mux_alu_A)   
@@ -129,7 +164,7 @@ mux
 )
 u_mux_datoB
 (
-    .i_a(i_dato2),
+    .i_a(mux_aluB_corto),
     .i_b(i_sign_extend),
     .i_selector(i_ctrl_ex[5]), //AluScr2
     .o_mux(mux_alu_B)   

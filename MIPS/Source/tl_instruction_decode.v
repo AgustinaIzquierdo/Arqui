@@ -30,7 +30,7 @@ module tl_instruction_decode
     parameter NB_ALU_CONTROL = 4,
     parameter NB_ALU_OP = 2,
     parameter NB_CTRL_WB = 2,
-    parameter NB_CTRL_MEM = 3,
+    parameter NB_CTRL_MEM = 9,
     parameter NB_CTRL_EX = 8
 )
 (
@@ -50,8 +50,9 @@ module tl_instruction_decode
   output [LEN-1:0] o_dato2,
   output reg [LEN-1:0] o_sign_extend,
   output reg [NB_CTRL_WB-1:0] o_ctrl_wb,//RegWrite Y MemtoReg
-  output reg [NB_CTRL_MEM-1:0] o_ctrl_mem,//Branch , MemRead Y MemWrite
-  output reg [NB_CTRL_EX-1:0] o_ctrl_ex // RegDst , ALUSrc, Jump y alu_code(4)
+  output reg [NB_CTRL_MEM-1:0] o_ctrl_mem, //BranchNotEqual, SB, SH, LB, LH, Unsigned , Branch , MemRead Y MemWrite
+  output reg [NB_CTRL_EX-1:0] o_ctrl_ex, // RegDst , ALUSrc, Jump y alu_code(4)
+  output o_flag_stall
 );
 
 //Cables-Reg hacia/desde banco de registros 
@@ -70,8 +71,6 @@ wire [NB_ADDRESS_REGISTROS-1:0] rd;
 wire [NB_SIGN_EXTEND-1:0] address;
 wire [LEN-1:0] sign_extend;
 wire [NB_ADDRESS_REGISTROS-1:0] shamt;
-
-
 
 assign opcode = i_instruccion[31:26];
 
@@ -98,7 +97,7 @@ assign sign_extend = (i_instruccion[15]==1) ? {{(16){1'b1}},address}: {{(16){1'b
         o_rd <= 5'b0;
         o_rt <= 5'b0;
         o_ctrl_wb <= 2'b0;
-        o_ctrl_mem <= 3'b0;
+        o_ctrl_mem <= 9'b0;
         o_ctrl_ex <= 8'b0;
         o_sign_extend <= 32'b0;
         o_shamt <= 5'b0;
@@ -109,11 +108,21 @@ assign sign_extend = (i_instruccion[15]==1) ? {{(16){1'b1}},address}: {{(16){1'b
         o_rs <= rs;
         o_rd <= rd;
         o_rt <= rt;
-        o_ctrl_wb <= ctrl_wb;
-        o_ctrl_mem <= ctrl_mem;
-        o_ctrl_ex <= ctrl_ex;
         o_sign_extend <= sign_extend;
         o_shamt <= shamt;
+        if(o_flag_stall)
+        begin
+            o_ctrl_wb <= 2'b0;
+            o_ctrl_mem <= 9'b0;
+            o_ctrl_ex <= 8'b0;
+        end
+        else
+        begin
+            o_ctrl_wb <= ctrl_wb;
+            o_ctrl_mem <= ctrl_mem;
+            o_ctrl_ex <= ctrl_ex;
+        end
+
     end
  end
 
@@ -153,6 +162,20 @@ u_control
     .o_ctrl_wb(ctrl_wb),
     .o_ctrl_mem(ctrl_mem),
     .o_ctrl_ex(ctrl_ex)
+);
+
+unidad_deteccion_riesgo
+#(
+    .LEN(LEN),
+    .NB_ADDRESS_REGISTROS(NB_ADDRESS_REGISTROS)
+)
+u_unidad_deteccion_riesgo
+(
+    .i_rs_id(rs),
+    .i_rt_id(rt),
+    .i_rt_ex(o_rt), 
+    .i_memRead_ex(o_ctrl_mem[1]), //MemRead
+    .o_flag_stall(o_flag_stall)
 );
 
 endmodule
