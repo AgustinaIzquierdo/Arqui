@@ -29,13 +29,13 @@ module alu
     input [LEN-1:0] i_datoA,
     input [LEN-1:0] i_datoB,
     input [NB_ALU_CONTROL-1:0] i_opcode,
-    output reg [LEN-1:0] o_result,
-    output reg o_zero_flag
+    output reg [LEN-1:0] o_result
+    //output reg o_zero_flag
 );
 
 always @(*)
 	begin
-		o_zero_flag = 0;
+		//o_zero_flag = 0;
 
 		case (i_opcode)
 		    4'b 0000: o_result = i_datoB << i_datoA; //SLL SLLV (shift left)
@@ -46,7 +46,7 @@ always @(*)
 			4'b 0111: 
 			begin
 			     o_result = i_datoA - i_datoB; //SUBU
-			     o_zero_flag = (i_datoA==i_datoB) ? 1'b1 : 1'b0; //BRANCH
+			   //  o_zero_flag = (i_datoA==i_datoB) ? 1'b1 : 1'b0; //BRANCH
             end
 			4'b 1000: o_result = i_datoA & i_datoB; //AND
 			4'b 1001: o_result = i_datoA | i_datoB; //OR

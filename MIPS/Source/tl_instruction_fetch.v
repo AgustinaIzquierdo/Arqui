@@ -50,6 +50,8 @@ module tl_instruction_fetch
     wire regcea_mem;
     wire [LEN-1:0] cablecito1;                      //VER
     
+    wire flush = i_PCSrc;
+    
     //Control Memoria
     assign rsta_mem =0;
     assign regcea_mem=1;
@@ -65,8 +67,16 @@ module tl_instruction_fetch
     end
     else
     begin
-        o_adder <= adder;
-        o_instruccion <= instruccion;
+        if(flush)
+        begin
+            o_adder <= 32'b0;
+            o_instruccion <= 32'b0;
+        end
+        else
+        begin
+            o_adder <= adder;
+            o_instruccion <= instruccion;
+        end
     end
  end
  

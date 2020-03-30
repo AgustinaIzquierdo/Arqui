@@ -24,7 +24,7 @@ module tl_memory
     #(
         parameter LEN = 32,
         parameter NB_CTRL_WB = 2,
-        parameter NB_CTRL_MEM = 9,
+        parameter NB_CTRL_MEM = 7,
         parameter NB_ADDRESS_REGISTROS = 5
     )
     (
@@ -33,14 +33,14 @@ module tl_memory
         input [LEN-1:0] i_address,
         input [LEN-1:0] i_write_data,
         input [NB_CTRL_WB-1:0] i_ctrl_wb,
-        input [NB_CTRL_MEM-1:0] i_ctrl_mem, //BranchNotEqual, SB, SH, LB, LH, Unsigned , Branch , MemRead Y MemWrite
-        input i_alu_zero,
+        input [NB_CTRL_MEM-1:0] i_ctrl_mem, //SB, SH, LB, LH, Unsigned ,MemRead Y MemWrite
+        //input i_alu_zero,
         input [NB_ADDRESS_REGISTROS-1:0] i_write_reg,
         output reg [LEN-1:0] o_address,
         output reg [LEN-1:0] o_read_data,
         output reg [NB_ADDRESS_REGISTROS-1:0] o_write_reg,
-        output reg [NB_CTRL_WB-1:0] o_ctrl_wb,
-        output o_PCSrc
+        output reg [NB_CTRL_WB-1:0] o_ctrl_wb
+        //output o_PCSrc
     );
     
 //Cables-Reg hacia/desde memoria de datos    
@@ -54,7 +54,7 @@ assign rsta_mem =0;
 assign regcea_mem=1;
 
 //Control Mux Instruction Fetch
-assign o_PCSrc = i_ctrl_mem[2] && ((i_ctrl_mem[8]) ? (~i_alu_zero) : (i_alu_zero));
+//assign o_PCSrc = i_ctrl_mem[2] && ((i_ctrl_mem[8]) ? (~i_alu_zero) : (i_alu_zero));
 
 //assign o_read_data = read_data;
 
@@ -72,16 +72,16 @@ begin
     o_write_reg <= i_write_reg;
     o_ctrl_wb <= i_ctrl_wb;
     
-    if(i_ctrl_mem[5]) //LB
+    if(i_ctrl_mem[4]) //LB
     begin
-        if(i_ctrl_mem[3]) //Unsigned
+        if(i_ctrl_mem[2]) //Unsigned
             o_read_data <= {{24{1'b0}},read_data[7:0]};
         else
             o_read_data <= {{24{read_data[7]}},read_data[7:0]};	
     end
-    else if(i_ctrl_mem[4]) //LH
+    else if(i_ctrl_mem[3]) //LH
     begin
-        if(i_ctrl_mem[3]) //Unsigned
+        if(i_ctrl_mem[2]) //Unsigned
             o_read_data <= {{16{1'b0}},read_data[15:0]};
         else
             o_read_data <= {{16{read_data[7]}},read_data[15:0]};	  
@@ -91,8 +91,8 @@ begin
 end
  
                         
-assign write_data_mem = (i_ctrl_mem[6] ? {{16{i_write_data[15]}},i_write_data[15:0]}: //SH
-                         i_ctrl_mem[7] ? {{24{i_write_data[15]}},i_write_data[7:0]}: //SB
+assign write_data_mem = (i_ctrl_mem[5] ? {{16{i_write_data[15]}},i_write_data[15:0]}: //SH
+                         i_ctrl_mem[6] ? {{24{i_write_data[15]}},i_write_data[7:0]}: //SB
                          i_write_data);
                         
 ram_datos
