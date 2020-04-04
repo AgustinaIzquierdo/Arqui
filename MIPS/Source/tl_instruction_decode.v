@@ -30,8 +30,8 @@ module tl_instruction_decode
     parameter NB_ALU_CONTROL = 4,
     parameter NB_ALU_OP = 2,
     parameter NB_CTRL_WB = 2,
-    parameter NB_CTRL_MEM = 7,
-    parameter NB_CTRL_EX = 10
+    parameter NB_CTRL_MEM = 9,
+    parameter NB_CTRL_EX = 8
 )
 (
   input i_clk,
@@ -41,7 +41,7 @@ module tl_instruction_decode
   input [NB_ADDRESS_REGISTROS-1:0] i_write_reg,
   input [LEN-1:0] i_adder_pc,
   input i_RegWrite,
- // output reg [LEN-1:0] o_adder_pc,
+  output reg [LEN-1:0] o_adder_pc,
   output reg [NB_ADDRESS_REGISTROS-1:0] o_rs,
   output reg [NB_ADDRESS_REGISTROS-1:0] o_rd,
   output reg [NB_ADDRESS_REGISTROS-1:0] o_rt,
@@ -50,11 +50,9 @@ module tl_instruction_decode
   output [LEN-1:0] o_dato2,
   output reg [LEN-1:0] o_sign_extend,
   output reg [NB_CTRL_WB-1:0] o_ctrl_wb,//RegWrite Y MemtoReg
-  output reg [NB_CTRL_MEM-1:0] o_ctrl_mem, //SB, SH, LB, LH, Unsigned,MemRead Y MemWrite
-  output reg [NB_CTRL_EX-3:0] o_ctrl_ex, // RegDst , ALUSrc, Jump y alu_code(4)
-  output o_flag_stall,
-  output [LEN-1:0] o_branch,
-  output o_flag_branch
+  output reg [NB_CTRL_MEM-1:0] o_ctrl_mem, //BranchNotEqual, SB, SH, LB, LH, Unsigned , Branch , MemRead Y MemWrite
+  output reg [NB_CTRL_EX-1:0] o_ctrl_ex, // RegDst , ALUSrc, Jump y alu_code(4)
+  output o_flag_stall
 );
 
 //Cables-Reg hacia/desde banco de registros 
@@ -74,7 +72,6 @@ wire [NB_SIGN_EXTEND-1:0] address;
 wire [LEN-1:0] sign_extend;
 wire [NB_ADDRESS_REGISTROS-1:0] shamt;
 
-wire [1:0] enable_branch;
 assign opcode = i_instruccion[31:26];
 
 assign rs = i_instruccion[25:21];
@@ -91,13 +88,11 @@ assign address = i_instruccion[15:0];
 
 assign sign_extend = (i_instruccion[15]==1) ? {{(16){1'b1}},address}: {{(16){1'b0}},address};
 
-assign enable_branch = ctrl_ex[NB_CTRL_EX-1: NB_CTRL_EX-2];
-
  always @(negedge i_clk)
  begin
     if(!i_rst)
     begin
-       // o_adder_pc <= 32'b0;
+        o_adder_pc <= 32'b0;
         o_rs <= 5'b0;
         o_rd <= 5'b0;
         o_rt <= 5'b0;
@@ -109,7 +104,7 @@ assign enable_branch = ctrl_ex[NB_CTRL_EX-1: NB_CTRL_EX-2];
     end
     else
     begin
-        //o_adder_pc <= i_adder_pc;
+        o_adder_pc <= i_adder_pc;
         o_rs <= rs;
         o_rd <= rd;
         o_rt <= rt;
@@ -118,14 +113,14 @@ assign enable_branch = ctrl_ex[NB_CTRL_EX-1: NB_CTRL_EX-2];
         if(o_flag_stall)
         begin
             o_ctrl_wb <= 2'b0;
-            o_ctrl_mem <= 7'b0;
+            o_ctrl_mem <= 9'b0;
             o_ctrl_ex <= 8'b0;
         end
         else
         begin
             o_ctrl_wb <= ctrl_wb;
             o_ctrl_mem <= ctrl_mem;
-            o_ctrl_ex <= ctrl_ex[NB_CTRL_EX-3:0];
+            o_ctrl_ex <= ctrl_ex;
         end
 
     end
@@ -181,22 +176,6 @@ u_unidad_deteccion_riesgo
     .i_rt_ex(o_rt), 
     .i_memRead_ex(o_ctrl_mem[1]), //MemRead
     .o_flag_stall(o_flag_stall)
-);
-
-unidad_riesgo_control
-#(
-    .LEN(LEN),
-    .NB_ADDRESS_REGISTROS(NB_ADDRESS_REGISTROS)
-)
-u_unidad_riesgo_control
-(
-  .i_adder_pc(i_adder_pc),
-  .i_sign_extend(sign_extend),
-  .i_rs(rs),
-  .i_rt(rt),
-  .i_enable_branch(enable_branch), //BranchNotEqual-BranchEqual
-  .o_flag_branch(o_flag_branch),
-  .o_branch(o_branch)
 );
 
 endmodule

@@ -37,7 +37,7 @@
 
 //Tamanio de los registros de control
 `define NB_CTRL_WB  2
-`define NB_CTRL_MEM  7
+`define NB_CTRL_MEM  9
 `define NB_CTRL_EX 8 
 
 module top_mips
@@ -95,7 +95,7 @@ wire flag_stall;
 //Cables hacia/desde execute 
 wire [LEN-1:0] dato2_ex_mem;
 wire [LEN-1:0] result_alu_ex_mem;
-//wire alu_zero;
+wire alu_zero;
 wire [NB_CTRL_WB-1:0] ctrl_wb_ex_mem;
 wire [NB_CTRL_MEM-1:0] ctrl_mem_ex_mem;
 wire [NB_ADDRESS_REGISTROS-1:0] write_reg_ex_mem;
@@ -144,7 +144,7 @@ assign o_ex_mem = {
                    branch_dir,//32 bits
                    result_alu_ex_mem,//32 bits
                    dato2_ex_mem,//32 
-                //   alu_zero, //1
+                   alu_zero, //1
                    write_reg_ex_mem //5bit
                    };
 assign o_mem_wb = {
@@ -181,7 +181,7 @@ tl_instruction_decode
     .NB_INSTRUCCION(NB_INSTRUCCION),    
     .NB_CTRL_WB(NB_CTRL_WB),
     .NB_CTRL_MEM(NB_CTRL_MEM),
-    .NB_CTRL_EX(10),
+    .NB_CTRL_EX(NB_CTRL_EX),
     .NB_ALU_CONTROL(NB_ALU_CONTROL),
     .NB_ALU_OP(NB_ALU_OP)
 )
@@ -194,7 +194,7 @@ tl_instruction_decode
     .i_write_reg(write_reg_wb_id),
     .i_adder_pc(out_adder_if_id),
     .i_RegWrite(regwrite_wb_id), 
-    //.o_adder_pc(out_adder_id_exe), 
+    .o_adder_pc(out_adder_id_exe), 
     .o_rs(rs),
     .o_rd(rd),
     .o_rt(rt),    
@@ -203,11 +203,9 @@ tl_instruction_decode
     .o_dato2(dato2_if_ex),
     .o_sign_extend(sign_extend),
     .o_ctrl_wb(ctrl_wb_id_ex), //RegWrite Y MemtoReg
-    .o_ctrl_mem(ctrl_mem_id_ex), //SB, SH, LB, LH, Unsigned , MemRead Y MemWrite
+    .o_ctrl_mem(ctrl_mem_id_ex), //BranchNotEqual, SB, SH, LB, LH, Unsigned , Branch , MemRead Y MemWrite
     .o_ctrl_ex(ctrl_ex_id_ex), // RegDst ,ALUSrc1(MUX de la entrada A de la ALU), ALUSrc2(MUX de la entrada B de la ALU), Jump y alu_code(4)
-    .o_flag_stall(flag_stall),
-    .o_branch(branch_dir),
-    .o_flag_branch(PCSrc)
+    .o_flag_stall(flag_stall)
 );
 
 //Execute
@@ -225,7 +223,7 @@ tl_execute
 (
     .i_clk(i_clk),
     .i_rst(i_rst),
-   // .i_adder_id(out_adder_id_exe),
+    .i_adder_id(out_adder_id_exe),
     .i_dato1(dato1),
     .i_dato2(dato2_if_ex),
     .i_sign_extend(sign_extend),
@@ -239,11 +237,11 @@ tl_execute
     .i_ctrl_muxB_corto(ctrl_muxB_corto),
     .i_rd_mem_corto(result_alu_ex_mem),
     .i_rd_wb_corto(write_data_banco_reg),
-   // .o_alu_zero(alu_zero),
+    .o_alu_zero(alu_zero),
     .o_write_reg(write_reg_ex_mem),
     .o_ctrl_wb(ctrl_wb_ex_mem),
     .o_ctrl_mem(ctrl_mem_ex_mem),
-    //.o_add_execute(branch_dir),
+    .o_add_execute(branch_dir),
     .o_alu_result(result_alu_ex_mem),
     .o_dato2(dato2_ex_mem)
 );
@@ -265,13 +263,13 @@ tl_memory
     .i_write_data(dato2_ex_mem),
     .i_ctrl_wb(ctrl_wb_ex_mem),
     .i_ctrl_mem(ctrl_mem_ex_mem),
-   // .i_alu_zero(alu_zero),
+    .i_alu_zero(alu_zero),
     .i_write_reg(write_reg_ex_mem),
     .o_address(result_alu_mem_wb),  
     .o_read_data(read_data_memory),
     .o_write_reg(write_reg_mem_wb),
-    .o_ctrl_wb(ctrl_wb_mem_wb)
-    //.o_PCSrc(PCSrc)
+    .o_ctrl_wb(ctrl_wb_mem_wb),
+    .o_PCSrc(PCSrc)
 );
 
 //Write Back
@@ -298,7 +296,6 @@ unidad_cortocircuito
     .LEN(LEN),
     .NB_ADDRESS_REGISTROS(NB_ADDRESS_REGISTROS)
 )
-u_unidad_corto
 (
    .i_rs_id_ex(rs),
    .i_rt_id_ex(rt),
