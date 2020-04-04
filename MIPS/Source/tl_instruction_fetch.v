@@ -65,8 +65,16 @@ module tl_instruction_fetch
     end
     else
     begin
-        o_adder <= adder;
-        o_instruccion <= instruccion;
+        if(i_PCSrc) //flush
+        begin
+            o_adder <= 32'b0;
+            o_instruccion <= 32'b0;
+        end
+        else
+        begin
+            o_adder <= adder;
+            o_instruccion <= instruccion;
+        end
     end
  end
  

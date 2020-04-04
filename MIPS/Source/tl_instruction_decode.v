@@ -41,6 +41,7 @@ module tl_instruction_decode
   input [NB_ADDRESS_REGISTROS-1:0] i_write_reg,
   input [LEN-1:0] i_adder_pc,
   input i_RegWrite,
+  input i_flush,
   output reg [LEN-1:0] o_adder_pc,
   output reg [NB_ADDRESS_REGISTROS-1:0] o_rs,
   output reg [NB_ADDRESS_REGISTROS-1:0] o_rd,
@@ -58,6 +59,8 @@ module tl_instruction_decode
 //Cables-Reg hacia/desde banco de registros 
 wire [NB_ADDRESS_REGISTROS-1:0] rs;
 wire [NB_ADDRESS_REGISTROS-1:0] rt;
+wire [LEN-1:0] dato1;
+wire [LEN-1:0] dato2;
 
 //Cables-Reg hacia/desde unidad de control
 wire [NB_INSTRUCCION-1:0] opcode;
@@ -71,6 +74,9 @@ wire [NB_ADDRESS_REGISTROS-1:0] rd;
 wire [NB_SIGN_EXTEND-1:0] address;
 wire [LEN-1:0] sign_extend;
 wire [NB_ADDRESS_REGISTROS-1:0] shamt;
+
+//Cables-Reg hacia/desde unidad deteccion riesgo
+wire flag_stall; 
 
 assign opcode = i_instruccion[31:26];
 
@@ -88,9 +94,14 @@ assign address = i_instruccion[15:0];
 
 assign sign_extend = (i_instruccion[15]==1) ? {{(16){1'b1}},address}: {{(16){1'b0}},address};
 
+
+assign o_flag_stall = (i_flush) ? 1'b0 : flag_stall;
+assign o_dato1 = (i_flush) ? 32'b0 : dato1;
+assign o_dato2 = (i_flush) ? 32'b0 : dato2;
+
  always @(negedge i_clk)
  begin
-    if(!i_rst)
+    if(!i_rst | i_flush)
     begin
         o_adder_pc <= 32'b0;
         o_rs <= 5'b0;
@@ -142,8 +153,8 @@ assign sign_extend = (i_instruccion[15]==1) ? {{(16){1'b1}},address}: {{(16){1'b
     .i_write_reg(i_write_reg),
     .i_write_data(i_write_data),
     .i_reg_write_ctrl(i_RegWrite),  
-    .o_read_data_1(o_dato1),
-    .o_read_data_2(o_dato2)
+    .o_read_data_1(dato1),
+    .o_read_data_2(dato2)
  );
    
 control
@@ -175,7 +186,7 @@ u_unidad_deteccion_riesgo
     .i_rt_id(rt),
     .i_rt_ex(o_rt), 
     .i_memRead_ex(o_ctrl_mem[1]), //MemRead
-    .o_flag_stall(o_flag_stall)
+    .o_flag_stall(flag_stall)
 );
 
 endmodule

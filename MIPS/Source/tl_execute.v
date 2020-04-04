@@ -46,18 +46,19 @@ module tl_execute
     input [1:0] i_ctrl_muxB_corto,
     input [LEN-1:0] i_rd_mem_corto,
     input [LEN-1:0] i_rd_wb_corto,
+    input i_flush,
     output reg o_alu_zero,
     output reg [NB_ADDRESS_REGISTROS-1:0] o_write_reg,
     output reg [NB_CTRL_WB-1:0] o_ctrl_wb,
     output reg [NB_CTRL_MEM-1:0] o_ctrl_mem,
-    output reg [LEN-1:0] o_add_execute,    
+    output reg [LEN-1:0] o_pc_branch,    
     output reg [LEN-1:0] o_alu_result,
     output reg [LEN-1:0] o_dato2
    
 ); 
 
 //Cables-Reg hacia/desde adder
-wire [LEN-1:0] add_execute;
+wire [LEN-1:0] pc_branch;
 
 //Cables-Reg hacia/desde mux
 wire [LEN-1:0] mux_alu_B;
@@ -74,9 +75,9 @@ wire [LEN-1:0] mux_aluB_corto;
     
 always @(negedge i_clk)
 begin
-    if(!i_rst)
+    if(!i_rst | i_flush)
     begin
-        o_add_execute <= 32'b0;
+        o_pc_branch <= 32'b0;
         o_alu_result <= 32'b0;
         o_dato2 <= 32'b0;
         o_ctrl_wb <= 2'b0;
@@ -86,7 +87,7 @@ begin
     end
     else
     begin
-        o_add_execute <= add_execute;
+        o_pc_branch <= pc_branch;
         o_alu_result <= alu_result;
         o_dato2 <= i_dato2;
         o_ctrl_wb <= i_ctrl_wb;
@@ -143,7 +144,7 @@ u_add
 (
     .i_a(i_adder_id),
     .i_b(i_sign_extend),
-    .o_adder(add_execute)
+    .o_adder(pc_branch)
 );
 
 mux

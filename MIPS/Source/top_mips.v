@@ -193,7 +193,8 @@ tl_instruction_decode
     .i_write_data(write_data_banco_reg),
     .i_write_reg(write_reg_wb_id),
     .i_adder_pc(out_adder_if_id),
-    .i_RegWrite(regwrite_wb_id), 
+    .i_RegWrite(regwrite_wb_id),
+    .i_flush(PCSrc), 
     .o_adder_pc(out_adder_id_exe), 
     .o_rs(rs),
     .o_rd(rd),
@@ -237,11 +238,12 @@ tl_execute
     .i_ctrl_muxB_corto(ctrl_muxB_corto),
     .i_rd_mem_corto(result_alu_ex_mem),
     .i_rd_wb_corto(write_data_banco_reg),
+    .i_flush(PCSrc),
     .o_alu_zero(alu_zero),
     .o_write_reg(write_reg_ex_mem),
     .o_ctrl_wb(ctrl_wb_ex_mem),
     .o_ctrl_mem(ctrl_mem_ex_mem),
-    .o_add_execute(branch_dir),
+    .o_pc_branch(branch_dir),
     .o_alu_result(result_alu_ex_mem),
     .o_dato2(dato2_ex_mem)
 );
@@ -269,7 +271,7 @@ tl_memory
     .o_read_data(read_data_memory),
     .o_write_reg(write_reg_mem_wb),
     .o_ctrl_wb(ctrl_wb_mem_wb),
-    .o_PCSrc(PCSrc)
+    .o_PCSrc(PCSrc) //Branch
 );
 
 //Write Back
@@ -296,6 +298,7 @@ unidad_cortocircuito
     .LEN(LEN),
     .NB_ADDRESS_REGISTROS(NB_ADDRESS_REGISTROS)
 )
+u_unidad_corto
 (
    .i_rs_id_ex(rs),
    .i_rt_id_ex(rt),
