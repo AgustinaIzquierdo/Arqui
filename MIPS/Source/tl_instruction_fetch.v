@@ -72,8 +72,16 @@ module tl_instruction_fetch
         end
         else
         begin
-            o_adder <= adder;
-            o_instruccion <= instruccion;
+            if(i_flag_stall)
+            begin
+                o_adder <= o_adder;
+                o_instruccion <= o_instruccion;
+            end
+            else
+            begin
+                o_adder <= adder;
+                o_instruccion <= instruccion;
+            end
         end
     end
  end

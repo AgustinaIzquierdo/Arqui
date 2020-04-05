@@ -78,6 +78,10 @@ wire [NB_ADDRESS_REGISTROS-1:0] shamt;
 //Cables-Reg hacia/desde unidad deteccion riesgo
 wire flag_stall; 
 
+wire [NB_CTRL_WB-1:0] ctrl_wb_int;
+wire [NB_CTRL_MEM-1:0] ctrl_mem_int;
+wire [NB_CTRL_EX-1:0] ctrl_ex_int;
+
 assign opcode = i_instruccion[31:26];
 
 assign rs = i_instruccion[25:21];
@@ -98,6 +102,10 @@ assign sign_extend = (i_instruccion[15]==1) ? {{(16){1'b1}},address}: {{(16){1'b
 assign o_flag_stall = (i_flush) ? 1'b0 : flag_stall;
 assign o_dato1 = (i_flush) ? 32'b0 : dato1;
 assign o_dato2 = (i_flush) ? 32'b0 : dato2;
+
+assign ctrl_wb_int = (o_flag_stall) ? 2'b0 : ctrl_wb;
+assign ctrl_mem_int = (o_flag_stall) ? 9'b0 : ctrl_mem;
+assign ctrl_ex_int = (o_flag_stall) ? 8'b0 : ctrl_ex;
 
  always @(negedge i_clk)
  begin
@@ -121,18 +129,18 @@ assign o_dato2 = (i_flush) ? 32'b0 : dato2;
         o_rt <= rt;
         o_sign_extend <= sign_extend;
         o_shamt <= shamt;
-        if(o_flag_stall)
-        begin
-            o_ctrl_wb <= 2'b0;
-            o_ctrl_mem <= 9'b0;
-            o_ctrl_ex <= 8'b0;
-        end
-        else
-        begin
-            o_ctrl_wb <= ctrl_wb;
-            o_ctrl_mem <= ctrl_mem;
-            o_ctrl_ex <= ctrl_ex;
-        end
+//        if(o_flag_stall)
+//        begin
+//            o_ctrl_wb <= 2'b0;
+//            o_ctrl_mem <= 9'b0;
+//            o_ctrl_ex <= 8'b0;
+//        end
+//        else
+//        begin
+        o_ctrl_wb <= ctrl_wb_int;
+        o_ctrl_mem <= ctrl_mem_int;
+        o_ctrl_ex <= ctrl_ex_int;
+        //end
 
     end
  end
