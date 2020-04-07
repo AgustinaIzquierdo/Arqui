@@ -11,15 +11,15 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="14050000fs"></ZoomStartTime>
-      <ZoomEndTime time="45190001fs"></ZoomEndTime>
-      <Cursor1Time time="40000000fs"></Cursor1Time>
+      <ZoomStartTime time="0fs"></ZoomStartTime>
+      <ZoomEndTime time="156700001fs"></ZoomEndTime>
+      <Cursor1Time time="80000000fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="175"></NameColumnWidth>
-      <ValueColumnWidth column_width="142"></ValueColumnWidth>
+      <ValueColumnWidth column_width="134"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="68" />
+   <WVObjectSize size="72" />
    <wvobject type="logic" fp_name="/tb_top_mips/i_clk">
       <obj_property name="ElementShortName">i_clk</obj_property>
       <obj_property name="ObjectShortName">i_clk</obj_property>
@@ -56,235 +56,190 @@
       <obj_property name="ElementShortName">i_PCSrc</obj_property>
       <obj_property name="ObjectShortName">i_PCSrc</obj_property>
    </wvobject>
+   <wvobject type="array" fp_name="/tb_top_mips/u_tl_instruction_decode/flag_jump">
+      <obj_property name="ElementShortName">flag_jump[2:0]</obj_property>
+      <obj_property name="ObjectShortName">flag_jump[2:0]</obj_property>
+      <obj_property name="CustomSignalColor">#FFD700</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_top_mips/u_tl_instruction_decode/o_flag_jump">
+      <obj_property name="ElementShortName">o_flag_jump</obj_property>
+      <obj_property name="ObjectShortName">o_flag_jump</obj_property>
+      <obj_property name="CustomSignalColor">#FFD700</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_top_mips/u_tl_instruction_decode/o_dir_jump">
+      <obj_property name="ElementShortName">o_dir_jump[31:0]</obj_property>
+      <obj_property name="ObjectShortName">o_dir_jump[31:0]</obj_property>
+      <obj_property name="CustomSignalColor">#FFD700</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
    <wvobject type="array" fp_name="/tb_top_mips/u_tl_instruction_decode/u_banco_registros/registros">
       <obj_property name="ElementShortName">registros[31:0][31:0]</obj_property>
       <obj_property name="ObjectShortName">registros[31:0][31:0]</obj_property>
       <obj_property name="CustomSignalColor">#FFD700</obj_property>
       <obj_property name="UseCustomSignalColor">true</obj_property>
       <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+      <obj_property name="isExpanded"></obj_property>
       <wvobject type="array" fp_name="/tb_top_mips/u_tl_instruction_decode/u_banco_registros/registros[31]">
          <obj_property name="ElementShortName">[31][31:0]</obj_property>
          <obj_property name="ObjectShortName">[31][31:0]</obj_property>
          <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-         <obj_property name="CustomSignalColor">#FFD700</obj_property>
-         <obj_property name="UseCustomSignalColor">true</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/tb_top_mips/u_tl_instruction_decode/u_banco_registros/registros[30]">
          <obj_property name="ElementShortName">[30][31:0]</obj_property>
          <obj_property name="ObjectShortName">[30][31:0]</obj_property>
          <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-         <obj_property name="CustomSignalColor">#FFD700</obj_property>
-         <obj_property name="UseCustomSignalColor">true</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/tb_top_mips/u_tl_instruction_decode/u_banco_registros/registros[29]">
          <obj_property name="ElementShortName">[29][31:0]</obj_property>
          <obj_property name="ObjectShortName">[29][31:0]</obj_property>
          <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-         <obj_property name="CustomSignalColor">#FFD700</obj_property>
-         <obj_property name="UseCustomSignalColor">true</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/tb_top_mips/u_tl_instruction_decode/u_banco_registros/registros[28]">
          <obj_property name="ElementShortName">[28][31:0]</obj_property>
          <obj_property name="ObjectShortName">[28][31:0]</obj_property>
          <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-         <obj_property name="CustomSignalColor">#FFD700</obj_property>
-         <obj_property name="UseCustomSignalColor">true</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/tb_top_mips/u_tl_instruction_decode/u_banco_registros/registros[27]">
          <obj_property name="ElementShortName">[27][31:0]</obj_property>
          <obj_property name="ObjectShortName">[27][31:0]</obj_property>
          <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-         <obj_property name="CustomSignalColor">#FFD700</obj_property>
-         <obj_property name="UseCustomSignalColor">true</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/tb_top_mips/u_tl_instruction_decode/u_banco_registros/registros[26]">
          <obj_property name="ElementShortName">[26][31:0]</obj_property>
          <obj_property name="ObjectShortName">[26][31:0]</obj_property>
          <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-         <obj_property name="CustomSignalColor">#FFD700</obj_property>
-         <obj_property name="UseCustomSignalColor">true</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/tb_top_mips/u_tl_instruction_decode/u_banco_registros/registros[25]">
          <obj_property name="ElementShortName">[25][31:0]</obj_property>
          <obj_property name="ObjectShortName">[25][31:0]</obj_property>
          <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-         <obj_property name="CustomSignalColor">#FFD700</obj_property>
-         <obj_property name="UseCustomSignalColor">true</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/tb_top_mips/u_tl_instruction_decode/u_banco_registros/registros[24]">
          <obj_property name="ElementShortName">[24][31:0]</obj_property>
          <obj_property name="ObjectShortName">[24][31:0]</obj_property>
          <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-         <obj_property name="CustomSignalColor">#FFD700</obj_property>
-         <obj_property name="UseCustomSignalColor">true</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/tb_top_mips/u_tl_instruction_decode/u_banco_registros/registros[23]">
          <obj_property name="ElementShortName">[23][31:0]</obj_property>
          <obj_property name="ObjectShortName">[23][31:0]</obj_property>
          <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-         <obj_property name="CustomSignalColor">#FFD700</obj_property>
-         <obj_property name="UseCustomSignalColor">true</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/tb_top_mips/u_tl_instruction_decode/u_banco_registros/registros[22]">
          <obj_property name="ElementShortName">[22][31:0]</obj_property>
          <obj_property name="ObjectShortName">[22][31:0]</obj_property>
          <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-         <obj_property name="CustomSignalColor">#FFD700</obj_property>
-         <obj_property name="UseCustomSignalColor">true</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/tb_top_mips/u_tl_instruction_decode/u_banco_registros/registros[21]">
          <obj_property name="ElementShortName">[21][31:0]</obj_property>
          <obj_property name="ObjectShortName">[21][31:0]</obj_property>
          <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-         <obj_property name="CustomSignalColor">#FFD700</obj_property>
-         <obj_property name="UseCustomSignalColor">true</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/tb_top_mips/u_tl_instruction_decode/u_banco_registros/registros[20]">
          <obj_property name="ElementShortName">[20][31:0]</obj_property>
          <obj_property name="ObjectShortName">[20][31:0]</obj_property>
          <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-         <obj_property name="CustomSignalColor">#FFD700</obj_property>
-         <obj_property name="UseCustomSignalColor">true</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/tb_top_mips/u_tl_instruction_decode/u_banco_registros/registros[19]">
          <obj_property name="ElementShortName">[19][31:0]</obj_property>
          <obj_property name="ObjectShortName">[19][31:0]</obj_property>
          <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-         <obj_property name="CustomSignalColor">#FFD700</obj_property>
-         <obj_property name="UseCustomSignalColor">true</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/tb_top_mips/u_tl_instruction_decode/u_banco_registros/registros[18]">
          <obj_property name="ElementShortName">[18][31:0]</obj_property>
          <obj_property name="ObjectShortName">[18][31:0]</obj_property>
          <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-         <obj_property name="CustomSignalColor">#FFD700</obj_property>
-         <obj_property name="UseCustomSignalColor">true</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/tb_top_mips/u_tl_instruction_decode/u_banco_registros/registros[17]">
          <obj_property name="ElementShortName">[17][31:0]</obj_property>
          <obj_property name="ObjectShortName">[17][31:0]</obj_property>
          <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-         <obj_property name="CustomSignalColor">#FFD700</obj_property>
-         <obj_property name="UseCustomSignalColor">true</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/tb_top_mips/u_tl_instruction_decode/u_banco_registros/registros[16]">
          <obj_property name="ElementShortName">[16][31:0]</obj_property>
          <obj_property name="ObjectShortName">[16][31:0]</obj_property>
          <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-         <obj_property name="CustomSignalColor">#FFD700</obj_property>
-         <obj_property name="UseCustomSignalColor">true</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/tb_top_mips/u_tl_instruction_decode/u_banco_registros/registros[15]">
          <obj_property name="ElementShortName">[15][31:0]</obj_property>
          <obj_property name="ObjectShortName">[15][31:0]</obj_property>
          <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-         <obj_property name="CustomSignalColor">#FFD700</obj_property>
-         <obj_property name="UseCustomSignalColor">true</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/tb_top_mips/u_tl_instruction_decode/u_banco_registros/registros[14]">
          <obj_property name="ElementShortName">[14][31:0]</obj_property>
          <obj_property name="ObjectShortName">[14][31:0]</obj_property>
          <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-         <obj_property name="CustomSignalColor">#FFD700</obj_property>
-         <obj_property name="UseCustomSignalColor">true</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/tb_top_mips/u_tl_instruction_decode/u_banco_registros/registros[13]">
          <obj_property name="ElementShortName">[13][31:0]</obj_property>
          <obj_property name="ObjectShortName">[13][31:0]</obj_property>
          <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-         <obj_property name="CustomSignalColor">#FFD700</obj_property>
-         <obj_property name="UseCustomSignalColor">true</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/tb_top_mips/u_tl_instruction_decode/u_banco_registros/registros[12]">
          <obj_property name="ElementShortName">[12][31:0]</obj_property>
          <obj_property name="ObjectShortName">[12][31:0]</obj_property>
          <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-         <obj_property name="CustomSignalColor">#FFD700</obj_property>
-         <obj_property name="UseCustomSignalColor">true</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/tb_top_mips/u_tl_instruction_decode/u_banco_registros/registros[11]">
          <obj_property name="ElementShortName">[11][31:0]</obj_property>
          <obj_property name="ObjectShortName">[11][31:0]</obj_property>
          <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-         <obj_property name="CustomSignalColor">#FFD700</obj_property>
-         <obj_property name="UseCustomSignalColor">true</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/tb_top_mips/u_tl_instruction_decode/u_banco_registros/registros[10]">
          <obj_property name="ElementShortName">[10][31:0]</obj_property>
          <obj_property name="ObjectShortName">[10][31:0]</obj_property>
          <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-         <obj_property name="CustomSignalColor">#FFD700</obj_property>
-         <obj_property name="UseCustomSignalColor">true</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/tb_top_mips/u_tl_instruction_decode/u_banco_registros/registros[9]">
          <obj_property name="ElementShortName">[9][31:0]</obj_property>
          <obj_property name="ObjectShortName">[9][31:0]</obj_property>
          <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-         <obj_property name="CustomSignalColor">#FFD700</obj_property>
-         <obj_property name="UseCustomSignalColor">true</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/tb_top_mips/u_tl_instruction_decode/u_banco_registros/registros[8]">
          <obj_property name="ElementShortName">[8][31:0]</obj_property>
          <obj_property name="ObjectShortName">[8][31:0]</obj_property>
          <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-         <obj_property name="CustomSignalColor">#FFD700</obj_property>
-         <obj_property name="UseCustomSignalColor">true</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/tb_top_mips/u_tl_instruction_decode/u_banco_registros/registros[7]">
          <obj_property name="ElementShortName">[7][31:0]</obj_property>
          <obj_property name="ObjectShortName">[7][31:0]</obj_property>
          <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-         <obj_property name="CustomSignalColor">#FFD700</obj_property>
-         <obj_property name="UseCustomSignalColor">true</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/tb_top_mips/u_tl_instruction_decode/u_banco_registros/registros[6]">
          <obj_property name="ElementShortName">[6][31:0]</obj_property>
          <obj_property name="ObjectShortName">[6][31:0]</obj_property>
          <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-         <obj_property name="CustomSignalColor">#FFD700</obj_property>
-         <obj_property name="UseCustomSignalColor">true</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/tb_top_mips/u_tl_instruction_decode/u_banco_registros/registros[5]">
          <obj_property name="ElementShortName">[5][31:0]</obj_property>
          <obj_property name="ObjectShortName">[5][31:0]</obj_property>
          <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-         <obj_property name="CustomSignalColor">#FFD700</obj_property>
-         <obj_property name="UseCustomSignalColor">true</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/tb_top_mips/u_tl_instruction_decode/u_banco_registros/registros[4]">
          <obj_property name="ElementShortName">[4][31:0]</obj_property>
          <obj_property name="ObjectShortName">[4][31:0]</obj_property>
          <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-         <obj_property name="CustomSignalColor">#FFD700</obj_property>
-         <obj_property name="UseCustomSignalColor">true</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/tb_top_mips/u_tl_instruction_decode/u_banco_registros/registros[3]">
          <obj_property name="ElementShortName">[3][31:0]</obj_property>
          <obj_property name="ObjectShortName">[3][31:0]</obj_property>
          <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-         <obj_property name="CustomSignalColor">#FFD700</obj_property>
-         <obj_property name="UseCustomSignalColor">true</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/tb_top_mips/u_tl_instruction_decode/u_banco_registros/registros[2]">
          <obj_property name="ElementShortName">[2][31:0]</obj_property>
          <obj_property name="ObjectShortName">[2][31:0]</obj_property>
          <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-         <obj_property name="CustomSignalColor">#FFD700</obj_property>
-         <obj_property name="UseCustomSignalColor">true</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/tb_top_mips/u_tl_instruction_decode/u_banco_registros/registros[1]">
          <obj_property name="ElementShortName">[1][31:0]</obj_property>
          <obj_property name="ObjectShortName">[1][31:0]</obj_property>
          <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-         <obj_property name="CustomSignalColor">#FFD700</obj_property>
-         <obj_property name="UseCustomSignalColor">true</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/tb_top_mips/u_tl_instruction_decode/u_banco_registros/registros[0]">
          <obj_property name="ElementShortName">[0][31:0]</obj_property>
          <obj_property name="ObjectShortName">[0][31:0]</obj_property>
          <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-         <obj_property name="CustomSignalColor">#FFD700</obj_property>
-         <obj_property name="UseCustomSignalColor">true</obj_property>
       </wvobject>
    </wvobject>
    <wvobject type="array" fp_name="/tb_top_mips/u_tl_instruction_decode/i_instruccion">
@@ -371,14 +326,14 @@
       <obj_property name="UseCustomSignalColor">true</obj_property>
    </wvobject>
    <wvobject type="array" fp_name="/tb_top_mips/u_tl_instruction_decode/ctrl_mem">
-      <obj_property name="ElementShortName">ctrl_mem[2:0]</obj_property>
-      <obj_property name="ObjectShortName">ctrl_mem[2:0]</obj_property>
+      <obj_property name="ElementShortName">ctrl_mem[8:0]</obj_property>
+      <obj_property name="ObjectShortName">ctrl_mem[8:0]</obj_property>
       <obj_property name="CustomSignalColor">#FFD700</obj_property>
       <obj_property name="UseCustomSignalColor">true</obj_property>
    </wvobject>
    <wvobject type="array" fp_name="/tb_top_mips/u_tl_instruction_decode/ctrl_ex">
-      <obj_property name="ElementShortName">ctrl_ex[6:0]</obj_property>
-      <obj_property name="ObjectShortName">ctrl_ex[6:0]</obj_property>
+      <obj_property name="ElementShortName">ctrl_ex[10:0]</obj_property>
+      <obj_property name="ObjectShortName">ctrl_ex[10:0]</obj_property>
       <obj_property name="CustomSignalColor">#FFD700</obj_property>
       <obj_property name="UseCustomSignalColor">true</obj_property>
    </wvobject>
@@ -389,14 +344,14 @@
       <obj_property name="UseCustomSignalColor">true</obj_property>
    </wvobject>
    <wvobject type="array" fp_name="/tb_top_mips/u_tl_instruction_decode/o_ctrl_mem">
-      <obj_property name="ElementShortName">o_ctrl_mem[2:0]</obj_property>
-      <obj_property name="ObjectShortName">o_ctrl_mem[2:0]</obj_property>
+      <obj_property name="ElementShortName">o_ctrl_mem[8:0]</obj_property>
+      <obj_property name="ObjectShortName">o_ctrl_mem[8:0]</obj_property>
       <obj_property name="CustomSignalColor">#FFD700</obj_property>
       <obj_property name="UseCustomSignalColor">true</obj_property>
    </wvobject>
    <wvobject type="array" fp_name="/tb_top_mips/u_tl_instruction_decode/o_ctrl_ex">
-      <obj_property name="ElementShortName">o_ctrl_ex[6:0]</obj_property>
-      <obj_property name="ObjectShortName">o_ctrl_ex[6:0]</obj_property>
+      <obj_property name="ElementShortName">o_ctrl_ex[10:0]</obj_property>
+      <obj_property name="ObjectShortName">o_ctrl_ex[10:0]</obj_property>
       <obj_property name="CustomSignalColor">#FFD700</obj_property>
       <obj_property name="UseCustomSignalColor">true</obj_property>
    </wvobject>
@@ -412,6 +367,13 @@
       <obj_property name="CustomSignalColor">#FFD700</obj_property>
       <obj_property name="UseCustomSignalColor">true</obj_property>
    </wvobject>
+   <wvobject type="array" fp_name="/tb_top_mips/u_tl_execute/i_sign_extend">
+      <obj_property name="ElementShortName">i_sign_extend[31:0]</obj_property>
+      <obj_property name="ObjectShortName">i_sign_extend[31:0]</obj_property>
+      <obj_property name="CustomSignalColor">#800080</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
    <wvobject type="array" fp_name="/tb_top_mips/u_tl_execute/i_adder_id">
       <obj_property name="ElementShortName">i_adder_id[31:0]</obj_property>
       <obj_property name="ObjectShortName">i_adder_id[31:0]</obj_property>
@@ -423,12 +385,14 @@
       <obj_property name="ObjectShortName">i_dato1[31:0]</obj_property>
       <obj_property name="CustomSignalColor">#800080</obj_property>
       <obj_property name="UseCustomSignalColor">true</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
    </wvobject>
    <wvobject type="array" fp_name="/tb_top_mips/u_tl_execute/i_dato2">
       <obj_property name="ElementShortName">i_dato2[31:0]</obj_property>
       <obj_property name="ObjectShortName">i_dato2[31:0]</obj_property>
       <obj_property name="CustomSignalColor">#800080</obj_property>
       <obj_property name="UseCustomSignalColor">true</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
    </wvobject>
    <wvobject type="array" fp_name="/tb_top_mips/u_tl_execute/i_ctrl_wb">
       <obj_property name="ElementShortName">i_ctrl_wb[1:0]</obj_property>
@@ -437,14 +401,14 @@
       <obj_property name="UseCustomSignalColor">true</obj_property>
    </wvobject>
    <wvobject type="array" fp_name="/tb_top_mips/u_tl_execute/i_ctrl_mem">
-      <obj_property name="ElementShortName">i_ctrl_mem[2:0]</obj_property>
-      <obj_property name="ObjectShortName">i_ctrl_mem[2:0]</obj_property>
+      <obj_property name="ElementShortName">i_ctrl_mem[8:0]</obj_property>
+      <obj_property name="ObjectShortName">i_ctrl_mem[8:0]</obj_property>
       <obj_property name="CustomSignalColor">#800080</obj_property>
       <obj_property name="UseCustomSignalColor">true</obj_property>
    </wvobject>
    <wvobject type="array" fp_name="/tb_top_mips/u_tl_execute/i_ctrl_ex">
-      <obj_property name="ElementShortName">i_ctrl_ex[6:0]</obj_property>
-      <obj_property name="ObjectShortName">i_ctrl_ex[6:0]</obj_property>
+      <obj_property name="ElementShortName">i_ctrl_ex[10:0]</obj_property>
+      <obj_property name="ObjectShortName">i_ctrl_ex[10:0]</obj_property>
       <obj_property name="CustomSignalColor">#800080</obj_property>
       <obj_property name="UseCustomSignalColor">true</obj_property>
    </wvobject>
@@ -463,12 +427,6 @@
    <wvobject type="array" fp_name="/tb_top_mips/u_tl_execute/write_reg">
       <obj_property name="ElementShortName">write_reg[4:0]</obj_property>
       <obj_property name="ObjectShortName">write_reg[4:0]</obj_property>
-      <obj_property name="CustomSignalColor">#800080</obj_property>
-      <obj_property name="UseCustomSignalColor">true</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/tb_top_mips/u_tl_execute/mux_alu">
-      <obj_property name="ElementShortName">mux_alu[31:0]</obj_property>
-      <obj_property name="ObjectShortName">mux_alu[31:0]</obj_property>
       <obj_property name="CustomSignalColor">#800080</obj_property>
       <obj_property name="UseCustomSignalColor">true</obj_property>
    </wvobject>
@@ -503,14 +461,8 @@
       <obj_property name="UseCustomSignalColor">true</obj_property>
    </wvobject>
    <wvobject type="array" fp_name="/tb_top_mips/u_tl_execute/o_ctrl_mem">
-      <obj_property name="ElementShortName">o_ctrl_mem[2:0]</obj_property>
-      <obj_property name="ObjectShortName">o_ctrl_mem[2:0]</obj_property>
-      <obj_property name="CustomSignalColor">#800080</obj_property>
-      <obj_property name="UseCustomSignalColor">true</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/tb_top_mips/u_tl_execute/o_add_execute">
-      <obj_property name="ElementShortName">o_add_execute[31:0]</obj_property>
-      <obj_property name="ObjectShortName">o_add_execute[31:0]</obj_property>
+      <obj_property name="ElementShortName">o_ctrl_mem[8:0]</obj_property>
+      <obj_property name="ObjectShortName">o_ctrl_mem[8:0]</obj_property>
       <obj_property name="CustomSignalColor">#800080</obj_property>
       <obj_property name="UseCustomSignalColor">true</obj_property>
    </wvobject>
@@ -519,10 +471,23 @@
       <obj_property name="ObjectShortName">o_alu_result[31:0]</obj_property>
       <obj_property name="CustomSignalColor">#800080</obj_property>
       <obj_property name="UseCustomSignalColor">true</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
    </wvobject>
    <wvobject type="array" fp_name="/tb_top_mips/u_tl_execute/o_dato2">
       <obj_property name="ElementShortName">o_dato2[31:0]</obj_property>
       <obj_property name="ObjectShortName">o_dato2[31:0]</obj_property>
+      <obj_property name="CustomSignalColor">#800080</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_top_mips/u_tl_execute/pc_branch">
+      <obj_property name="ElementShortName">pc_branch[31:0]</obj_property>
+      <obj_property name="ObjectShortName">pc_branch[31:0]</obj_property>
+      <obj_property name="CustomSignalColor">#800080</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_top_mips/u_tl_execute/o_pc_branch">
+      <obj_property name="ElementShortName">o_pc_branch[31:0]</obj_property>
+      <obj_property name="ObjectShortName">o_pc_branch[31:0]</obj_property>
       <obj_property name="CustomSignalColor">#800080</obj_property>
       <obj_property name="UseCustomSignalColor">true</obj_property>
    </wvobject>
@@ -545,8 +510,8 @@
       <obj_property name="UseCustomSignalColor">true</obj_property>
    </wvobject>
    <wvobject type="array" fp_name="/tb_top_mips/u_tl_memory/i_ctrl_mem">
-      <obj_property name="ElementShortName">i_ctrl_mem[2:0]</obj_property>
-      <obj_property name="ObjectShortName">i_ctrl_mem[2:0]</obj_property>
+      <obj_property name="ElementShortName">i_ctrl_mem[8:0]</obj_property>
+      <obj_property name="ObjectShortName">i_ctrl_mem[8:0]</obj_property>
       <obj_property name="CustomSignalColor">#00FFFF</obj_property>
       <obj_property name="UseCustomSignalColor">true</obj_property>
    </wvobject>
