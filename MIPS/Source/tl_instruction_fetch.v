@@ -31,6 +31,8 @@ module tl_instruction_fetch
         input [LEN-1:0] i_branch_dir, //Salto condicional
         input i_PCSrc,
         input i_flag_stall,
+        input i_flag_jump,
+        input [LEN-1:0] i_dir_jump,  //Salto incondicional
         output reg [LEN-1:0] o_instruccion,
         output reg [LEN-1:0] o_adder
     );
@@ -49,13 +51,15 @@ module tl_instruction_fetch
     wire rsta_mem;
     wire regcea_mem;
     wire [LEN-1:0] cablecito1;                      //VER
-    
+   
+    wire flush; 
     //Control Memoria
     assign rsta_mem =0;
     assign regcea_mem=1;
     assign cablecito1 =0;
     
- 
+    assign flush = i_PCSrc | i_flag_jump;
+    
  always @(negedge i_clk)
  begin
     if(!i_rst)
@@ -65,7 +69,7 @@ module tl_instruction_fetch
     end
     else
     begin
-        if(i_PCSrc) //flush
+        if(flush) //flush
         begin
             o_adder <= 32'b0;
             o_instruccion <= 32'b0;
@@ -87,15 +91,16 @@ module tl_instruction_fetch
  end
  
  //mux_PC
- mux
+ mux_pc
  #(
     .LEN(LEN)
   )
   u_mux
   (
-    .i_a(adder),
-    .i_b(i_branch_dir),  
-    .i_selector(i_PCSrc),  
+    .i_pc(adder),
+    .i_jump(i_dir_jump),  
+    .i_branch(i_branch_dir),
+    .i_selector({i_flag_jump,i_PCSrc}),  
     .o_mux(mux_pc)
   );
  

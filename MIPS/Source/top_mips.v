@@ -38,7 +38,7 @@
 //Tamanio de los registros de control
 `define NB_CTRL_WB  2
 `define NB_CTRL_MEM  9
-`define NB_CTRL_EX 8 
+`define NB_CTRL_EX 11
 
 module top_mips
 (
@@ -91,6 +91,8 @@ wire [NB_CTRL_WB-1:0] ctrl_wb_id_ex;
 wire [NB_CTRL_MEM-1:0] ctrl_mem_id_ex;
 wire [NB_CTRL_EX-1:0] ctrl_ex_id_ex;
 wire flag_stall;
+wire [LEN-1:0] dir_jump;
+wire flag_jump;
 
 //Cables hacia/desde execute 
 wire [LEN-1:0] dato2_ex_mem;
@@ -167,6 +169,8 @@ tl_instruction_fetch
     .i_branch_dir(branch_dir),
     .i_PCSrc(PCSrc),
     .i_flag_stall(flag_stall),
+    .i_flag_jump(flag_jump),
+    .i_dir_jump(dir_jump),
     .o_instruccion(instruccion),
     .o_adder(out_adder_if_id)
 );
@@ -205,8 +209,10 @@ tl_instruction_decode
     .o_sign_extend(sign_extend),
     .o_ctrl_wb(ctrl_wb_id_ex), //RegWrite Y MemtoReg
     .o_ctrl_mem(ctrl_mem_id_ex), //BranchNotEqual, SB, SH, LB, LH, Unsigned , Branch , MemRead Y MemWrite
-    .o_ctrl_ex(ctrl_ex_id_ex), // RegDst ,ALUSrc1(MUX de la entrada A de la ALU), ALUSrc2(MUX de la entrada B de la ALU), Jump y alu_code(4)
-    .o_flag_stall(flag_stall)
+    .o_ctrl_ex(ctrl_ex_id_ex), //JAL,Jump, JR, JALR,RegDst ,Jump,RegDst ,ALUSrc1(MUX de la entrada A de la ALU), ALUSrc2(MUX de la entrada B de la ALU) y alu_code(4)
+    .o_flag_stall(flag_stall),
+    .o_dir_jump(dir_jump),
+    .o_flag_jump(flag_jump)
 );
 
 //Execute
@@ -271,7 +277,7 @@ tl_memory
     .o_read_data(read_data_memory),
     .o_write_reg(write_reg_mem_wb),
     .o_ctrl_wb(ctrl_wb_mem_wb),
-    .o_PCSrc(PCSrc) //Branch
+    .o_PCSrc(PCSrc) //Branch, indica si se hace el flush
 );
 
 //Write Back

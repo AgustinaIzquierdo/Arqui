@@ -38,7 +38,7 @@ module tl_execute
     input [LEN-1:0] i_sign_extend,
     input [NB_CTRL_WB-1:0] i_ctrl_wb,
     input [NB_CTRL_MEM-1:0] i_ctrl_mem,
-    input [NB_CTRL_EX-1:0] i_ctrl_ex, // RegDst , ALUSrc1, ALUSrc2, Jump y alu_code(4)
+    input [NB_CTRL_EX-1:0] i_ctrl_ex, //JAL,Jump, JR, JALR,RegDst ,Jump,RegDst ,ALUSrc1(MUX de la entrada A de la ALU), ALUSrc2(MUX de la entrada B de la ALU) y alu_code(4)
     input [NB_ADDRESS_REGISTROS-1:0] i_rd,
     input [NB_ADDRESS_REGISTROS-1:0] i_rt,
     input [NB_ADDRESS_REGISTROS-1:0] i_shamt,
@@ -63,6 +63,8 @@ wire [LEN-1:0] pc_branch;
 //Cables-Reg hacia/desde mux
 wire [LEN-1:0] mux_alu_B;
 wire [LEN-1:0] mux_alu_A;
+wire [LEN-1:0] mux_A;
+wire [LEN-1:0] mux_B;
 wire [NB_ADDRESS_REGISTROS-1:0] write_reg;
 
 //Cables-Reg hacia/desde alu
@@ -132,7 +134,7 @@ end
   (
     .i_a(i_rt),
     .i_b(i_rd),  
-    .i_selector(i_ctrl_ex[7]),  //RegDst
+    .i_selector(i_ctrl_ex[6]),  //RegDst
     .o_mux(write_reg)
   );
     
@@ -155,8 +157,8 @@ u_mux_datoA
 (
     .i_a(mux_aluA_corto),
     .i_b({{(27){1'b0}},i_shamt}),
-    .i_selector(i_ctrl_ex[6]), //AluScr1
-    .o_mux(mux_alu_A)   
+    .i_selector(i_ctrl_ex[5]), //AluScr1
+    .o_mux(mux_A)   
 );
 
 mux
@@ -167,8 +169,33 @@ u_mux_datoB
 (
     .i_a(mux_aluB_corto),
     .i_b(i_sign_extend),
-    .i_selector(i_ctrl_ex[5]), //AluScr2
+    .i_selector(i_ctrl_ex[4]), //AluScr2
+    .o_mux(mux_B)   
+);
+
+mux
+#(  
+    .LEN(LEN)
+)
+u_mux_datoB_out
+(
+    .i_a(mux_B),
+    .i_b(i_adder_id),
+    .i_selector(i_ctrl_ex[10] | i_ctrl_ex[7]), //JAL
     .o_mux(mux_alu_B)   
+);
+
+
+mux
+#(  
+    .LEN(LEN)
+)
+u_mux_datoA_out
+(
+    .i_a(mux_A),
+    .i_b(4'b1000),
+    .i_selector(i_ctrl_ex[10]| i_ctrl_ex[7] ), //JAL o JALR
+    .o_mux(mux_alu_A)   
 );
 
 alu

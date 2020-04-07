@@ -34,6 +34,7 @@ module banco_registros
     input [NB_ADDRESS_REGISTROS-1:0] i_write_reg,
     input i_reg_write_ctrl,
     input [LEN-1:0] i_write_data,
+    output [LEN-1:0] o_wire_data1,
     output reg [LEN-1:0] o_read_data_1,
     output reg [LEN-1:0] o_read_data_2
 );
@@ -46,6 +47,8 @@ generate
         for (indice=0; indice < CANTIDAD_REGISTROS; indice =indice+1)
             registros[indice] <= {LEN{1'b0+indice}};
 endgenerate
+
+assign o_wire_data1 = registros[i_read_reg_1];
 
 always @(negedge i_clk) //Lectura del banco de registros
 begin

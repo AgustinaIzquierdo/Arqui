@@ -33,7 +33,7 @@ module control
     input [NB_INSTRUCCION-1:0] i_inst_funcion,
     output reg [NB_CTRL_WB-1:0] o_ctrl_wb,//RegWrite Y MemtoReg
     output reg [NB_CTRL_MEM-1:0] o_ctrl_mem,//BranchNotEqual, SB, SH, LB, LH, Unsigned , Branch , MemRead Y MemWrite
-    output reg [NB_CTRL_EX-1:0] o_ctrl_ex // RegDst ,ALUSrc1(MUX de la entrada A de la ALU), ALUSrc2(MUX de la entrada B de la ALU), Jump y alu_code(4)
+    output reg [NB_CTRL_EX-1:0] o_ctrl_ex //JAL,Jump, JR, JALR,,RegDst ,ALUSrc1(MUX de la entrada A de la ALU), ALUSrc2(MUX de la entrada B de la ALU) y alu_code(4)
 );
 
 reg [NB_ALU_OP-1:0] alu_op;
@@ -44,20 +44,38 @@ begin
     case(i_opcode)
         6'b000000: //Tipo-R
         begin
-            alu_op = 2'b10;
-            o_ctrl_wb = 2'b10;
-            o_ctrl_mem = 9'b000000000;
-            if((i_inst_funcion == 6'b000000) || (i_inst_funcion == 6'b000010) || (i_inst_funcion == 6'b000011)) //SLL SRL SRA
-                o_ctrl_ex = {4'b1100,o_alu_control};
-            else    
-                o_ctrl_ex = {4'b1000,o_alu_control};
+            if(i_inst_funcion == 6'b001000) //JR
+            begin
+                alu_op = 2'b10;
+                o_ctrl_wb = 2'b00;
+                o_ctrl_mem = 9'b000000000;
+                o_ctrl_ex = {7'b0010000,o_alu_control};    
+            end
+            else if(i_inst_funcion == 6'b001001) //JALR
+            begin
+                alu_op = 2'b10;
+                o_ctrl_wb = 2'b10;
+                o_ctrl_mem = 9'b000000000;
+                o_ctrl_ex = {7'b0001100,o_alu_control}; 
+            end
+            
+            else
+            begin
+                alu_op = 2'b10;
+                o_ctrl_wb = 2'b10;
+                o_ctrl_mem = 9'b000000000;
+                if((i_inst_funcion == 6'b000000) || (i_inst_funcion == 6'b000010) || (i_inst_funcion == 6'b000011)) //SLL SRL SRA
+                    o_ctrl_ex = {7'b0000110,o_alu_control};
+                else    
+                    o_ctrl_ex = {7'b0000100,o_alu_control}; //SLLV SRLV SRAV
+            end
         end
         
         6'b100000: //LOAD LB
         begin
             alu_op = 2'b00;
             o_ctrl_wb = 2'b11;
-            o_ctrl_ex = {4'b0010,o_alu_control};
+            o_ctrl_ex = {7'b0000001,o_alu_control};
             o_ctrl_mem = 9'b000100010;
         end
         
@@ -65,7 +83,7 @@ begin
         begin
             alu_op = 2'b00;
             o_ctrl_wb = 2'b11;
-            o_ctrl_ex = {4'b0010,o_alu_control};
+            o_ctrl_ex = {7'b0000001,o_alu_control};
             o_ctrl_mem = 9'b000010010; 
         end
         
@@ -73,7 +91,7 @@ begin
         begin
             alu_op = 2'b00;
             o_ctrl_wb = 2'b11;
-            o_ctrl_ex = {4'b0010,o_alu_control};
+            o_ctrl_ex = {7'b0000001,o_alu_control};
             o_ctrl_mem = 9'b000000010;  
         end
         
@@ -81,7 +99,7 @@ begin
         begin
             alu_op = 2'b00;
             o_ctrl_wb = 2'b11;
-            o_ctrl_ex = {4'b0010,o_alu_control};
+            o_ctrl_ex = {7'b0000001,o_alu_control};
             o_ctrl_mem = 9'b000000010;  
         end
         
@@ -89,7 +107,7 @@ begin
         begin
             alu_op = 2'b00;
             o_ctrl_wb = 2'b11;
-            o_ctrl_ex = {4'b0010,o_alu_control};
+            o_ctrl_ex = {7'b0000001,o_alu_control};
             o_ctrl_mem = 9'b000101010;
         end
         
@@ -97,7 +115,7 @@ begin
         begin
             alu_op = 2'b00;
             o_ctrl_wb = 2'b11;
-            o_ctrl_ex = {4'b0010,o_alu_control};
+            o_ctrl_ex = {7'b0000001,o_alu_control};
             o_ctrl_mem = 9'b000011010; 
         end
         
@@ -105,7 +123,7 @@ begin
         begin
             alu_op = 2'b00;
             o_ctrl_wb = 2'b00;
-            o_ctrl_ex = {4'b0010,o_alu_control};
+            o_ctrl_ex = {7'b0000001,o_alu_control};
             o_ctrl_mem = 9'b010000001;
         end
         
@@ -113,7 +131,7 @@ begin
         begin
             alu_op = 2'b00;
             o_ctrl_wb = 2'b00;
-            o_ctrl_ex = {4'b0010,o_alu_control};
+            o_ctrl_ex = {7'b0000001,o_alu_control};
             o_ctrl_mem = 9'b001000001;
         end
         
@@ -121,7 +139,7 @@ begin
         begin
             alu_op = 2'b00;
             o_ctrl_wb = 2'b00;
-            o_ctrl_ex = {4'b0010,o_alu_control};
+            o_ctrl_ex = {7'b0000001,o_alu_control};
             o_ctrl_mem = 9'b000000001;
         end
         
@@ -130,7 +148,7 @@ begin
             alu_op = 2'b00;
             o_ctrl_wb = 2'b10;
             o_ctrl_mem = 9'b000000000;
-            o_ctrl_ex = {4'b0010,o_alu_control};  
+            o_ctrl_ex = {7'b0000001,o_alu_control};  
         end
         
         6'b001100: //ANDI
@@ -138,7 +156,7 @@ begin
             alu_op = 2'b11;
             o_ctrl_wb = 2'b10;
             o_ctrl_mem = 9'b000000000;
-            o_ctrl_ex = {4'b0010,o_alu_control};  
+            o_ctrl_ex = {7'b0000001,o_alu_control};  
         end
         
         6'b001101: //ORI
@@ -146,7 +164,7 @@ begin
             alu_op = 2'b11;
             o_ctrl_wb = 2'b10;
             o_ctrl_mem = 9'b000000000;
-            o_ctrl_ex = {4'b0010,o_alu_control};  
+            o_ctrl_ex = {7'b0000001,o_alu_control};  
         end
         
         6'b001110: //XORI
@@ -154,7 +172,7 @@ begin
             alu_op = 2'b11;
             o_ctrl_wb = 2'b10;
             o_ctrl_mem = 9'b000000000;
-            o_ctrl_ex = {4'b0010,o_alu_control};  
+            o_ctrl_ex = {7'b0000001,o_alu_control};  
         end
         
         6'b001111: //LUI
@@ -162,7 +180,7 @@ begin
             alu_op = 2'b11;
             o_ctrl_wb = 2'b10;
             o_ctrl_mem = 9'b000000000;
-            o_ctrl_ex = {4'b0010,o_alu_control};  
+            o_ctrl_ex = {7'b0000001,o_alu_control};  
         end
         
         6'b001010: //SLTI
@@ -170,7 +188,7 @@ begin
             alu_op = 2'b11;
             o_ctrl_wb = 2'b10;
             o_ctrl_mem = 9'b000000000;
-            o_ctrl_ex = {4'b0010,o_alu_control};  
+            o_ctrl_ex = {7'b0000001,o_alu_control};  
         end
         
         6'b000100: // Tipo-branch on equal
@@ -178,7 +196,7 @@ begin
             alu_op = 2'b01;
             o_ctrl_wb = 2'b00;
             o_ctrl_mem = 9'b000000100;  
-            o_ctrl_ex = {4'b0000,o_alu_control}; 
+            o_ctrl_ex = {7'b0000000,o_alu_control}; 
         end
         
         6'b000101: // Tipo-branch on not equal
@@ -186,23 +204,31 @@ begin
             alu_op = 2'b01;
             o_ctrl_wb = 2'b00;
             o_ctrl_mem = 9'b100000100;  
-            o_ctrl_ex = {4'b0000,o_alu_control}; 
+            o_ctrl_ex = {7'b0000000,o_alu_control}; 
         end
         
-        /*6'b000010: // Tipo-Jump
+        6'b000010: // Tipo-Jump
         begin
             alu_op = 2'b00;
             o_ctrl_wb = 2'b00;
-            o_ctrl_mem = 3'b000; //CAMBIAR
-            o_ctrl_ex = {4'b0001,o_alu_control};
-        end*/
+            o_ctrl_mem = 9'b000; 
+            o_ctrl_ex = {7'b0100000,o_alu_control};
+        end
+        
+        6'b000011: // Tipo-JAL
+        begin
+            alu_op = 2'b00;
+            o_ctrl_wb = 2'b10;
+            o_ctrl_mem = 9'b000; 
+            o_ctrl_ex = {7'b1000000,o_alu_control};
+        end
         
         default:
         begin
             alu_op = 2'b00;
             o_ctrl_wb = 2'b00;
             o_ctrl_mem = 9'b000000000;
-            o_ctrl_ex = {4'b0000,o_alu_control};
+            o_ctrl_ex = {7'b0000000,o_alu_control};
         end
     endcase
 end

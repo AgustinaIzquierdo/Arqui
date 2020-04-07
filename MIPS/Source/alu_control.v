@@ -62,7 +62,7 @@ begin
                 6'b100110: o_alu_code = 4'b1010; //xor
                 6'b100111: o_alu_code = 4'b1011; //nor
                 6'b101010: o_alu_code = 4'b1100; //set on less than
-                default: o_alu_code = 4'b1000;
+                default: o_alu_code = 4'b0110;
             endcase
         end
         2'b11:
