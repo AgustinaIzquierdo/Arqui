@@ -193,7 +193,7 @@ mux
 u_mux_datoA_out
 (
     .i_a(mux_A),
-    .i_b(4'b1000),
+    .i_b(32'b1000),
     .i_selector(i_ctrl_ex[10]| i_ctrl_ex[7] ), //JAL o JALR
     .o_mux(mux_alu_A)   
 );

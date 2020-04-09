@@ -28,7 +28,7 @@ module tb_top_mips();
 `define NB_INSTRUCCION  6
 `define NB_ALU_CONTROL  4       
 `define NB_ALU_OP  2
-`define INIT_FILE_IM "/home/andres/Facultad/Arquitectura_de_Computadoras/Andres/Arqui/MIPS/Source/test12.txt"
+`define INIT_FILE_IM "/home/andres/Facultad/Arquitectura_de_Computadoras/Andres/Arqui/MIPS/Source/test15.txt"
 
 //Tamanio de los latches 
 `define NB_IF_ID  64

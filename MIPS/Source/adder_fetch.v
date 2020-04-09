@@ -3,9 +3,9 @@
 // Company: 
 // Engineer: 
 // 
-// Create Date: 25.02.2020 10:57:58
+// Create Date: 09.04.2020 10:34:48
 // Design Name: 
-// Module Name: mux_pc
+// Module Name: adder_fetch
 // Project Name: 
 // Target Devices: 
 // Tool Versions: 
@@ -20,17 +20,17 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module mux
+module adder_fetch
     #(
-        parameter LEN = 32
-     )
-     (
+        parameter LEN=32
+    )
+    (
         input [LEN-1:0] i_a,
         input [LEN-1:0] i_b,
-        input i_selector,
-        output [LEN-1:0] o_mux
-     );
-     
-     assign o_mux = (i_selector) ? i_b : i_a;
-     
+        input i_enable,
+        output [LEN-1:0] o_adder
+    );
+    
+    assign o_adder = i_enable==1'b1 ? i_a + i_b : i_a; 
 endmodule
+

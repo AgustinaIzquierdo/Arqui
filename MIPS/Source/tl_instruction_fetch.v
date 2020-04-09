@@ -51,6 +51,7 @@ module tl_instruction_fetch
     wire rsta_mem;
     wire regcea_mem;
     wire [LEN-1:0] cablecito1;                      //VER
+    wire flag_halt;   
    
     wire flush; 
     //Control Memoria
@@ -76,7 +77,7 @@ module tl_instruction_fetch
         end
         else
         begin
-            if(i_flag_stall)
+            if(i_flag_stall==1'b1)
             begin
                 o_adder <= o_adder;
                 o_instruccion <= o_instruccion;
@@ -135,18 +136,20 @@ module tl_instruction_fetch
   .i_ena(!i_flag_stall),
   .i_rsta(rsta_mem),
   .i_regcea(regcea_mem), 
-  .o_douta(instruccion)  
+  .o_douta(instruccion),
+  .o_halt(flag_halt)  
  );
  
  //sumador
- adder 
+ adder_fetch 
  #(
     .LEN(LEN)
   )
-  u_adder
+  u_adder_fetch
   (
     .i_a(contador_programa), 
     .i_b(32'h00000001),
+    .i_enable(!flag_halt),
     .o_adder(adder) 
   );
     

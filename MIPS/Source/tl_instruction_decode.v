@@ -52,7 +52,7 @@ module tl_instruction_decode
   output reg [LEN-1:0] o_sign_extend,
   output reg [NB_CTRL_WB-1:0] o_ctrl_wb,//RegWrite Y MemtoReg
   output reg [NB_CTRL_MEM-1:0] o_ctrl_mem, //BranchNotEqual, SB, SH, LB, LH, Unsigned , Branch , MemRead Y MemWrite
-  output reg [NB_CTRL_EX-1:0] o_ctrl_ex, //JAL,Jump, JR, JALR,RegDst ,Jump,RegDst ,ALUSrc1(MUX de la entrada A de la ALU), ALUSrc2(MUX de la entrada B de la ALU) y alu_code(4)
+  output reg [NB_CTRL_EX-1:0] o_ctrl_ex, //JAL,Jump, JR, JALR,,RegDst ,ALUSrc1(MUX de la entrada A de la ALU), ALUSrc2(MUX de la entrada B de la ALU) y alu_code(4)
   output o_flag_stall,
   output o_flag_jump, 
   output [LEN-1:0] o_dir_jump
@@ -112,7 +112,7 @@ assign ctrl_mem_int = (o_flag_stall) ? 9'b0 : ctrl_mem;
 assign ctrl_ex_int = (o_flag_stall) ? 11'b0 : ctrl_ex;
 
 assign flag_jump = (ctrl_ex_int[10]==1'b1)? 3'b100 : (ctrl_ex_int[9]==1'b1)? 3'b011 :
-                   (ctrl_ex_int[8]==1'b1)? 3'b010 : (ctrl_ex_int[8]==1'b1)? 3'b001 : 3'b000;
+                   (ctrl_ex_int[8]==1'b1)? 3'b010 : (ctrl_ex_int[7]==1'b1)? 3'b001 : 3'b000;
 
 assign o_dir_jump = (flag_jump == 3'b011) ? {i_adder_pc[31:28],{2'b00,i_instruccion[25:0]}}: //JUMP
                     (flag_jump == 3'b100) ? {2'b00,i_instruccion[25:0]}:                 //JAL
