@@ -30,10 +30,10 @@
 //gil:  "/home/andres/Facultad/Arquitectura_de_Computadoras/Andres/Arqui/MIPS/Source/instruction_memory.txt"
 
 //Tamanio de los latches 
-`define NB_IF_ID  64
-`define NB_ID_EX  192
+`define NB_IF_ID  96
+`define NB_ID_EX  224
 `define NB_EX_MEM  128
-`define NB_MEM_WB  64
+`define NB_MEM_WB  96
 
 //Tamanio de los registros de control
 `define NB_CTRL_WB  2
@@ -76,6 +76,9 @@ wire [LEN-1:0] branch_dir;
 wire PCSrc;
 wire [LEN-1:0] instruccion;
 wire [LEN-1:0] out_adder_if_id;
+wire [LEN-1:0] contador_programa;
+wire flag_halt;
+wire [LEN-1:0] holis;
 
 //Cables hacia/desde instruction_decode 
 wire [LEN-1:0] write_data_banco_reg;
@@ -124,36 +127,47 @@ output [NB_EX_MEM-1:0] o_ex_mem;
 output [NB_MEM_WB-1:0] o_mem_wb;
 
 //Latches intermedios
-assign o_if_id = {out_adder_if_id, //32 bits
-                  instruccion}; //32 bits
+assign o_if_id = {
+                  contador_programa, //32 bits
+                  instruccion,//32 bits
+                  {31{1'b0}},
+                  flag_halt //1bits
+                  }; 
 
 assign o_id_ex = { 
+                   {10{1'b0}},
                    ctrl_wb_id_ex,  //2bits
-                   ctrl_mem_id_ex, //3bits
-                   ctrl_ex_id_ex,  //7bits
-                   out_adder_id_exe, //32 bits 
-                   sign_extend, //32 bits
-                   dato1,       //32 bits
-                   dato2_if_ex,       //32 bits
+                   ctrl_mem_id_ex, //9bits
+                   ctrl_ex_id_ex,  //11 bits
+                   {12{1'b0}},
                    shamt, //5 bits
                    rs,  //5 bits
                    rt,  //5 bits
-                   rd};   //5 bits
+                   rd,   //5 bits
+                   out_adder_id_exe, //32 bits
+                   dir_jump,         //32bits 
+                   sign_extend,      //32 bits
+                   dato1,            //32 bits
+                   dato2_if_ex       //32 bits
+                  };   
                    
 assign o_ex_mem = {
+                   {15{1'b0}},
                    ctrl_wb_ex_mem, //2bits
-                   ctrl_mem_ex_mem, //3bits
+                   ctrl_mem_ex_mem, //9bits
+                   alu_zero, //1 bit
+                   write_reg_ex_mem, //5bit
                    branch_dir,//32 bits
                    result_alu_ex_mem,//32 bits
-                   dato2_ex_mem,//32 
-                   alu_zero, //1
-                   write_reg_ex_mem //5bit
+                   dato2_ex_mem //32 bits
                    };
+
 assign o_mem_wb = {
+                   {25{1'b0}},
                    ctrl_wb_mem_wb, //2 bits
+                   write_reg_mem_wb, //5 bits
                    result_alu_mem_wb,//32 bits
-                   read_data_memory, //32 bits
-                   write_reg_mem_wb //5 bits
+                   read_data_memory //32 bits
                    };
 
 //Instruction fetch
@@ -172,7 +186,9 @@ tl_instruction_fetch
     .i_flag_jump(flag_jump),
     .i_dir_jump(dir_jump),
     .o_instruccion(instruccion),
-    .o_adder(out_adder_if_id)
+    .o_adder(out_adder_if_id),
+    .o_contador_programa(contador_programa), //DEBUG_UNIT
+    .o_flag_halt(flag_halt)
 );
 
 //Instruction decode

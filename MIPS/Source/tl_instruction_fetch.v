@@ -34,24 +34,25 @@ module tl_instruction_fetch
         input i_flag_jump,
         input [LEN-1:0] i_dir_jump,  //Salto incondicional
         output reg [LEN-1:0] o_instruccion,
-        output reg [LEN-1:0] o_adder
+        output reg [LEN-1:0] o_adder,
+        output reg [LEN-1:0] o_contador_programa, //DEBUG UNIT
+        output o_flag_halt
     );
+    
+    //Cables-Reg hacia/desde mux 
+    wire [LEN-1:0] contador_programa;
     
     //Cables-Reg hacia/desde mux 
     wire [LEN-1:0] mux_pc;
     
     //Cables-Reg hacia/desde adder 
     wire [LEN-1:0] adder;
-    
-    //Cables-Reg hacia/desde PC
-    wire [LEN-1:0] contador_programa;
-      
+   
     //Cables-Reg hacia/desde memoria 
     wire [LEN-1:0] instruccion;
     wire rsta_mem;
     wire regcea_mem;
     wire [LEN-1:0] cablecito1;                      //VER
-    wire flag_halt;   
    
     wire flush; 
     //Control Memoria
@@ -67,6 +68,7 @@ module tl_instruction_fetch
     begin
         o_adder <= 32'b0;
         o_instruccion <= 32'b0;
+        o_contador_programa <= 32'b0;
     end
     else
     begin
@@ -81,11 +83,13 @@ module tl_instruction_fetch
             begin
                 o_adder <= o_adder;
                 o_instruccion <= o_instruccion;
+                o_contador_programa <= o_contador_programa;
             end
             else
             begin
                 o_adder <= adder;
                 o_instruccion <= instruccion;
+                o_contador_programa <= contador_programa;
             end
         end
     end
@@ -137,7 +141,7 @@ module tl_instruction_fetch
   .i_rsta(rsta_mem),
   .i_regcea(regcea_mem), 
   .o_douta(instruccion),
-  .o_halt(flag_halt)  
+  .o_halt(o_flag_halt)  
  );
  
  //sumador
@@ -149,7 +153,7 @@ module tl_instruction_fetch
   (
     .i_a(contador_programa), 
     .i_b(32'h00000001),
-    .i_enable(!flag_halt),
+    .i_enable(!o_flag_halt),
     .o_adder(adder) 
   );
     

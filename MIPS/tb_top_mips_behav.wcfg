@@ -12,14 +12,14 @@
    </db_ref_list>
    <zoom_setting>
       <ZoomStartTime time="0fs"></ZoomStartTime>
-      <ZoomEndTime time="201831685fs"></ZoomEndTime>
-      <Cursor1Time time="20000000fs"></Cursor1Time>
+      <ZoomEndTime time="18480001fs"></ZoomEndTime>
+      <Cursor1Time time="10000000fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="175"></NameColumnWidth>
-      <ValueColumnWidth column_width="122"></ValueColumnWidth>
+      <ValueColumnWidth column_width="118"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="73" />
+   <WVObjectSize size="76" />
    <wvobject type="logic" fp_name="/tb_top_mips/i_clk">
       <obj_property name="ElementShortName">i_clk</obj_property>
       <obj_property name="ObjectShortName">i_clk</obj_property>
@@ -28,9 +28,29 @@
       <obj_property name="ElementShortName">i_rst</obj_property>
       <obj_property name="ObjectShortName">i_rst</obj_property>
    </wvobject>
+   <wvobject type="array" fp_name="/tb_top_mips/o_if_id">
+      <obj_property name="ElementShortName">o_if_id[95:0]</obj_property>
+      <obj_property name="ObjectShortName">o_if_id[95:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_top_mips/o_id_ex">
+      <obj_property name="ElementShortName">o_id_ex[223:0]</obj_property>
+      <obj_property name="ObjectShortName">o_id_ex[223:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_top_mips/o_ex_mem">
+      <obj_property name="ElementShortName">o_ex_mem[127:0]</obj_property>
+      <obj_property name="ObjectShortName">o_ex_mem[127:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_top_mips/o_mem_wb">
+      <obj_property name="ElementShortName">o_mem_wb[95:0]</obj_property>
+      <obj_property name="ObjectShortName">o_mem_wb[95:0]</obj_property>
+   </wvobject>
    <wvobject type="array" fp_name="/tb_top_mips/u_tl_instruction_fetch/u_ram_instrucciones/BRAM">
       <obj_property name="ElementShortName">BRAM[2047:0][31:0]</obj_property>
       <obj_property name="ObjectShortName">BRAM[2047:0][31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_top_mips/u_tl_instruction_fetch/o_contador_programa">
+      <obj_property name="ElementShortName">o_contador_programa[31:0]</obj_property>
+      <obj_property name="ObjectShortName">o_contador_programa[31:0]</obj_property>
    </wvobject>
    <wvobject type="array" fp_name="/tb_top_mips/u_tl_instruction_fetch/instruccion">
       <obj_property name="ElementShortName">instruccion[31:0]</obj_property>
@@ -47,14 +67,6 @@
    <wvobject type="array" fp_name="/tb_top_mips/u_tl_instruction_fetch/o_adder">
       <obj_property name="ElementShortName">o_adder[31:0]</obj_property>
       <obj_property name="ObjectShortName">o_adder[31:0]</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/tb_top_mips/u_tl_instruction_fetch/contador_programa">
-      <obj_property name="ElementShortName">contador_programa[31:0]</obj_property>
-      <obj_property name="ObjectShortName">contador_programa[31:0]</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/tb_top_mips/u_tl_instruction_fetch/flag_halt">
-      <obj_property name="ElementShortName">flag_halt</obj_property>
-      <obj_property name="ObjectShortName">flag_halt</obj_property>
    </wvobject>
    <wvobject type="logic" fp_name="/tb_top_mips/u_tl_instruction_fetch/i_PCSrc">
       <obj_property name="ElementShortName">i_PCSrc</obj_property>
@@ -84,167 +96,6 @@
       <obj_property name="CustomSignalColor">#FFD700</obj_property>
       <obj_property name="UseCustomSignalColor">true</obj_property>
       <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-      <obj_property name="isExpanded"></obj_property>
-      <wvobject type="array" fp_name="/tb_top_mips/u_tl_instruction_decode/u_banco_registros/registros[31]">
-         <obj_property name="ElementShortName">[31][31:0]</obj_property>
-         <obj_property name="ObjectShortName">[31][31:0]</obj_property>
-         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/tb_top_mips/u_tl_instruction_decode/u_banco_registros/registros[30]">
-         <obj_property name="ElementShortName">[30][31:0]</obj_property>
-         <obj_property name="ObjectShortName">[30][31:0]</obj_property>
-         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/tb_top_mips/u_tl_instruction_decode/u_banco_registros/registros[29]">
-         <obj_property name="ElementShortName">[29][31:0]</obj_property>
-         <obj_property name="ObjectShortName">[29][31:0]</obj_property>
-         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/tb_top_mips/u_tl_instruction_decode/u_banco_registros/registros[28]">
-         <obj_property name="ElementShortName">[28][31:0]</obj_property>
-         <obj_property name="ObjectShortName">[28][31:0]</obj_property>
-         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/tb_top_mips/u_tl_instruction_decode/u_banco_registros/registros[27]">
-         <obj_property name="ElementShortName">[27][31:0]</obj_property>
-         <obj_property name="ObjectShortName">[27][31:0]</obj_property>
-         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/tb_top_mips/u_tl_instruction_decode/u_banco_registros/registros[26]">
-         <obj_property name="ElementShortName">[26][31:0]</obj_property>
-         <obj_property name="ObjectShortName">[26][31:0]</obj_property>
-         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/tb_top_mips/u_tl_instruction_decode/u_banco_registros/registros[25]">
-         <obj_property name="ElementShortName">[25][31:0]</obj_property>
-         <obj_property name="ObjectShortName">[25][31:0]</obj_property>
-         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/tb_top_mips/u_tl_instruction_decode/u_banco_registros/registros[24]">
-         <obj_property name="ElementShortName">[24][31:0]</obj_property>
-         <obj_property name="ObjectShortName">[24][31:0]</obj_property>
-         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/tb_top_mips/u_tl_instruction_decode/u_banco_registros/registros[23]">
-         <obj_property name="ElementShortName">[23][31:0]</obj_property>
-         <obj_property name="ObjectShortName">[23][31:0]</obj_property>
-         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/tb_top_mips/u_tl_instruction_decode/u_banco_registros/registros[22]">
-         <obj_property name="ElementShortName">[22][31:0]</obj_property>
-         <obj_property name="ObjectShortName">[22][31:0]</obj_property>
-         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/tb_top_mips/u_tl_instruction_decode/u_banco_registros/registros[21]">
-         <obj_property name="ElementShortName">[21][31:0]</obj_property>
-         <obj_property name="ObjectShortName">[21][31:0]</obj_property>
-         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/tb_top_mips/u_tl_instruction_decode/u_banco_registros/registros[20]">
-         <obj_property name="ElementShortName">[20][31:0]</obj_property>
-         <obj_property name="ObjectShortName">[20][31:0]</obj_property>
-         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/tb_top_mips/u_tl_instruction_decode/u_banco_registros/registros[19]">
-         <obj_property name="ElementShortName">[19][31:0]</obj_property>
-         <obj_property name="ObjectShortName">[19][31:0]</obj_property>
-         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/tb_top_mips/u_tl_instruction_decode/u_banco_registros/registros[18]">
-         <obj_property name="ElementShortName">[18][31:0]</obj_property>
-         <obj_property name="ObjectShortName">[18][31:0]</obj_property>
-         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/tb_top_mips/u_tl_instruction_decode/u_banco_registros/registros[17]">
-         <obj_property name="ElementShortName">[17][31:0]</obj_property>
-         <obj_property name="ObjectShortName">[17][31:0]</obj_property>
-         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/tb_top_mips/u_tl_instruction_decode/u_banco_registros/registros[16]">
-         <obj_property name="ElementShortName">[16][31:0]</obj_property>
-         <obj_property name="ObjectShortName">[16][31:0]</obj_property>
-         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/tb_top_mips/u_tl_instruction_decode/u_banco_registros/registros[15]">
-         <obj_property name="ElementShortName">[15][31:0]</obj_property>
-         <obj_property name="ObjectShortName">[15][31:0]</obj_property>
-         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/tb_top_mips/u_tl_instruction_decode/u_banco_registros/registros[14]">
-         <obj_property name="ElementShortName">[14][31:0]</obj_property>
-         <obj_property name="ObjectShortName">[14][31:0]</obj_property>
-         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/tb_top_mips/u_tl_instruction_decode/u_banco_registros/registros[13]">
-         <obj_property name="ElementShortName">[13][31:0]</obj_property>
-         <obj_property name="ObjectShortName">[13][31:0]</obj_property>
-         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/tb_top_mips/u_tl_instruction_decode/u_banco_registros/registros[12]">
-         <obj_property name="ElementShortName">[12][31:0]</obj_property>
-         <obj_property name="ObjectShortName">[12][31:0]</obj_property>
-         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/tb_top_mips/u_tl_instruction_decode/u_banco_registros/registros[11]">
-         <obj_property name="ElementShortName">[11][31:0]</obj_property>
-         <obj_property name="ObjectShortName">[11][31:0]</obj_property>
-         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/tb_top_mips/u_tl_instruction_decode/u_banco_registros/registros[10]">
-         <obj_property name="ElementShortName">[10][31:0]</obj_property>
-         <obj_property name="ObjectShortName">[10][31:0]</obj_property>
-         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/tb_top_mips/u_tl_instruction_decode/u_banco_registros/registros[9]">
-         <obj_property name="ElementShortName">[9][31:0]</obj_property>
-         <obj_property name="ObjectShortName">[9][31:0]</obj_property>
-         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/tb_top_mips/u_tl_instruction_decode/u_banco_registros/registros[8]">
-         <obj_property name="ElementShortName">[8][31:0]</obj_property>
-         <obj_property name="ObjectShortName">[8][31:0]</obj_property>
-         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/tb_top_mips/u_tl_instruction_decode/u_banco_registros/registros[7]">
-         <obj_property name="ElementShortName">[7][31:0]</obj_property>
-         <obj_property name="ObjectShortName">[7][31:0]</obj_property>
-         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/tb_top_mips/u_tl_instruction_decode/u_banco_registros/registros[6]">
-         <obj_property name="ElementShortName">[6][31:0]</obj_property>
-         <obj_property name="ObjectShortName">[6][31:0]</obj_property>
-         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/tb_top_mips/u_tl_instruction_decode/u_banco_registros/registros[5]">
-         <obj_property name="ElementShortName">[5][31:0]</obj_property>
-         <obj_property name="ObjectShortName">[5][31:0]</obj_property>
-         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/tb_top_mips/u_tl_instruction_decode/u_banco_registros/registros[4]">
-         <obj_property name="ElementShortName">[4][31:0]</obj_property>
-         <obj_property name="ObjectShortName">[4][31:0]</obj_property>
-         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/tb_top_mips/u_tl_instruction_decode/u_banco_registros/registros[3]">
-         <obj_property name="ElementShortName">[3][31:0]</obj_property>
-         <obj_property name="ObjectShortName">[3][31:0]</obj_property>
-         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/tb_top_mips/u_tl_instruction_decode/u_banco_registros/registros[2]">
-         <obj_property name="ElementShortName">[2][31:0]</obj_property>
-         <obj_property name="ObjectShortName">[2][31:0]</obj_property>
-         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/tb_top_mips/u_tl_instruction_decode/u_banco_registros/registros[1]">
-         <obj_property name="ElementShortName">[1][31:0]</obj_property>
-         <obj_property name="ObjectShortName">[1][31:0]</obj_property>
-         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/tb_top_mips/u_tl_instruction_decode/u_banco_registros/registros[0]">
-         <obj_property name="ElementShortName">[0][31:0]</obj_property>
-         <obj_property name="ObjectShortName">[0][31:0]</obj_property>
-         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-      </wvobject>
    </wvobject>
    <wvobject type="array" fp_name="/tb_top_mips/u_tl_instruction_decode/i_instruccion">
       <obj_property name="ElementShortName">i_instruccion[31:0]</obj_property>
