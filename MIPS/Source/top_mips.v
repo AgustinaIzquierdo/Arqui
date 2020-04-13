@@ -31,7 +31,7 @@
 
 //Tamanio de los latches 
 `define NB_IF_ID  96
-`define NB_ID_EX  224
+`define NB_ID_EX  160
 `define NB_EX_MEM  128
 `define NB_MEM_WB  96
 
@@ -78,7 +78,6 @@ wire [LEN-1:0] instruccion;
 wire [LEN-1:0] out_adder_if_id;
 wire [LEN-1:0] contador_programa;
 wire flag_halt;
-wire [LEN-1:0] holis;
 
 //Cables hacia/desde instruction_decode 
 wire [LEN-1:0] write_data_banco_reg;
@@ -146,9 +145,9 @@ assign o_id_ex = {
                    rd,   //5 bits
                    out_adder_id_exe, //32 bits
                    dir_jump,         //32bits 
-                   sign_extend,      //32 bits
-                   dato1,            //32 bits
-                   dato2_if_ex       //32 bits
+                   sign_extend      //32 bits
+                   //dato1,            //32 bits
+                 //  dato2_if_ex       //32 bits
                   };   
                    
 assign o_ex_mem = {
