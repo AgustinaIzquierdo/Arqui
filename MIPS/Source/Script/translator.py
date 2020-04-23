@@ -83,19 +83,16 @@ except:
 	print ('Fin.')
 	exit(1)
 
-print ('\nContenido del archivo: ')
-print (cadena_linea)
 
 #Parseo del archivo.
-print ('\nParseo del archivo: ')
+
 arreglo_parseo = cadena_linea.split ('\n')
-print (arreglo_parseo)
+
 hex_instrucciones=[]
+
 for ii in range(len(arreglo_parseo)-1): #-1 porque nos agrega una linea
 	aux_instr=arreglo_parseo[ii].split(" ")
-	print(aux_instr)
 	str_instr=get_struct_instr(aux_instr[0].upper())
-	print(str_instr)
 	if(str(str_instr).find("base")==-1):	#No hay parentesis
 		if(aux_instr[0].upper()=="HALT"):
 			hex_instrucciones.append(hex(str_instr[0][1]))
@@ -105,6 +102,17 @@ for ii in range(len(arreglo_parseo)-1): #-1 porque nos agrega una linea
 	else:									#Si hay parentesis
 		hex_instrucciones.append(get_hex_instr(aux_instr[1],str_instr,1))
 
-	print(hex_instrucciones)
+try:
+	fic = open("ram_instruction.txt", "w")
+	for line in range (len(hex_instrucciones)):
+		fic.write(hex_instrucciones[line].split("x")[1])
+		fic.write("\n")
+	fic.close()
 
+except:
+	print ('Error en el manejo del archivo.')
+	print ('Fin.')
+	exit(1)
+
+print ('Fin')
 exit()
