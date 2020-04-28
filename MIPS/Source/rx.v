@@ -28,10 +28,10 @@ module rx
 (
     input i_clk,
     input i_rst,
-    input i_bit,
-    input i_tick,
-    output reg o_done_data,
-    output [NB_DATA-1:0] o_data
+    input i_bit, //Senial que recibe los bit de entrada
+    input i_tick, //Senial de control que indica cuando muestrear
+    output reg o_done_data, //Dato listo
+    output [NB_DATA-1:0] o_data //Dato de salida
 ); 
 
 	localparam LEN_DATA_COUNTER = $clog2(NB_DATA); 
@@ -42,10 +42,10 @@ module rx
 	localparam	[3:0] DATA	= 4'b 0010;
 	localparam	[3:0] STOP 	= 4'b 0001;
 
-	reg [3:0] state, state_next;
-	reg [LEN_NUM_TICKS_COUNTER - 1:0] acc_tick, acc_tick_next;
-	reg [LEN_DATA_COUNTER - 1:0] num_bits, num_bits_next;
-	reg [NB_DATA - 1:0] buffer, buffer_next;
+	reg [3:0] state, state_next; //Estados a transitar
+	reg [LEN_NUM_TICKS_COUNTER - 1:0] acc_tick, acc_tick_next; //Acumulador de tick
+	reg [LEN_DATA_COUNTER - 1:0] num_bits, num_bits_next; //Bits recibidos
+	reg [NB_DATA - 1:0] buffer, buffer_next; //Almacena el dato recibido
 
 	assign o_data = buffer; 
 

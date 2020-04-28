@@ -5,7 +5,7 @@
 # Autores: Izquierdo Agustina, Salvatierra Andres
 
 #Constantes
-NOMBRE_DE_ARCHIVO="test1.asm"
+NOMBRE_DE_ARCHIVO="test8.asm"
 
 def get_struct_instr(opcode):
 	return {		
@@ -61,7 +61,7 @@ def get_hex_instr(op,struct_instr,flag):
 		operando.append(aux2_op[0])
 		aux3_op=str(aux2_op[1]).split(")")
 		operando.append(aux3_op[0])
-
+	
 	hex_instr = int(struct_instr[0][1])  #Obtenemos el opcode
 	for jj in range(0,len(operando)):		
 		hex_instr = hex_instr + int((int(operando[jj])<<int(struct_instr[jj+1][1])))
@@ -93,6 +93,7 @@ hex_instrucciones=[]
 for ii in range(len(arreglo_parseo)-1): #-1 porque nos agrega una linea
 	aux_instr=arreglo_parseo[ii].split(" ")
 	str_instr=get_struct_instr(aux_instr[0].upper())
+
 	if(str(str_instr).find("base")==-1):	#No hay parentesis
 		if(aux_instr[0].upper()=="HALT"):
 			hex_instrucciones.append(hex(str_instr[0][1]))

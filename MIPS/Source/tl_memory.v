@@ -40,7 +40,8 @@ module tl_memory
         output reg [LEN-1:0] o_read_data,
         output reg [NB_ADDRESS_REGISTROS-1:0] o_write_reg,
         output reg [NB_CTRL_WB-1:0] o_ctrl_wb,
-        output o_PCSrc
+        output o_PCSrc,
+        output [LEN-1:0] o_mem_reco
     );
     
 //Cables-Reg hacia/desde memoria de datos    
@@ -51,7 +52,7 @@ wire [LEN-1:0] write_data_mem;
 
 //Control Memoria
 assign rsta_mem =0;
-assign regcea_mem=1;
+assign regcea_mem=0;
 
 //Control Mux Instruction Fetch
 assign o_PCSrc = i_ctrl_mem[2] && ((i_ctrl_mem[8]) ? (~i_alu_zero) : (i_alu_zero));
@@ -111,7 +112,8 @@ ram_datos
     .i_ena(i_ctrl_mem[1]), 
     .i_rsta(rsta_mem),
     .i_regcea(regcea_mem), 
-    .o_douta(read_data) 
+    .o_douta(read_data),
+    .o_douta_wire(o_mem_reco) 
  );
  
 endmodule
