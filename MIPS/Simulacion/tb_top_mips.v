@@ -28,7 +28,7 @@ module tb_top_mips();
 `define NB_INSTRUCCION  6
 `define NB_ALU_CONTROL  4       
 `define NB_ALU_OP  2
-`define INIT_FILE_IM "/home/andres/Facultad/Arquitectura_de_Computadoras/Andres/Arqui/MIPS/Source/test15.txt"
+`define INIT_FILE_IM "" ///home/andres/Facultad/Arquitectura_de_Computadoras/Andres/Arqui/MIPS/Source/Script/ram_instruction.txt"
 
 //Tamanio de los latches 
 `define NB_IF_ID  96
@@ -116,17 +116,41 @@ wire [1:0] ctrl_muxB_corto;
 
 reg i_clk, i_rst;
 
+
+//CARGAR LA MEMORIA DE INSTRUCCIONES
+reg wea_mem_instr;
+reg [LEN-1:0] dir_mem_instr;
+integer ram_instruct,error1;
+reg [LEN-1:0] cont;
+
+//SACAR DATOS
+integer wr_latch_if_id, wr_latch_id_ex, wr_latch_ex_mem, wr_latch_mem_wb;
 initial
 begin
     i_clk = 1'b0;
     i_rst = 1'b0;
-    #10 i_rst= 1'b1; //Desactiva el reset
+    cont = 32'hffffffff;
+    wea_mem_instr = 1'b1;
     
+    ram_instruct=$fopen("/home/andres/Facultad/Arquitectura_de_Computadoras/Andres/Arqui/MIPS/Source/Script/ram_instruction.txt","r");
+        if(ram_instruct==0) $stop;
+    wr_latch_if_id = $fopen("/home/andres/Facultad/Arquitectura_de_Computadoras/Andres/Arqui/MIPS/Source/Script/if_id.txt", "w");
+       if(wr_latch_if_id==0) $stop;
+    wr_latch_id_ex = $fopen("/home/andres/Facultad/Arquitectura_de_Computadoras/Andres/Arqui/MIPS/Source/Script/id_ex.txt", "w");
+       if(wr_latch_id_ex==0) $stop;
+    wr_latch_ex_mem = $fopen("/home/andres/Facultad/Arquitectura_de_Computadoras/Andres/Arqui/MIPS/Source/Script/ex_mem.txt", "w");
+       if(wr_latch_ex_mem==0) $stop;
+    wr_latch_mem_wb = $fopen("/home/andres/Facultad/Arquitectura_de_Computadoras/Andres/Arqui/MIPS/Source/Script/mem_wb.txt", "w");
+       if(wr_latch_mem_wb==0) $stop;    
+   // #1000 i_rst= 1'b1; //Desactiva el reset
+     //   wea_mem_instr= 1'b0;
     
-    #500 $finish;
+    #300 $finish;
 end
 
 always #2.5 i_clk=~i_clk;
+
+
 
 //Latches intermedios
 assign o_if_id = {
@@ -149,7 +173,8 @@ assign o_id_ex = {
                    dir_jump,         //32bits 
                    sign_extend,      //32 bits
                    dato1,            //32 bits
-                   dato2_if_ex       //32 bits
+                   dato2_if_ex,       //32 bits
+                   flag_stall
                   };   
                    
 assign o_ex_mem = {
@@ -171,6 +196,34 @@ assign o_mem_wb = {
                    read_data_memory //32 bits
                    };
 
+always @(negedge i_clk)
+begin
+    if(!i_rst)
+    begin
+        cont <= cont + 1'b1;
+        error1<=$fscanf(ram_instruct,"%h",dir_mem_instr);
+            if(error1!=1) 
+            begin
+                $stop;
+                i_rst <= 1'b1;
+                wea_mem_instr <= 1'b0;
+            end
+    end
+    else
+        cont <= cont;
+end
+
+always @(negedge i_clk)
+begin
+    if(i_rst)
+    begin
+        $fwrite(wr_latch_if_id, "%h\n", o_if_id);
+        $fwrite(wr_latch_id_ex, "%h\n", o_id_ex);
+        $fwrite(wr_latch_ex_mem, "%h\n", o_ex_mem);
+        $fwrite(wr_latch_mem_wb, "%h\n", o_mem_wb);
+    end
+end
+
 //Instruction fetch
 tl_instruction_fetch
 #(
@@ -186,6 +239,9 @@ tl_instruction_fetch
     .i_flag_stall(flag_stall),
     .i_flag_jump(flag_jump),
     .i_dir_jump(dir_jump),
+    .i_dir_mem_instr(dir_mem_instr),
+    .i_wea_mem_instr(wea_mem_instr),
+    .i_addr_mem_inst(cont),
     .o_instruccion(instruccion),
     .o_adder(out_adder_if_id),
     .o_contador_programa(contador_programa), //DEBUG_UNIT

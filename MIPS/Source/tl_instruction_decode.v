@@ -52,7 +52,7 @@ module tl_instruction_decode
   output reg [LEN-1:0] o_sign_extend,
   output reg [NB_CTRL_WB-1:0] o_ctrl_wb,//RegWrite Y MemtoReg
   output reg [NB_CTRL_MEM-1:0] o_ctrl_mem, //BranchNotEqual, SB, SH, LB, LH, Unsigned , Branch , MemRead Y MemWrite
-  output reg [NB_CTRL_EX-1:0] o_ctrl_ex, //JAL,Jump, JR, JALR,,RegDst ,ALUSrc1(MUX de la entrada A de la ALU), ALUSrc2(MUX de la entrada B de la ALU) y alu_code(4)
+  output reg [NB_CTRL_EX-1:0] o_ctrl_ex, //JAL,Jump, JR, JALR,RegDst ,ALUSrc1(MUX de la entrada A de la ALU), ALUSrc2(MUX de la entrada B de la ALU) y alu_code(4)
   output o_flag_stall,
   output o_flag_jump, 
   output [LEN-1:0] o_dir_jump,
@@ -104,7 +104,7 @@ assign address = i_instruccion[15:0];
 
 assign sign_extend = (i_instruccion[15]==1) ? {{(16){1'b1}},address}: {{(16){1'b0}},address};
 
-assign o_flag_stall = (i_flush) ? 1'b0 : flag_stall;
+assign o_flag_stall = (i_flush) ? 1'b0 : flag_stall; //flush
 assign o_dato1 = (i_flush) ? 32'b0 : dato1;
 assign o_dato2 = (i_flush) ? 32'b0 : dato2;
 

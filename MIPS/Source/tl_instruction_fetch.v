@@ -33,6 +33,9 @@ module tl_instruction_fetch
         input i_flag_stall,
         input i_flag_jump,
         input [LEN-1:0] i_dir_jump,  //Salto incondicional
+        input [LEN-1:0] i_dir_mem_instr,
+        input i_wea_mem_instr,
+        input [LEN-1:0] i_addr_mem_inst,
         output reg [LEN-1:0] o_instruccion,
         output reg [LEN-1:0] o_adder,
         output reg [LEN-1:0] o_contador_programa, //DEBUG UNIT
@@ -52,13 +55,11 @@ module tl_instruction_fetch
     wire [LEN-1:0] instruccion;
     wire rsta_mem;
     wire regcea_mem;
-    wire [LEN-1:0] cablecito1;                      //VER
    
     wire flush; 
     //Control Memoria
     assign rsta_mem =0;
     assign regcea_mem=1;
-    assign cablecito1 =0;
     
     assign flush = i_PCSrc | i_flag_jump;
     
@@ -68,7 +69,7 @@ module tl_instruction_fetch
     begin
         o_adder <= 32'b0;
         o_instruccion <= 32'b0;
-        o_contador_programa <= 32'b0;
+        o_contador_programa <= 32'h0;
     end
     else
     begin
@@ -102,7 +103,7 @@ module tl_instruction_fetch
   )
   u_mux
   (
-    .i_pc(adder),
+    .i_pc(adder),  //adder
     .i_jump(i_dir_jump),  
     .i_branch(i_branch_dir),
     .i_selector({i_flag_jump,i_PCSrc}),  
@@ -133,10 +134,10 @@ module tl_instruction_fetch
  )
  u_ram_instrucciones
  (
-  .i_addra(contador_programa),
-  .i_dina(cablecito1), //Ver de donde viene
+  .i_addra((!i_rst)? i_addr_mem_inst: contador_programa),
+  .i_dina(i_dir_mem_instr), 
   .i_clka(i_clk),
-  .i_wea(cablecito1),  //Ver de donde viene
+  .i_wea(i_wea_mem_instr),  
   .i_ena(!i_flag_stall),
   .i_rsta(rsta_mem),
   .i_regcea(regcea_mem), 

@@ -43,7 +43,7 @@ begin
         
         2'b01: //branch
         begin
-            o_alu_code = 4'b0111;
+            o_alu_code = 4'b0111; //subu
         end
         
         2'b10: //Tipo-R
@@ -61,13 +61,14 @@ begin
                 6'b100101: o_alu_code = 4'b1001; //or
                 6'b100110: o_alu_code = 4'b1010; //xor
                 6'b100111: o_alu_code = 4'b1011; //nor
-                6'b101010: o_alu_code = 4'b1100; //set on less than
+                6'b101010: o_alu_code = 4'b1100; //slt
                 default: o_alu_code = 4'b0110;
             endcase
         end
         2'b11:
         begin
             case(i_opcode)
+                6'b001000: o_alu_code=4'b0100; //addi
                 6'b001100: o_alu_code=4'b1000; //andi
                 6'b001101: o_alu_code=4'b1001; //ori
                 6'b001110: o_alu_code=4'b1010; //xori
@@ -76,6 +77,7 @@ begin
                 default: o_alu_code = 4'b1000; 
             endcase
         end
+        default: o_alu_code = 4'b0110;
     endcase
 end
 

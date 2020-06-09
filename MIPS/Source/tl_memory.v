@@ -50,14 +50,33 @@ wire regcea_mem;
 wire [LEN-1:0] read_data;
 wire [LEN-1:0] write_data_mem;
 
+//Cables de la senial de control mem
+wire memWrite;
+wire memRead;
+wire branch;
+wire Unsigned;
+wire LH;
+wire LB;
+wire SH;
+wire SB;
+wire branchNotEqual;
+
+assign memWrite = i_ctrl_mem[0];
+assign memRead = i_ctrl_mem[1];
+assign branch = i_ctrl_mem[2];
+assign Unsigned = i_ctrl_mem[3];
+assign LH = i_ctrl_mem[4];
+assign LB = i_ctrl_mem[5];
+assign SH = i_ctrl_mem[6];
+assign SB = i_ctrl_mem[7];
+assign branchNotEqual = i_ctrl_mem[8];
+
 //Control Memoria
 assign rsta_mem =0;
 assign regcea_mem=0;
 
-//Control Mux Instruction Fetch
-assign o_PCSrc = i_ctrl_mem[2] && ((i_ctrl_mem[8]) ? (~i_alu_zero) : (i_alu_zero));
-
-//assign o_read_data = read_data;
+//Control Mux Instruction Fetch 
+assign o_PCSrc = branch && ((branchNotEqual) ? (~i_alu_zero) : (i_alu_zero)); //assign o_PCSrc = i_ctrl_mem[2] && ((i_ctrl_mem[8]) ? (~i_alu_zero) : (i_alu_zero));
 
 always @(negedge i_clk)
 if(!i_rst)
@@ -73,16 +92,16 @@ begin
     o_write_reg <= i_write_reg;
     o_ctrl_wb <= i_ctrl_wb;
     
-    if(i_ctrl_mem[5]) //LB
+    if(LB) //LB i_ctrl_mem[5]
     begin
-        if(i_ctrl_mem[3]) //Unsigned
+        if(Unsigned) //Unsigned i_ctrl_mem[3]
             o_read_data <= {{24{1'b0}},read_data[7:0]};
         else
             o_read_data <= {{24{read_data[7]}},read_data[7:0]};	
     end
-    else if(i_ctrl_mem[4]) //LH
+    else if(LH) //LH i_ctrl_mem[4]
     begin
-        if(i_ctrl_mem[3]) //Unsigned
+        if(Unsigned) //Unsigned i_ctrl_mem[3]
             o_read_data <= {{16{1'b0}},read_data[15:0]};
         else
             o_read_data <= {{16{read_data[7]}},read_data[15:0]};	  
@@ -92,8 +111,8 @@ begin
 end
  
                         
-assign write_data_mem = (i_ctrl_mem[6] ? {{16{i_write_data[15]}},i_write_data[15:0]}: //SH
-                         i_ctrl_mem[7] ? {{24{i_write_data[15]}},i_write_data[7:0]}: //SB
+assign write_data_mem = (SH ? {{16{i_write_data[15]}},i_write_data[15:0]}: //SH i_ctrl_mem[6]
+                         SB ? {{24{i_write_data[15]}},i_write_data[7:0]}: //SB i_ctrl_mem[7]
                          i_write_data);
                         
 ram_datos
@@ -108,8 +127,8 @@ ram_datos
     .i_addra(i_address),
     .i_dina(write_data_mem), 
     .i_clka(i_clk),
-    .i_wea(i_ctrl_mem[0]),  
-    .i_ena(i_ctrl_mem[1]), 
+    .i_wea(memWrite),  //i_ctrl_mem[0]
+    .i_ena(memRead), //i_ctrl_mem[1]
     .i_rsta(rsta_mem),
     .i_regcea(regcea_mem), 
     .o_douta(read_data),

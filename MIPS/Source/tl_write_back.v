@@ -35,6 +35,11 @@ module tl_write_back
         output o_RegWrite
     );
 
+//Cables de la senial de control mem
+wire memtoReg;
+
+assign memtoReg = i_ctrl_wb[0];
+
 assign o_write_reg = i_write_reg;
 assign o_RegWrite = i_ctrl_wb[1];
 
@@ -47,7 +52,7 @@ u_mux
 (
     .i_a(i_result_alu),
     .i_b(i_read_data),
-    .i_selector(i_ctrl_wb[0]),
+    .i_selector(memtoReg), //i_ctrl_wb[0]
     .o_mux(o_write_data)
 );
 endmodule

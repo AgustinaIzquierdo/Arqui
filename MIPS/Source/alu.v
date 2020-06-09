@@ -18,8 +18,6 @@
 // Additional Comments:
 // 
 //////////////////////////////////////////////////////////////////////////////////
-
-
 module alu
 #(
     parameter LEN=32,
@@ -33,6 +31,14 @@ module alu
     output reg o_zero_flag
 );
 
+reg signed [LEN-1:0] signed_datoA;
+reg signed [LEN-1:0] signed_datoB;
+
+always @(*) begin
+    signed_datoA = i_datoA;
+    signed_datoB = i_datoB;
+end
+
 always @(*)
 	begin
 		o_zero_flag = 0;
@@ -42,7 +48,8 @@ always @(*)
 		    4'b 0001: o_result = i_datoB >> i_datoA; //SRL SRLV (right logico)
 		    4'b 0010: o_result = i_datoB >>> i_datoA; //SRA SRAV(right aritmetico)
 		    4'b 0011: o_result = i_datoB << 16; //LUI //PROBAR QUE NO SEA CIRCULAR SI NO CONCATENAR 00
-		    4'b 0110: o_result = i_datoA + i_datoB; //ADDU
+		    4'b 0100: o_result = signed_datoA + signed_datoB; //ADDI
+		    4'b 0110: o_result = i_datoA + i_datoB; //ADDU 
 			4'b 0111: 
 			begin
 			     o_result = i_datoA - i_datoB; //SUBU
@@ -52,7 +59,7 @@ always @(*)
 			4'b 1001: o_result = i_datoA | i_datoB; //OR
 			4'b 1010: o_result = i_datoA ^ i_datoB; // XOR
 			4'b 1011: o_result = ~(i_datoA | i_datoB); //NOR		
-			4'b 1100: o_result = i_datoA < i_datoB; //SLT
+			4'b 1100: o_result = signed_datoA < signed_datoB; //SLT SLTI
 			default: o_result = 0;
 		endcase	
 	end

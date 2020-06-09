@@ -29,10 +29,10 @@
 `define CANT_REG 16
 `define CANT_MEM 8
 
-`define NBITS 8
-`define NUM_TICKS 16
-`define BAUD_RATE 9600
-`define CLK_RATE 100000000
+//`define NBITS 8
+//`define NUM_TICKS 16
+//`define BAUD_RATE 9600
+//`define CLK_RATE 100000000
 
 parameter LEN = `LEN;
 parameter CANT_REG = `CANT_REG;
@@ -41,10 +41,10 @@ parameter NB_IF_ID = `NB_IF_ID;
 parameter NB_ID_EX = `NB_ID_EX; 
 parameter NB_EX_MEM = `NB_EX_MEM; 
 parameter NB_MEM_WB = `NB_MEM_WB; 
-parameter NBITS = `NBITS;
-parameter NUM_TICKS = `NUM_TICKS;
-parameter BAUD_RATE = `BAUD_RATE;
-parameter CLK_RATE = `CLK_RATE;
+//parameter NBITS = `NBITS;
+//parameter NUM_TICKS = `NUM_TICKS;
+//parameter BAUD_RATE = `BAUD_RATE;
+//parameter CLK_RATE = `CLK_RATE;
 
 module top_gral
 (
@@ -84,52 +84,52 @@ top_mips
     .o_mem_datos_recolector(mem_datos_recolector)
 );
 
-uart
-#(
-   .NBITS(NBITS),
-   .NUM_TICKS(NUM_TICKS),
-   .BAUD_RATE(BAUD_RATE),
-   .CLK_RATE(CLK_RATE)
-)
-    u_uart
-(
-    .i_clk(),
-    .i_rst(),
-    .i_tx_start(),
-    .i_rx_bit(),
-    .i_data_in_tx(),
-    .o_data_out_rx(),
-    .o_rx_done_tick(),
-    .o_tx_bit(),
-    .o_tx_done_tick()
-);
+//uart
+//#(
+//   .NBITS(NBITS),
+//   .NUM_TICKS(NUM_TICKS),
+//   .BAUD_RATE(BAUD_RATE),
+//   .CLK_RATE(CLK_RATE)
+//)
+//    u_uart
+//(
+//    .i_clk(),
+//    .i_rst(),
+//    .i_tx_start(),
+//    .i_rx_bit(),
+//    .i_data_in_tx(),
+//    .o_data_out_rx(),
+//    .o_rx_done_tick(),
+//    .o_tx_bit(),
+//    .o_tx_done_tick()
+//);
 
-debug_unit
-#(
-    .LEN(LEN),
-    .LEN_UART(NBITS),
-    .CANT_REG(CANT_REG),
-    .CANT_MEM(CANT_MEM),
-    .NB_IF_ID(NB_IF_ID),
-    .NB_ID_EX(NB_ID_EX),
-    .NB_EX_MEM(NB_EX_MEM),
-    .NB_MEM_WB(NB_MEM_WB)
-)
-    u_debug_unit
-(
-    .i_clk(),
-    .i_rst(),
-    .i_halt(),
-    .i_if_id(),
-    .i_id_ex(),
-    .i_ex_mem(),
-    .i_mem_wb(),
-    .i_tx_done(),
-    .i_rx_done(),
-    .i_uart_data(),
-    .o_tx_start(),
-    .o_uart_start()
-);
+//debug_unit
+//#(
+//    .LEN(LEN),
+//    .LEN_UART(NBITS),
+//    .CANT_REG(CANT_REG),
+//    .CANT_MEM(CANT_MEM),
+//    .NB_IF_ID(NB_IF_ID),
+//    .NB_ID_EX(NB_ID_EX),
+//    .NB_EX_MEM(NB_EX_MEM),
+//    .NB_MEM_WB(NB_MEM_WB)
+//)
+//    u_debug_unit
+//(
+//    .i_clk(),
+//    .i_rst(),
+//    .i_halt(),
+//    .i_if_id(),
+//    .i_id_ex(),
+//    .i_ex_mem(),
+//    .i_mem_wb(),
+//    .i_tx_done(),
+//    .i_rx_done(),
+//    .i_uart_data(),
+//    .o_tx_start(),
+//    .o_uart_start()
+//);
 
 recolector
 #(

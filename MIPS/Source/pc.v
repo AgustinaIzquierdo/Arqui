@@ -35,7 +35,7 @@ module pc
 always @(negedge i_clk)
 begin
     if(!i_rst)
-        o_pc <= 0;
+        o_pc <= 32'h0;
     else
     begin
         if(!i_enable) //No se produce un Stall, incrementa el PC

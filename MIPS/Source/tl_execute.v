@@ -27,7 +27,7 @@ module tl_execute
     parameter NB_ALU_CONTROL = 4,
     parameter NB_CTRL_WB = 2,
     parameter NB_CTRL_MEM = 9,
-    parameter NB_CTRL_EX = 8    
+    parameter NB_CTRL_EX = 11    
 )
 (
     input i_clk,
@@ -38,7 +38,7 @@ module tl_execute
     input [LEN-1:0] i_sign_extend,
     input [NB_CTRL_WB-1:0] i_ctrl_wb,
     input [NB_CTRL_MEM-1:0] i_ctrl_mem,
-    input [NB_CTRL_EX-1:0] i_ctrl_ex, //JAL,Jump, JR, JALR,RegDst ,Jump,RegDst ,ALUSrc1(MUX de la entrada A de la ALU), ALUSrc2(MUX de la entrada B de la ALU) y alu_code(4)
+    input [NB_CTRL_EX-1:0] i_ctrl_ex, //JAL,Jump, JR, JALR,RegDst ,ALUSrc1(MUX de la entrada A de la ALU), ALUSrc2(MUX de la entrada B de la ALU) y alu_code(4)
     input [NB_ADDRESS_REGISTROS-1:0] i_rd,
     input [NB_ADDRESS_REGISTROS-1:0] i_rt,
     input [NB_ADDRESS_REGISTROS-1:0] i_shamt,
@@ -74,7 +74,26 @@ wire [LEN-1:0] alu_result;
 //Cables mux_cortocircuitos 
 wire [LEN-1:0] mux_aluA_corto;
 wire [LEN-1:0] mux_aluB_corto;
-    
+
+//Cables de la senial de control ex
+wire [NB_ALU_CONTROL-1:0] alu_code;
+wire ALUSrc2;
+wire AluScr1;
+wire RegDst;
+wire JALR;
+wire JR;
+wire JUMP;
+wire JAL;
+
+assign alu_code = i_ctrl_ex[NB_ALU_CONTROL-1:0];
+assign ALUSrc2 = i_ctrl_ex[4];
+assign AluScr1 = i_ctrl_ex[5];
+assign RegDst = i_ctrl_ex[6];
+assign JALR = i_ctrl_ex[7];
+assign JR = i_ctrl_ex[8];
+assign JUMP = i_ctrl_ex[9];
+assign JAL = i_ctrl_ex[10];
+
 always @(negedge i_clk)
 begin
     if(!i_rst | i_flush)
@@ -134,7 +153,7 @@ end
   (
     .i_a(i_rt),
     .i_b(i_rd),  
-    .i_selector(i_ctrl_ex[6]),  //RegDst
+    .i_selector(RegDst),  //RegDst i_ctrl_ex[6]
     .o_mux(write_reg)
   );
     
@@ -157,7 +176,7 @@ u_mux_datoA
 (
     .i_a(mux_aluA_corto),
     .i_b({{(27){1'b0}},i_shamt}),
-    .i_selector(i_ctrl_ex[5]), //AluScr1
+    .i_selector(AluScr1), //AluScr1 i_ctrl_ex[5]
     .o_mux(mux_A)   
 );
 
@@ -169,7 +188,7 @@ u_mux_datoB
 (
     .i_a(mux_aluB_corto),
     .i_b(i_sign_extend),
-    .i_selector(i_ctrl_ex[4]), //AluScr2
+    .i_selector(ALUSrc2), //AluScr2 i_ctrl_ex[4]
     .o_mux(mux_B)   
 );
 
@@ -181,7 +200,7 @@ u_mux_datoB_out
 (
     .i_a(mux_B),
     .i_b(i_adder_id),
-    .i_selector(i_ctrl_ex[10] | i_ctrl_ex[7]), //JAL
+    .i_selector(JAL | JALR), //JAL o JALR i_ctrl_ex[10] | i_ctrl_ex[7]
     .o_mux(mux_alu_B)   
 );
 
@@ -194,7 +213,7 @@ u_mux_datoA_out
 (
     .i_a(mux_A),
     .i_b(32'b1000),
-    .i_selector(i_ctrl_ex[10]| i_ctrl_ex[7] ), //JAL o JALR
+    .i_selector(JAL | JALR), //JAL o JALR i_ctrl_ex[10] | i_ctrl_ex[7]
     .o_mux(mux_alu_A)   
 );
 
@@ -207,7 +226,7 @@ u_alu
 (
     .i_datoA(mux_alu_A),
     .i_datoB(mux_alu_B),
-    .i_opcode(i_ctrl_ex[NB_ALU_CONTROL-1:0]), //Control
+    .i_opcode(alu_code), //Control i_ctrl_ex[NB_ALU_CONTROL-1:0]
     .o_result(alu_result),
     .o_zero_flag(alu_zero)    
 );

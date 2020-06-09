@@ -145,7 +145,7 @@ begin
         
         6'b001000: //ADDI
         begin
-            alu_op = 2'b00;
+            alu_op = 2'b11;
             o_ctrl_wb = 2'b10;
             o_ctrl_mem = 9'b000000000;
             o_ctrl_ex = {7'b0000001,o_alu_control};  

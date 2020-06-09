@@ -26,7 +26,8 @@
 `define NB_INSTRUCCION  6
 `define NB_ALU_CONTROL  4       
 `define NB_ALU_OP  2
-`define INIT_FILE_IM "/home/anij/facu/Arquitectura_de_Computadoras/agus-arqui/Arqui/MIPS/Source/instruction_memory.txt"
+`define INIT_FILE_IM "" 
+//"/home/anij/facu/Arquitectura_de_Computadoras/agus-arqui/Arqui/MIPS/Source/instruction_memory.txt"
 //gil:  "/home/andres/Facultad/Arquitectura_de_Computadoras/Andres/Arqui/MIPS/Source/instruction_memory.txt"
 
 //Tamanio de los latches 
@@ -56,6 +57,9 @@ module top_mips
     input i_debug_flag,
     input [$clog2(CANT_REG)-1:0] i_addr_reg_reco, //Recolector 
     input [$clog2(CANT_MEM)-1:0] i_addr_memdatos_reco, //Recolector
+    input [LEN-1:0] dir_mem_instr,
+    input wea_mem_instr,
+    input [LEN-1:0] addr_mem_inst,
     output [NB_IF_ID-1:0] o_if_id,
     output [NB_ID_EX-1:0] o_id_ex,
     output [NB_EX_MEM-1:0] o_ex_mem,
@@ -156,9 +160,10 @@ assign o_id_ex = {
                    rd,   //5 bits
                    out_adder_id_exe, //32 bits
                    dir_jump,         //32bits 
-                   sign_extend      //32 bits
-                   //dato1,            //32 bits
-                 //  dato2_if_ex       //32 bits
+                   sign_extend,      //32 bits
+                   dato1,            //32 bits
+                   dato2_if_ex,       //32 bits
+                   flag_stall
                   };   
                    
 assign o_ex_mem = {
@@ -195,6 +200,9 @@ tl_instruction_fetch
     .i_flag_stall(flag_stall),
     .i_flag_jump(flag_jump),
     .i_dir_jump(dir_jump),
+    .i_dir_mem_instr(dir_mem_instr),
+    .i_wea_mem_instr(wea_mem_instr),
+    .i_addr_mem_inst(addr_mem_inst),
     .o_instruccion(instruccion),
     .o_adder(out_adder_if_id),
     .o_contador_programa(contador_programa), //DEBUG_UNIT
