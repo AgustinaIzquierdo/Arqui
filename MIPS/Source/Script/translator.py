@@ -5,7 +5,7 @@
 # Autores: Izquierdo Agustina, Salvatierra Andres
 
 #Constantes
-NOMBRE_DE_ARCHIVO="test1.asm"
+NOMBRE_DE_ARCHIVO="test7.asm"
 
 def get_struct_instr(opcode):
 	return {		

@@ -100,7 +100,7 @@ wire flag_halt;
 
 //Cables hacia/desde instruction_decode 
 wire [LEN-1:0] write_data_banco_reg;
-wire [LEN-1:0] out_adder_id_exe;
+wire [LEN-1:0] out_adder_id_ex;
 wire [NB_ADDRESS_REGISTROS-1:0] rs;
 wire [NB_ADDRESS_REGISTROS-1:0] rd;
 wire [NB_ADDRESS_REGISTROS-1:0] rt;
@@ -144,33 +144,33 @@ assign o_debug_halt = flag_halt;
 assign o_if_id = {
                   contador_programa, //32 bits
                   instruccion,//32 bits
-                  {31{1'b0}},
+                 // {31{1'b0}},
                   flag_halt //1bits
                   }; 
 
 assign o_id_ex = { 
-                   {10{1'b0}},
+                   //{10{1'b0}},
                    ctrl_wb_id_ex,  //2bits
                    ctrl_mem_id_ex, //9bits
                    ctrl_ex_id_ex,  //11 bits
-                   {12{1'b0}},
+                  // {12{1'b0}},
                    shamt, //5 bits
                    rs,  //5 bits
                    rt,  //5 bits
                    rd,   //5 bits
-                   out_adder_id_exe, //32 bits
+                   out_adder_id_ex, //32 bits
                    dir_jump,         //32bits 
                    sign_extend,      //32 bits
                    dato1,            //32 bits
                    dato2_if_ex,       //32 bits
-                   flag_stall
+                   flag_stall,
+                   flag_jump
                   };   
                    
 assign o_ex_mem = {
-                   {15{1'b0}},
+                  // {15{1'b0}},
                    ctrl_wb_ex_mem, //2bits
                    ctrl_mem_ex_mem, //9bits
-                   alu_zero, //1 bit
                    write_reg_ex_mem, //5bit
                    branch_dir,//32 bits
                    result_alu_ex_mem,//32 bits
@@ -178,7 +178,8 @@ assign o_ex_mem = {
                    };
 
 assign o_mem_wb = {
-                   {25{1'b0}},
+                   //{25{1'b0}},
+                   PCSrc, //1 bit
                    ctrl_wb_mem_wb, //2 bits
                    write_reg_mem_wb, //5 bits
                    result_alu_mem_wb,//32 bits
@@ -233,7 +234,7 @@ tl_instruction_decode
     .i_adder_pc(out_adder_if_id),
     .i_RegWrite(regwrite_wb_id),
     .i_flush(PCSrc), 
-    .o_adder_pc(out_adder_id_exe), 
+    .o_adder_pc(out_adder_id_ex), 
     .o_rs(rs),
     .o_rd(rd),
     .o_rt(rt),    
@@ -265,7 +266,7 @@ tl_execute
 (
     .i_clk(i_clk),
     .i_rst(i_rst),
-    .i_adder_id(out_adder_id_exe),
+    .i_adder_id(out_adder_id_ex),
     .i_dato1(dato1),
     .i_dato2(dato2_if_ex),
     .i_sign_extend(sign_extend),

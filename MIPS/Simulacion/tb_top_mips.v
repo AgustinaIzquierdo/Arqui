@@ -31,10 +31,10 @@ module tb_top_mips();
 `define INIT_FILE_IM "" ///home/andres/Facultad/Arquitectura_de_Computadoras/Andres/Arqui/MIPS/Source/Script/ram_instruction.txt"
 
 //Tamanio de los latches 
-`define NB_IF_ID  96
-`define NB_ID_EX  224
-`define NB_EX_MEM  128
-`define NB_MEM_WB  96
+`define NB_IF_ID  65 //96
+`define NB_ID_EX  204 //224
+`define NB_EX_MEM  112 //128
+`define NB_MEM_WB  72 //96
 
 //Tamanio de los registros de control
 `define NB_CTRL_WB  2
@@ -77,7 +77,7 @@ wire flag_halt;
 
 //Cables hacia/desde instruction_decode 
 wire [LEN-1:0] write_data_banco_reg;
-wire [LEN-1:0] out_adder_id_exe;
+wire [LEN-1:0] out_adder_id_ex;
 wire [NB_ADDRESS_REGISTROS-1:0] rs;
 wire [NB_ADDRESS_REGISTROS-1:0] rd;
 wire [NB_ADDRESS_REGISTROS-1:0] rt;
@@ -124,7 +124,13 @@ integer ram_instruct,error1;
 reg [LEN-1:0] cont;
 
 //SACAR DATOS
-integer wr_latch_if_id, wr_latch_id_ex, wr_latch_ex_mem, wr_latch_mem_wb;
+integer wr_latch_if_id, wr_latch_id_ex, wr_latch_ex_mem, wr_latch_mem_wb, wr_cant_clock;
+
+//CANTIDAD DE CLOCK
+reg [LEN-1:0] cant_clock;
+reg [3-1:0] cuentita;
+reg flag;
+
 initial
 begin
     i_clk = 1'b0;
@@ -141,11 +147,13 @@ begin
     wr_latch_ex_mem = $fopen("/home/andres/Facultad/Arquitectura_de_Computadoras/Andres/Arqui/MIPS/Source/Script/ex_mem.txt", "w");
        if(wr_latch_ex_mem==0) $stop;
     wr_latch_mem_wb = $fopen("/home/andres/Facultad/Arquitectura_de_Computadoras/Andres/Arqui/MIPS/Source/Script/mem_wb.txt", "w");
-       if(wr_latch_mem_wb==0) $stop;    
+       if(wr_latch_mem_wb==0) $stop;
+   wr_cant_clock = $fopen("/home/andres/Facultad/Arquitectura_de_Computadoras/Andres/Arqui/MIPS/Source/Script/cant_clock.txt", "w");
+       if(wr_cant_clock==0) $stop;        
    // #1000 i_rst= 1'b1; //Desactiva el reset
      //   wea_mem_instr= 1'b0;
     
-    #300 $finish;
+    #150 $finish;
 end
 
 always #2.5 i_clk=~i_clk;
@@ -155,33 +163,33 @@ always #2.5 i_clk=~i_clk;
 //Latches intermedios
 assign o_if_id = {
                   contador_programa, //32 bits
-                  instruccion,
-                  {31{1'b0}},
-                  flag_halt}; //32 bits
+                  instruccion, //32 bits
+                 // {31{1'b0}},
+                  flag_halt}; //1bit
 
 assign o_id_ex = { 
-                   {10{1'b0}},
+                  // {10{1'b0}},
                    ctrl_wb_id_ex,  //2bits
                    ctrl_mem_id_ex, //9bits
                    ctrl_ex_id_ex,  //11 bits
-                   {12{1'b0}},
+                   //{12{1'b0}},
                    shamt, //5 bits
                    rs,  //5 bits
                    rt,  //5 bits
                    rd,   //5 bits
-                   out_adder_id_exe, //32 bits
+                   out_adder_id_ex, //32 bits
                    dir_jump,         //32bits 
                    sign_extend,      //32 bits
                    dato1,            //32 bits
                    dato2_if_ex,       //32 bits
-                   flag_stall
+                   flag_stall,        //1 bit
+                   flag_jump          //1 bit
                   };   
                    
 assign o_ex_mem = {
-                   {15{1'b0}},
+                  // {15{1'b0}},
                    ctrl_wb_ex_mem, //2bits
                    ctrl_mem_ex_mem, //9bits
-                   alu_zero, //1 bit
                    write_reg_ex_mem, //5bit
                    branch_dir,//32 bits
                    result_alu_ex_mem,//32 bits
@@ -189,7 +197,8 @@ assign o_ex_mem = {
                    };
 
 assign o_mem_wb = {
-                   {25{1'b0}},
+                 //  {25{1'b0}},
+                   PCSrc, //1bit
                    ctrl_wb_mem_wb, //2 bits
                    write_reg_mem_wb, //5 bits
                    result_alu_mem_wb,//32 bits
@@ -217,10 +226,45 @@ always @(negedge i_clk)
 begin
     if(i_rst)
     begin
-        $fwrite(wr_latch_if_id, "%h\n", o_if_id);
-        $fwrite(wr_latch_id_ex, "%h\n", o_id_ex);
-        $fwrite(wr_latch_ex_mem, "%h\n", o_ex_mem);
-        $fwrite(wr_latch_mem_wb, "%h\n", o_mem_wb);
+        if(!flag)
+        begin
+            $fwrite(wr_latch_if_id, "%b\n", o_if_id);
+            $fwrite(wr_latch_id_ex, "%b\n", o_id_ex);
+            $fwrite(wr_latch_ex_mem, "%b\n", o_ex_mem);
+            $fwrite(wr_latch_mem_wb, "%b\n", o_mem_wb);
+            $fwrite(wr_cant_clock, "%b\n", cant_clock);
+        end
+    end
+end
+
+
+always @(negedge i_clk)
+begin
+    if(!i_rst)
+    begin
+        cant_clock <= 32'b0;
+        cuentita <= 2'b0;
+        flag <= 1'b0;
+    end
+    else
+    begin
+        if(flag_halt && flag!=1'b1)
+        begin
+            cuentita<= cuentita + 1'b1;
+        end
+        else
+            cuentita <= cuentita;
+        
+        if(cuentita >= 3'b100)
+        begin
+            cant_clock<= cant_clock;
+            flag <= 1'b1;
+        end
+        else
+        begin
+            cant_clock<= cant_clock + 1'b1;
+            flag <= flag;
+        end
     end
 end
 
@@ -272,7 +316,7 @@ tl_instruction_decode
     .i_adder_pc(out_adder_if_id),
     .i_RegWrite(regwrite_wb_id),
     .i_flush(PCSrc), 
-    .o_adder_pc(out_adder_id_exe), 
+    .o_adder_pc(out_adder_id_ex), 
     .o_rs(rs),
     .o_rd(rd),
     .o_rt(rt),    
@@ -303,7 +347,7 @@ tl_execute
 (
     .i_clk(i_clk),
     .i_rst(i_rst),
-    .i_adder_id(out_adder_id_exe),
+    .i_adder_id(out_adder_id_ex),
     .i_dato1(dato1),
     .i_dato2(dato2_if_ex),
     .i_sign_extend(sign_extend),

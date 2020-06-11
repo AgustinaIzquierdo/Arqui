@@ -88,6 +88,10 @@ wire [NB_CTRL_EX-1:0] ctrl_ex_int;
 
 wire [3-1:0] flag_jump; //JAL (100),JUMP (011), JR (010), JALR (001)
 
+wire flag_nop;
+
+assign flag_nop = |i_instruccion[31:0];
+
 assign opcode = i_instruccion[31:26];
 
 assign rs = i_instruccion[25:21];
@@ -108,9 +112,9 @@ assign o_flag_stall = (i_flush) ? 1'b0 : flag_stall; //flush
 assign o_dato1 = (i_flush) ? 32'b0 : dato1;
 assign o_dato2 = (i_flush) ? 32'b0 : dato2;
 
-assign ctrl_wb_int = (o_flag_stall) ? 2'b0 : ctrl_wb;
-assign ctrl_mem_int = (o_flag_stall) ? 9'b0 : ctrl_mem;
-assign ctrl_ex_int = (o_flag_stall) ? 11'b0 : ctrl_ex;
+assign ctrl_wb_int = (o_flag_stall | !flag_nop) ? 2'b0 : ctrl_wb;
+assign ctrl_mem_int = (o_flag_stall | !flag_nop) ? 9'b0 : ctrl_mem;
+assign ctrl_ex_int = (o_flag_stall | !flag_nop) ? 11'b0 : ctrl_ex;
 
 assign flag_jump = (ctrl_ex_int[10]==1'b1)? 3'b100 : (ctrl_ex_int[9]==1'b1)? 3'b011 :
                    (ctrl_ex_int[8]==1'b1)? 3'b010 : (ctrl_ex_int[7]==1'b1)? 3'b001 : 3'b000;
