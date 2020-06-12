@@ -19,7 +19,6 @@
 // 
 //////////////////////////////////////////////////////////////////////////////////
 
-//`define LEN 32
 `define CANTIDAD_REGISTROS 32
 `define NB_ADDRESS_REGISTROS $clog2(CANTIDAD_REGISTROS)
 `define NB_SIGN_EXTEND  16
@@ -27,19 +26,12 @@
 `define NB_ALU_CONTROL  4       
 `define NB_ALU_OP  2
 `define INIT_FILE_IM "" 
-//"/home/anij/facu/Arquitectura_de_Computadoras/agus-arqui/Arqui/MIPS/Source/instruction_memory.txt"
-//gil:  "/home/andres/Facultad/Arquitectura_de_Computadoras/Andres/Arqui/MIPS/Source/instruction_memory.txt"
-
-//Tamanio de los latches 
-//`define NB_IF_ID  96
-//`define NB_ID_EX  160
-//`define NB_EX_MEM  128
-//`define NB_MEM_WB  96
 
 //Tamanio de los registros de control
 `define NB_CTRL_WB  2
 `define NB_CTRL_MEM  9
 `define NB_CTRL_EX 11
+
 
 module top_mips
 #(
@@ -54,19 +46,13 @@ module top_mips
 (
     input i_clk,
     input i_rst,
-    input i_debug_flag,
-    input [$clog2(CANT_REG)-1:0] i_addr_reg_reco, //Recolector 
-    input [$clog2(CANT_MEM)-1:0] i_addr_memdatos_reco, //Recolector
     input [LEN-1:0] dir_mem_instr,
     input wea_mem_instr,
     input [LEN-1:0] addr_mem_inst,
     output [NB_IF_ID-1:0] o_if_id,
     output [NB_ID_EX-1:0] o_id_ex,
     output [NB_EX_MEM-1:0] o_ex_mem,
-    output [NB_MEM_WB-1:0] o_mem_wb,
-    output [LEN-1:0] o_reg_recolector, //Recolector
-    output [LEN-1:0] o_mem_datos_recolector, //Recolector
-    output o_debug_halt //Debug
+    output [NB_MEM_WB-1:0] o_mem_wb
 );
 
 //Parametros
@@ -78,13 +64,6 @@ localparam NB_INSTRUCCION = `NB_INSTRUCCION;
 localparam NB_ALU_CONTROL = `NB_ALU_CONTROL;
 localparam NB_ALU_OP = `NB_ALU_OP;
 localparam INIT_FILE_IM = `INIT_FILE_IM;
-
-                                                            //(Ver si realmente son estos los tamanios)
-//parameter NB_IF_ID = `NB_IF_ID; 
-//parameter NB_ID_EX = `NB_ID_EX; 
-//parameter NB_EX_MEM = `NB_EX_MEM; 
-//parameter NB_MEM_WB = `NB_MEM_WB; 
-
                                                            //(Ver si realmente son estos los tamanios)
 localparam NB_CTRL_WB = `NB_CTRL_WB; 
 localparam NB_CTRL_MEM = `NB_CTRL_MEM; 
@@ -137,8 +116,6 @@ wire [NB_ADDRESS_REGISTROS-1:0] write_reg_wb_id;
 wire [1:0] ctrl_muxA_corto;
 wire [1:0] ctrl_muxB_corto;
 
-
-assign o_debug_halt = flag_halt;
 
 //Latches intermedios
 assign o_if_id = {
@@ -228,7 +205,7 @@ tl_instruction_decode
 (
     .i_clk(i_clk),          
     .i_rst(i_rst),
-    .i_instruccion(i_debug_flag? {{7{1'b0}},i_addr_reg_reco,{21{1'b0}}}: instruccion),
+    .i_instruccion(instruccion),
     .i_write_data(write_data_banco_reg),
     .i_write_reg(write_reg_wb_id),
     .i_adder_pc(out_adder_if_id),
@@ -247,8 +224,7 @@ tl_instruction_decode
     .o_ctrl_ex(ctrl_ex_id_ex), //JAL,Jump, JR, JALR,RegDst ,Jump,RegDst ,ALUSrc1(MUX de la entrada A de la ALU), ALUSrc2(MUX de la entrada B de la ALU) y alu_code(4)
     .o_flag_stall(flag_stall),
     .o_dir_jump(dir_jump),
-    .o_flag_jump(flag_jump),
-    .o_reg_reco(o_reg_recolector)
+    .o_flag_jump(flag_jump)
 );
 
 //Execute
@@ -303,7 +279,7 @@ tl_memory
 (
     .i_clk(i_clk),
     .i_rst(i_rst),
-    .i_address(i_debug_flag? {{29{1'b0}},i_addr_memdatos_reco} : result_alu_ex_mem),
+    .i_address(result_alu_ex_mem),
     .i_write_data(dato2_ex_mem),
     .i_ctrl_wb(ctrl_wb_ex_mem),
     .i_ctrl_mem(ctrl_mem_ex_mem),
@@ -313,8 +289,7 @@ tl_memory
     .o_read_data(read_data_memory),
     .o_write_reg(write_reg_mem_wb),
     .o_ctrl_wb(ctrl_wb_mem_wb),
-    .o_PCSrc(PCSrc), //Branch, indica si se hace el flush
-    .o_mem_reco(o_mem_datos_recolector) 
+    .o_PCSrc(PCSrc) //Branch, indica si se hace el flush
 );
 
 //Write Back

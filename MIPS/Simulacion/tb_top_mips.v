@@ -114,8 +114,8 @@ wire [NB_ADDRESS_REGISTROS-1:0] write_reg_wb_id;
 wire [1:0] ctrl_muxA_corto;
 wire [1:0] ctrl_muxB_corto;
 
-reg i_clk, i_rst;
-
+reg i_rst;
+wire i_clk;
 
 //CARGAR LA MEMORIA DE INSTRUCCIONES
 reg wea_mem_instr;
@@ -131,15 +131,29 @@ reg [LEN-1:0] cant_clock;
 reg [3-1:0] cuentita;
 reg flag;
 
+//MODO DE OPERACION
+reg mode;   //Si es 0 es Step by step y si es 1 es continuo
+reg i_clk2;
+reg enable_mode; //Si esta en 1 habilita el modo en el que esta
+
+//ARCHIVO PARA STEP BY STEP
+integer archivo_step,error2;
+reg cable_enable_mode;
+
 initial
 begin
-    i_clk = 1'b0;
+   // i_clk = 1'b0;
+    i_clk2 = 1'b0;
     i_rst = 1'b0;
     cont = 32'hffffffff;
     wea_mem_instr = 1'b1;
     
+    mode = 1'b1; //Continuo(1) Step(0)
+    
     ram_instruct=$fopen("/home/andres/Facultad/Arquitectura_de_Computadoras/Andres/Arqui/MIPS/Source/Script/ram_instruction.txt","r");
         if(ram_instruct==0) $stop;
+    archivo_step=$fopen("/home/andres/Facultad/Arquitectura_de_Computadoras/Andres/Arqui/MIPS/Source/Script/step.txt","r");
+        if(archivo_step==0) $stop;   
     wr_latch_if_id = $fopen("/home/andres/Facultad/Arquitectura_de_Computadoras/Andres/Arqui/MIPS/Source/Script/if_id.txt", "w");
        if(wr_latch_if_id==0) $stop;
     wr_latch_id_ex = $fopen("/home/andres/Facultad/Arquitectura_de_Computadoras/Andres/Arqui/MIPS/Source/Script/id_ex.txt", "w");
@@ -150,62 +164,15 @@ begin
        if(wr_latch_mem_wb==0) $stop;
    wr_cant_clock = $fopen("/home/andres/Facultad/Arquitectura_de_Computadoras/Andres/Arqui/MIPS/Source/Script/cant_clock.txt", "w");
        if(wr_cant_clock==0) $stop;        
-   // #1000 i_rst= 1'b1; //Desactiva el reset
-     //   wea_mem_instr= 1'b0;
     
     #150 $finish;
 end
 
-always #2.5 i_clk=~i_clk;
+always #2.5 i_clk2=~i_clk2;
 
+assign i_clk = !i_rst? i_clk2 : enable_mode ? flag ? 1'b0 : i_clk2 : 1'b0;
 
-
-//Latches intermedios
-assign o_if_id = {
-                  contador_programa, //32 bits
-                  instruccion, //32 bits
-                 // {31{1'b0}},
-                  flag_halt}; //1bit
-
-assign o_id_ex = { 
-                  // {10{1'b0}},
-                   ctrl_wb_id_ex,  //2bits
-                   ctrl_mem_id_ex, //9bits
-                   ctrl_ex_id_ex,  //11 bits
-                   //{12{1'b0}},
-                   shamt, //5 bits
-                   rs,  //5 bits
-                   rt,  //5 bits
-                   rd,   //5 bits
-                   out_adder_id_ex, //32 bits
-                   dir_jump,         //32bits 
-                   sign_extend,      //32 bits
-                   dato1,            //32 bits
-                   dato2_if_ex,       //32 bits
-                   flag_stall,        //1 bit
-                   flag_jump          //1 bit
-                  };   
-                   
-assign o_ex_mem = {
-                  // {15{1'b0}},
-                   ctrl_wb_ex_mem, //2bits
-                   ctrl_mem_ex_mem, //9bits
-                   write_reg_ex_mem, //5bit
-                   branch_dir,//32 bits
-                   result_alu_ex_mem,//32 bits
-                   dato2_ex_mem //32 bits
-                   };
-
-assign o_mem_wb = {
-                 //  {25{1'b0}},
-                   PCSrc, //1bit
-                   ctrl_wb_mem_wb, //2 bits
-                   write_reg_mem_wb, //5 bits
-                   result_alu_mem_wb,//32 bits
-                   read_data_memory //32 bits
-                   };
-
-always @(negedge i_clk)
+always @(negedge i_clk2)
 begin
     if(!i_rst)
     begin
@@ -226,7 +193,7 @@ always @(negedge i_clk)
 begin
     if(i_rst)
     begin
-        if(!flag)
+        if(!flag && (enable_mode==1'b1))
         begin
             $fwrite(wr_latch_if_id, "%b\n", o_if_id);
             $fwrite(wr_latch_id_ex, "%b\n", o_id_ex);
@@ -237,8 +204,30 @@ begin
     end
 end
 
+always @(negedge i_clk2)
+begin
+    if(!i_rst)
+    begin
+        enable_mode<=1'b0;
+    end
+    else
+    begin
+        if(mode == 1'b1) //continuo
+        begin
+            enable_mode <= mode;
+        end
+        else
+        begin //step_by_step
+            error2<=$fscanf(archivo_step,"%b",cable_enable_mode);
+            if(error2!=1) 
+                $stop;
+            else
+                enable_mode<=cable_enable_mode;
+        end
+    end
+end
 
-always @(negedge i_clk)
+always @(negedge i_clk2)
 begin
     if(!i_rst)
     begin
@@ -248,25 +237,35 @@ begin
     end
     else
     begin
-        if(flag_halt && flag!=1'b1)
+        if(enable_mode==1'b1)
         begin
-            cuentita<= cuentita + 1'b1;
+            if(flag_halt && flag!=1'b1)  //ACA PONDRIA OTRA MAQUINA QUE DEPENDIENDO UN FLAG ESTO SE HAGA SIEMPRE QUE SERIA EL CONTINUO O A PARTIR DE LA LECTURA DE UN ARCHIVO.
+            begin                        //DIGAMOS A DEMAS DE CONTROLAR TODO ESTO DEBERIAMOS CONTROLAR EL CLOCK DEL SISTEMA
+                cuentita<= cuentita + 1'b1; // EN CASO DE SER CONTINUO QUE TOME SIEMPRE EL CLOCK PERO EN CASO DE NO SERLO QUE SERIA EL STEP BY STEP QUE LO HAGA LEYENDO UN ARCHIVO SUPONGO
+            end                             //USAR DOS CLOCK SUPONGO.
+            else
+                cuentita <= cuentita;
+            
+            if(cuentita >= 3'b100)
+            begin
+                cant_clock<= cant_clock;
+                flag <= 1'b1;               //OTRA COSA A PROBAR ES SI EL FLAG ES 1 EL CLOCK DEBERIA PARARSE Y NO SEGUIR EJECUTANDO
+            end
+            else
+            begin
+                cant_clock<= cant_clock + 1'b1;
+                flag <= flag;
+            end
         end
         else
+        begin
             cuentita <= cuentita;
-        
-        if(cuentita >= 3'b100)
-        begin
-            cant_clock<= cant_clock;
-            flag <= 1'b1;
-        end
-        else
-        begin
-            cant_clock<= cant_clock + 1'b1;
+            cant_clock <= cant_clock;
             flag <= flag;
         end
     end
 end
+
 
 //Instruction fetch
 tl_instruction_fetch
@@ -432,4 +431,51 @@ u_unidad_corto
    .o_muxA_alu(ctrl_muxA_corto),
    .o_muxB_alu(ctrl_muxB_corto)
 );
+
+//Latches intermedios
+assign o_if_id = {
+                  contador_programa, //32 bits
+                  instruccion, //32 bits
+                 // {31{1'b0}},
+                  flag_halt}; //1bit
+
+assign o_id_ex = { 
+                  // {10{1'b0}},
+                   ctrl_wb_id_ex,  //2bits
+                   ctrl_mem_id_ex, //9bits
+                   ctrl_ex_id_ex,  //11 bits
+                   //{12{1'b0}},
+                   shamt, //5 bits
+                   rs,  //5 bits
+                   rt,  //5 bits
+                   rd,   //5 bits
+                   out_adder_id_ex, //32 bits
+                   dir_jump,         //32bits 
+                   sign_extend,      //32 bits
+                   dato1,            //32 bits
+                   dato2_if_ex,       //32 bits
+                   flag_stall,        //1 bit
+                   flag_jump          //1 bit
+                  };   
+                   
+assign o_ex_mem = {
+                  // {15{1'b0}},
+                   ctrl_wb_ex_mem, //2bits
+                   ctrl_mem_ex_mem, //9bits
+                   write_reg_ex_mem, //5bit
+                   branch_dir,//32 bits
+                   result_alu_ex_mem,//32 bits
+                   dato2_ex_mem //32 bits
+                   };
+
+assign o_mem_wb = {
+                 //  {25{1'b0}},
+                   PCSrc, //1bit
+                   ctrl_wb_mem_wb, //2 bits
+                   write_reg_mem_wb, //5 bits
+                   result_alu_mem_wb,//32 bits
+                   read_data_memory //32 bits
+                   };
+
+
 endmodule

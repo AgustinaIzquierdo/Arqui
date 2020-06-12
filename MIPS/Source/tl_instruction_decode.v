@@ -55,8 +55,7 @@ module tl_instruction_decode
   output reg [NB_CTRL_EX-1:0] o_ctrl_ex, //JAL,Jump, JR, JALR,RegDst ,ALUSrc1(MUX de la entrada A de la ALU), ALUSrc2(MUX de la entrada B de la ALU) y alu_code(4)
   output o_flag_stall,
   output o_flag_jump, 
-  output [LEN-1:0] o_dir_jump,
-  output [LEN-1:0] o_reg_reco
+  output [LEN-1:0] o_dir_jump
 );
 
 //Cables-Reg hacia/desde banco de registros 
@@ -125,8 +124,6 @@ assign o_dir_jump = (flag_jump == 3'b011) ? {i_adder_pc[31:28],{2'b00,i_instrucc
                     32'b0;
                       
 assign o_flag_jump = |flag_jump;
-
-assign o_reg_reco = wire_dato1; //Registro Rs en recolector, para sacar los 16 registros del banco
 
  always @(negedge i_clk)
  begin

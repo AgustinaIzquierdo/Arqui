@@ -40,8 +40,7 @@ module tl_memory
         output reg [LEN-1:0] o_read_data,
         output reg [NB_ADDRESS_REGISTROS-1:0] o_write_reg,
         output reg [NB_CTRL_WB-1:0] o_ctrl_wb,
-        output o_PCSrc,
-        output [LEN-1:0] o_mem_reco
+        output o_PCSrc
     );
     
 //Cables-Reg hacia/desde memoria de datos    
@@ -131,8 +130,7 @@ ram_datos
     .i_ena(memRead), //i_ctrl_mem[1]
     .i_rsta(rsta_mem),
     .i_regcea(regcea_mem), 
-    .o_douta(read_data),
-    .o_douta_wire(o_mem_reco) 
+    .o_douta(read_data)
  );
  
 endmodule
