@@ -1,11 +1,11 @@
 # TP 4. MIPS.
-# Script que traduce a instrucciones binarias el assembler del archivo "assembler_MIPS.txt".
+# Script que traduce a instrucciones binarias el assembler del archivo "test.txt".
 # Arquitectura de Computadoras. FCEFyN. UNC.
 # Anio 2019-2020.
 # Autores: Izquierdo Agustina, Salvatierra Andres
 
 #Constantes
-NOMBRE_DE_ARCHIVO="test7.asm"
+NOMBRE_DE_ARCHIVO="test1.asm"
 
 def get_struct_instr(opcode):
 	return {		
@@ -13,7 +13,7 @@ def get_struct_instr(opcode):
            "SLL" :  [("code", 0x00000000), ("rd", 11), ("rt", 16), ("sa", 6)],
            "SRL" :  [("code", 0x00000002), ("rd", 11), ("rt", 16), ("sa", 6)],
            "SRA" :  [("code", 0x00000003), ("rd", 11), ("rt", 16), ("sa", 6)],
-		   "SLLV" : [("code", 0x00000004), ("rd", 11), ("rt", 16), ("rs", 21)],
+           "SLLV" : [("code", 0x00000004), ("rd", 11), ("rt", 16), ("rs", 21)],
            "SRLV" : [("code", 0x00000006), ("rd", 11), ("rt", 16), ("rs", 21)],
            "SRAV" : [("code", 0x00000007), ("rd", 11), ("rt", 16), ("rs", 21)],
            "ADDU" : [("code", 0x00000021), ("rd", 11), ("rs", 21), ("rt", 16)],
@@ -86,15 +86,15 @@ except:
 
 #Parseo del archivo.
 
-arreglo_parseo = cadena_linea.split ('\n')
+arreglo_parseo = cadena_linea.split ('\n') #Cada linea en una posicion del arreglo
 
 hex_instrucciones=[]
 
 for ii in range(len(arreglo_parseo)-1): #-1 porque nos agrega una linea
-	aux_instr=arreglo_parseo[ii].split(" ")
+	aux_instr=arreglo_parseo[ii].split(" ") #Dividimos codigo de operacion y parametros
 	str_instr=get_struct_instr(aux_instr[0].upper())
 
-	if(str(str_instr).find("base")==-1):	#No hay parentesis
+	if(str(str_instr).find("base")==-1):	#No hay parentesis (no es load ni store)
 		if(aux_instr[0].upper()=="HALT"):
 			hex_instrucciones.append(hex(str_instr[0][1]))
 		else:
